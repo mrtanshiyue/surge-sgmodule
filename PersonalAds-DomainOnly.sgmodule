@@ -1,5 +1,5 @@
 #!name=个人 App 去广告聚合 · 仅域名版
-#!desc=精选广告域名拦截；需要 Surge iOS 5.23.0+（目前为 TestFlight RC）。无需 MITM、Rewrite 或脚本。
+#!desc=精选广告域名拦截；需要 Surge iOS 5.23.0+（CORE_VERSION>=6010000）。无需 MITM、Rewrite 或脚本。
 #!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
 #!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
 
