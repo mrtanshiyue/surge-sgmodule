@@ -16,13 +16,14 @@ https://github.com/app2smile/rules
 https://github.com/Maasea/sgmodule (Apache-2.0)
 https://github.com/deezertidal/shadowrocket-rules (reference: exact FanQienovel ad-sign hosts)
 https://github.com/v2ray/domain-list-community (reference: fqnovel-ads domain classification)
+https://github.com/abclq/home-dns-adblock (reference: Red Fruit Android capture and exact ad hosts; no code copied)
 https://www.apache.org/licenses/LICENSE-2.0
 
 Modifications: selected advertising rules; excluded broad telemetry/push blocks,
 watermark/download and membership changes; converted selected JSON operations
 to jq; reduced UI modifications; fixed YouTube button flags to false and caption
 translation to off; bounded YouTube request bodies to 1 MiB and response bodies to 4 MiB; limited Bilibili gRPC
-to video details; combined exact-domain blocks in a named inline ruleset; added three exact ad-sign CDN hosts based on public domain references, without copying upstream scripts or broad API rules.
+to video details; combined exact-domain blocks in a named inline ruleset; added exact Red Fruit ad-service, ad-video and ad-sign hostnames based on public domain references, without copying upstream scripts or broad API rules.
 
 Luestr-derived configuration terms: attribution, non-commercial and share-alike
 (CC BY-NC-SA 4.0), as described at https://github.com/luestr/ProxyResource.
