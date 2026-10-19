@@ -1,0 +1,88 @@
+#!name=个人 App 去广告聚合 · 仅域名版
+#!desc=精选广告域名拦截；需要 Surge iOS 5.23.0+（目前为 TestFlight RC）。无需 MITM、Rewrite 或脚本。
+#!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
+#!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
+
+# Version: 0.1.0 / 2026-10-19
+# Sources and limitations: see 使用说明.md and 来源与验证.md
+# Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
+# All-in-one local snapshot. Does not fetch executable scripts.
+
+[Rule]
+RULE-SET,PersonalAds20261019,REJECT,pre-matching
+
+[Ruleset PersonalAds20261019]
+# QQ音乐
+DOMAIN,adstats.tencentmusic.com,extended-matching
+DOMAIN,ad.tencentmusic.com,extended-matching
+DOMAIN,adcdn.tencentmusic.com,extended-matching
+DOMAIN,adcdn6.tencentmusic.com,extended-matching
+DOMAIN,adexpo.tencentmusic.com,extended-matching
+DOMAIN,adclick.tencentmusic.com,extended-matching
+DOMAIN,tmead.y.qq.com,extended-matching
+DOMAIN,tmeadbak.y.qq.com,extended-matching
+DOMAIN,tmeadquic.y.qq.com,extended-matching
+# 网易云音乐
+DOMAIN,iadmat.nosdn.127.net,extended-matching
+DOMAIN,iadmatapk.nosdn.127.net,extended-matching
+DOMAIN,iadmusicmat.music.126.net,extended-matching
+DOMAIN,iadmusicmatvideo.music.126.net,extended-matching
+# 喜马拉雅
+DOMAIN,adse.ximalaya.com,extended-matching
+DOMAIN,adsehera.ximalaya.com,extended-matching
+DOMAIN,adse.wsa.ximalaya.com,extended-matching
+DOMAIN,adbehavior.ximalaya.com,extended-matching
+DOMAIN,adbehavior.wsa.ximalaya.com,extended-matching
+# 优酷
+DOMAIN,adx-core.youku.com,extended-matching
+DOMAIN,adx-open-service.youku.com,extended-matching
+DOMAIN,yk-ssp.ad.youku.com,extended-matching
+DOMAIN,cad.youku.com,extended-matching
+DOMAIN,ykad-data.youku.com,extended-matching
+DOMAIN,m.atm.youku.com,extended-matching
+DOMAIN,mc.atm.youku.com,extended-matching
+DOMAIN-SUFFIX,iyes.youku.com,extended-matching
+# 中国电信
+DOMAIN,ad.21cn.com,extended-matching
+DOMAIN,ad.k.21cn.com,extended-matching
+DOMAIN,admarket.21cn.com,extended-matching
+DOMAIN,adshows.21cn.com,extended-matching
+# 米家
+DOMAIN,sdkconfig.ad.xiaomi.com,extended-matching
+# 小红书
+DOMAIN,ads-img-qc.xhscdn.com,extended-matching
+DOMAIN,ads-video-al.xhscdn.com,extended-matching
+DOMAIN,ads-video-qc.xhscdn.com,extended-matching
+DOMAIN,t-ads.xiaohongshu.com,extended-matching
+# 广告 SDK
+DOMAIN-SUFFIX,pangle.io,extended-matching
+DOMAIN,open.e.kuaishou.com,extended-matching
+DOMAIN,open.e.kuaishou.cn,extended-matching
+DOMAIN,adtrack.e.kuaishou.com,extended-matching
+DOMAIN-SUFFIX,adukwai.com,extended-matching
+DOMAIN-SUFFIX,adkwai.com,extended-matching
+DOMAIN-SUFFIX,supersonicads.com,extended-matching
+DOMAIN-SUFFIX,beizi.biz,extended-matching
+DOMAIN-SUFFIX,ad-scope.com.cn,extended-matching
+DOMAIN-SUFFIX,adn-plus.com.cn,extended-matching
+DOMAIN-SUFFIX,admobile.top,extended-matching
+DOMAIN-SUFFIX,tianmu.mobi,extended-matching
+DOMAIN,mobads-pre-config.cdn.bcebos.com,extended-matching
+DOMAIN,mobads.baidu.com,extended-matching
+DOMAIN,miniapp-ad.cdn.bcebos.com,extended-matching
+DOMAIN,adsmind.gdtimg.com,extended-matching
+DOMAIN-SUFFIX,gdt.qq.com,extended-matching
+DOMAIN-SUFFIX,ugdtimg.com,extended-matching
+DOMAIN-SUFFIX,ubixioe.com,extended-matching
+DOMAIN-SUFFIX,ad.xiaomi.com,extended-matching
+DOMAIN,dsp-x.jd.com,extended-matching
+DOMAIN-SUFFIX,toponadss.com,extended-matching
+DOMAIN-SUFFIX,adx.yixin.im,extended-matching
+DOMAIN-SUFFIX,anythinktech.com,extended-matching
+DOMAIN,ads.cup.com.cn,extended-matching
+DOMAIN-SUFFIX,doubleclick.net,extended-matching
+DOMAIN-SUFFIX,googlesyndication-cn.com,extended-matching
+DOMAIN-SUFFIX,sigmob.cn,extended-matching
+DOMAIN-SUFFIX,adwangmai.com,extended-matching
+# 穿山甲（域名见 app2smile adsense.sgmodule）
+DOMAIN,api-access.pangolin-sdk-toutiao.com,extended-matching
