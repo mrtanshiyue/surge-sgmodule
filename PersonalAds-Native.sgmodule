@@ -1,0 +1,189 @@
+#!name=个人 App 去广告聚合 · 原生版
+#!desc=精选广告规则；需要 Surge iOS 5.23.0+（目前为 TestFlight RC）并启用 Rewrite 与 MITM。静态规则快照，未做手机实测。
+#!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
+#!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
+
+# Version: 0.1.0 / 2026-10-19
+# Sources and limitations: see 使用说明.md and 来源与验证.md
+# Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
+# All-in-one local snapshot. Does not fetch executable scripts.
+
+[Rule]
+RULE-SET,PersonalAds20261019,REJECT,pre-matching
+
+[Ruleset PersonalAds20261019]
+# QQ音乐
+DOMAIN,adstats.tencentmusic.com,extended-matching
+DOMAIN,ad.tencentmusic.com,extended-matching
+DOMAIN,adcdn.tencentmusic.com,extended-matching
+DOMAIN,adcdn6.tencentmusic.com,extended-matching
+DOMAIN,adexpo.tencentmusic.com,extended-matching
+DOMAIN,adclick.tencentmusic.com,extended-matching
+DOMAIN,tmead.y.qq.com,extended-matching
+DOMAIN,tmeadbak.y.qq.com,extended-matching
+DOMAIN,tmeadquic.y.qq.com,extended-matching
+# 网易云音乐
+DOMAIN,iadmat.nosdn.127.net,extended-matching
+DOMAIN,iadmatapk.nosdn.127.net,extended-matching
+DOMAIN,iadmusicmat.music.126.net,extended-matching
+DOMAIN,iadmusicmatvideo.music.126.net,extended-matching
+# 喜马拉雅
+DOMAIN,adse.ximalaya.com,extended-matching
+DOMAIN,adsehera.ximalaya.com,extended-matching
+DOMAIN,adse.wsa.ximalaya.com,extended-matching
+DOMAIN,adbehavior.ximalaya.com,extended-matching
+DOMAIN,adbehavior.wsa.ximalaya.com,extended-matching
+# 优酷
+DOMAIN,adx-core.youku.com,extended-matching
+DOMAIN,adx-open-service.youku.com,extended-matching
+DOMAIN,yk-ssp.ad.youku.com,extended-matching
+DOMAIN,cad.youku.com,extended-matching
+DOMAIN,ykad-data.youku.com,extended-matching
+DOMAIN,m.atm.youku.com,extended-matching
+DOMAIN,mc.atm.youku.com,extended-matching
+DOMAIN-SUFFIX,iyes.youku.com,extended-matching
+# 中国电信
+DOMAIN,ad.21cn.com,extended-matching
+DOMAIN,ad.k.21cn.com,extended-matching
+DOMAIN,admarket.21cn.com,extended-matching
+DOMAIN,adshows.21cn.com,extended-matching
+# 米家
+DOMAIN,sdkconfig.ad.xiaomi.com,extended-matching
+# 小红书
+DOMAIN,ads-img-qc.xhscdn.com,extended-matching
+DOMAIN,ads-video-al.xhscdn.com,extended-matching
+DOMAIN,ads-video-qc.xhscdn.com,extended-matching
+DOMAIN,t-ads.xiaohongshu.com,extended-matching
+# 广告 SDK
+DOMAIN-SUFFIX,pangle.io,extended-matching
+DOMAIN,open.e.kuaishou.com,extended-matching
+DOMAIN,open.e.kuaishou.cn,extended-matching
+DOMAIN,adtrack.e.kuaishou.com,extended-matching
+DOMAIN-SUFFIX,adukwai.com,extended-matching
+DOMAIN-SUFFIX,adkwai.com,extended-matching
+DOMAIN-SUFFIX,supersonicads.com,extended-matching
+DOMAIN-SUFFIX,beizi.biz,extended-matching
+DOMAIN-SUFFIX,ad-scope.com.cn,extended-matching
+DOMAIN-SUFFIX,adn-plus.com.cn,extended-matching
+DOMAIN-SUFFIX,admobile.top,extended-matching
+DOMAIN-SUFFIX,tianmu.mobi,extended-matching
+DOMAIN,mobads-pre-config.cdn.bcebos.com,extended-matching
+DOMAIN,mobads.baidu.com,extended-matching
+DOMAIN,miniapp-ad.cdn.bcebos.com,extended-matching
+DOMAIN,adsmind.gdtimg.com,extended-matching
+DOMAIN-SUFFIX,gdt.qq.com,extended-matching
+DOMAIN-SUFFIX,ugdtimg.com,extended-matching
+DOMAIN-SUFFIX,ubixioe.com,extended-matching
+DOMAIN-SUFFIX,ad.xiaomi.com,extended-matching
+DOMAIN,dsp-x.jd.com,extended-matching
+DOMAIN-SUFFIX,toponadss.com,extended-matching
+DOMAIN-SUFFIX,adx.yixin.im,extended-matching
+DOMAIN-SUFFIX,anythinktech.com,extended-matching
+DOMAIN,ads.cup.com.cn,extended-matching
+DOMAIN-SUFFIX,doubleclick.net,extended-matching
+DOMAIN-SUFFIX,googlesyndication-cn.com,extended-matching
+DOMAIN-SUFFIX,sigmob.cn,extended-matching
+DOMAIN-SUFFIX,adwangmai.com,extended-matching
+# 穿山甲（域名见 app2smile adsense.sgmodule）
+DOMAIN,api-access.pangolin-sdk-toutiao.com,extended-matching
+
+[URL Rewrite]
+# 萤石云视频
+^https:\/\/api\.ys7\.com\/api\/ads - reject
+# 中国电信
+^https?:\/\/cloud\.189\.cn\/include\/splash\/ - reject
+# WPS
+^https?:\/\/ios\.wps\.cn\/ad-statistics-service - reject
+# 杭州市民卡
+^https?:\/\/smkmp\.96225\.com\/smkcenter\/ad/ - reject
+# 山姆
+^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v\d\/sams\/sams-user\/(window\/getGoUpPlus|screen_promotion\/get) - reject
+
+[Map Local]
+# 网易云音乐
+^https?:\/\/interface\d?\.music\.163\.com\/eapi\/delivery\/(batch-)?deliver data-type=text data="{}" status-code=200
+^https?:\/\/interface\d?\.music\.163\.com\/e?api\/(ocpc\/)?ad\/ data-type=text data="" header="Content-Type:text/plain"
+# 喜马拉雅
+^https:\/\/(mobile|mobilehera|mobwsa)\.ximalaya\.com\/mobile-playpage\/playpage\/recommendContentV\d\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/(mobile|mobilehera|mobwsa)\.ximalaya\.com\/mobile-playpage\/playpage\/recommend\/resource\/allocation\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/(mobile|mobilehera|mobwsa)\.ximalaya\.com\/business-sale-promotion-guide-mobile-web\/popup\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 萤石云视频
+^https:\/\/api\.ys7\.com\/v3\/config\/service\/entrance\/bannerInfo data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 小米音箱
+^https:\/\/marketing-aibox\.v\.mitvos\.com\/advertise\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 淘宝/1688/淘票票
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alimama\.etao\.config\.query\/.+?etao_advertise data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.etao\.noah\.query\/.+tao_splash data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.film\.mtopadvertiseapi\.queryadvertise data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.(volvo\.secondfloor\.getconfig|wireless\.home\.newface\.awesome\.get) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 淘票票
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.film\.life\.popup\.get\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.film\.mtopindependentadvertiseapi\.queryadvertise\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.film\.mtopitemadvertiseapi\.queryadvertise\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 高德地图
+^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/tips_adv\? data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/oss\.amap\.com\/ws\/banner\/lists\/\? data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 小红书
+^https:\/\/edith\.xiaohongshu\.com\/api\/sns\/v1\/surprisebox\/(?:get_style|open|submit_action) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/www\.xiaohongshu\.com\/api\/marketing\/box\/trigger\? data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/www\.xiaohongshu\.com\/api\/sns\/(?:v1\/ads\/resource|v2\/hey\/\w+\/hey_gallery) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 微信
+^https:\/\/mp\.weixin\.qq\.com\/mp\/getappmsgad\? data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 中国电信
+^https?:\/\/zt-app\.go189\.cn\/zt-app\/welcome\/.*?Animation data-type=tiny-gif status-code=200
+# 杭州市民卡
+^https?:\/\/ads\.iconntech\.com\/resource-delivery\/.*\.(?:jpg|png)(?:\?.*)?$ data-type=tiny-gif status-code=200
+# 米家
+^https?:\/\/home\.mi\.com\/cgi-op\/api\/v1\/recommendation\/(banner|carousel\/banners|openingBanner) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https?:\/\/home\.mi\.com\/cgi-op\/api\/v1\/resource\/realtime\/openingBanner data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 山姆
+^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v\d\/sams\/channel\/portal\/AdgroupData data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 1688
+^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.cbu\.app\.homepage\.startup data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 美团
+^https?:\/\/img\.meituan\.net\/(adunion|display|midas)\/\w+\.(gif|jpg|jpg\.webp)$ data-type=tiny-gif status-code=200
+^https?:\/\/p\d\.meituan\.net\/(bizad|wmbanner)\/\w+\.jpg data-type=tiny-gif status-code=200
+^https?:\/\/.*\.meituan\.com\/api\/v\d\/(openscreen\?ad|appstatus\?ad|loadInfo\?|startpicture) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 同花顺
+^https?:\/\/adm\.10jqka\.com\.cn\/interface\/ad\/recommend data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 小翼管家
+^https?:\/\/zjh5api\.ott4china\.com:8091\/cp-api\/view\/config\/pos data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+[Body Rewrite]
+# 喜马拉雅
+http-response-jq ^https:\/\/(mobile|mobilehera|mobwsa)\.ximalaya\.com\/football-portal\/diff2\/batch\? 'delpaths([["json","ad"]])'
+# 淘票票
+http-response-jq ^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.film\.mtopintegrationapi\.homeconfig\/ 'delpaths([["data","returnValue","floatingBanner"]])'
+# 拼多多
+http-response-jq ^https:\/\/api\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? 'delpaths([["result","dy_module","irregular_banner_dy"]])'
+http-response-jq ^https:\/\/api\.pinduoduo\.com\/api\/oak\/integration\/render\? 'delpaths([["ui","live_section","float_info"]])'
+http-response-jq ^https:\/\/api\.pinduoduo\.com\/order\/ 'delpaths([["marketing_banner_vo"]])'
+http-response-jq ^https:\/\/api\.pinduoduo\.com\/order\/ 'delpaths([["shipping","banner_above_recommend"]])'
+# 优酷
+http-response-jq ^https:\/\/un-acs\.youku\.com\/gw\/mtop\.youku\.play\.ups\.appinfo\.get 'delpaths([["data","data","ad"]])'
+http-response-jq ^https:\/\/un-acs\.youku\.com\/gw\/mtop\.youku\.play\.ups\.appinfo\.get 'delpaths([["data","data","ykad"]])'
+# 高德地图
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/marketingOperationStructured\? 'delpaths([["data","commonMaterial"]])'
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/marketingOperationStructured\? 'delpaths([["data","tipsOperationLocation"]])'
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/marketingOperationStructured\? 'delpaths([["data","resourcePlacement"]])'
+http-response-jq ^https:\/\/m5-zb\.amap\.com\/ws\/sharedtrip\/taxi\/order_detail_car_tips\? 'delpaths([["data","carTips","data","popupInfo"]])'
+# 小红书
+http-response-jq ^https?://(?:edith|rec)\.xiaohongshu\.com/api/sns/v6/homefeed(?:\?|$) 'if (.data | type) == "array" then .data |= map(select(has("ads_info") | not)) else . end'
+http-response-jq ^https?://(?:edith|so)\.xiaohongshu\.com/api/sns/v\d+/search/notes(?:\?|$) 'if (.data.items | type) == "array" then .data.items |= map(select(.model_type != "ads" and .model_type != "ad" and (has("ads_info") | not))) else . end'
+http-response-jq ^https?://edith\.xiaohongshu\.com/api/sns/v\d+/system_service/config(?:\?|$) 'del(.data.splash, .data.loading_img)'
+http-response-jq ^https?://edith\.xiaohongshu\.com/api/sns/v\d+/system_service/splash_config(?:\?|$) 'if (.data.ads_groups | type) == "array" then .data.ads_groups = [] else . end'
+# 京东
+http-response-jq ^https?://api\.m\.jd\.com/client\.action\?(?:[^#]*&)?functionId=start(?:&|$) 'if has("images") then .images = [] | .showTimesDaily = 0 else . end'
+http-response-jq ^https?://api\.m\.jd\.com/client\.action\?(?:[^#]*&)?functionId=welcomeHome(?:&|$) 'if (.floorList | type) == "array" then .floorList |= map(select(.type | IN("bottomXview", "float", "photoCeiling", "tabBarAtmosphere") | not)) else . end'
+# 淘宝
+http-response-jq ^https?://guide-acs\.m\.taobao\.com/gw/mtop\.taobao\.cloudvideo\.video\.query/ 'if (.data | type) == "object" then .data.duration = "0" | .data.resources = [] | .data.caches = [] else . end'
+http-response-jq ^https?://guide-acs\.m\.taobao\.com/gw/mtop\.taobao\.wireless\.home\.splash\.awesome\.get/ 'if (.data.containers.splash_home_base.base.sections | type) == "array" then .data.containers.splash_home_base.base.sections |= map(if (.bizData["taobao-splash"].data | type) == "array" then .bizData["taobao-splash"].data |= map(.times = "0" | .waitTime = "0" | .coldStart = "false" | .hotStart = "false" | .imgUrl = "" | .videoUrl = "") else . end) else . end'
+# 哔哩哔哩
+http-response-jq ^https?://app\.bilibili\.com/x/v2/splash/(?:list|show|event/list2?|brand/list)(?:\?|$) 'if (.data | type) == "object" then .data |= with_entries(if (.key | IN("show", "list", "event_list")) then .value = [] else . end) else . end'
+http-response-jq ^https?://app\.bilibili\.com/x/v2/feed/index(?:\?|$) 'if (.data.items | type) == "array" then .data.items |= map(select(.ad_info == null and ((.card_goto // "") | startswith("ad") | not)) | if (.banner_item | type) == "array" then .banner_item |= map(select(.type != "ad")) else . end) else . end'
+http-response-jq ^https?://app\.bilibili\.com/x/v2/feed/index/story(?:\?|$) 'if (.data.items | type) == "array" then .data.items |= map(select(.ad_info == null and ((.card_goto // "") | startswith("ad") | not))) else . end'
+
+[MITM]
+hostname = %APPEND% interface*.music.163.com, mobile.ximalaya.com, mobilehera.ximalaya.com, mobwsa.ximalaya.com, api.ys7.com, marketing-aibox.v.mitvos.com, acs.m.taobao.com, guide-acs.m.taobao.com, api.m.jd.com, api.pinduoduo.com, un-acs.youku.com, m5.amap.com, m5-zb.amap.com, oss.amap.com, edith.xiaohongshu.com, rec.xiaohongshu.com, so.xiaohongshu.com, www.xiaohongshu.com, mp.weixin.qq.com, cloud.189.cn, zt-app.go189.cn, ios.wps.cn, ads.iconntech.com, smkmp.96225.com, home.mi.com, api-sams.walmartmobile.cn, app.bilibili.com, img.meituan.net, p*.meituan.net, peisongapi.meituan.com, www.meituan.com, wmapi.meituan.com, adm.10jqka.com.cn, zjh5api.ott4china.com:8091
