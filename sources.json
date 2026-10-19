@@ -1,0 +1,92 @@
+[
+  {
+    "app": "QQ音乐",
+    "source": "work/upstream/LoonKissSurge-main/Surge/QQ音乐去广告.sgmodule",
+    "sha256": "ce292f4816f65ddc910fd904da6cb149ad013102e3fd5a70dc43ab34cae845fd"
+  },
+  {
+    "app": "网易云音乐",
+    "source": "work/upstream/LoonKissSurge-main/Surge/网易云音乐去广告.sgmodule",
+    "sha256": "feef07eaf32ac53b65325d0255b167c44c0bd15703ef759858fe2a3486444ba3"
+  },
+  {
+    "app": "喜马拉雅",
+    "source": "work/upstream/LoonKissSurge-main/Surge/喜马拉雅去广告.sgmodule",
+    "sha256": "5ea2c795921716e43dd68c046068e817d1470d3c94904eeb0f5fba6367befedd"
+  },
+  {
+    "app": "萤石云视频",
+    "source": "work/upstream/LoonKissSurge-main/Surge/萤石云视频去广告.sgmodule",
+    "sha256": "11767bc7c239144bd0c1b506b6e5da53a82c106998bbc35a72a5e6cc1e0a7d01"
+  },
+  {
+    "app": "小米音箱",
+    "source": "work/upstream/LoonKissSurge-main/Surge/小米音箱去广告.sgmodule",
+    "sha256": "9330082a71ed6174b8e118748a53c6b592e09be9d1962e3c8880505e1a0a33e9"
+  },
+  {
+    "app": "淘宝/1688/淘票票",
+    "source": "work/upstream/LoonKissSurge-main/Surge/淘宝去广告.sgmodule",
+    "sha256": "60f0d96e614961c994c0915c13624484bdbb342fb22bdea46c0e5c48e1185c6e"
+  },
+  {
+    "app": "淘票票",
+    "source": "work/upstream/LoonKissSurge-main/Surge/淘票票去广告.sgmodule",
+    "sha256": "fe90a095b16d9bd3725d6d96ddfa0e1c3ea97bff66369c7d03c104e0e653efa1"
+  },
+  {
+    "app": "拼多多",
+    "source": "work/upstream/LoonKissSurge-main/Surge/拼多多去广告.sgmodule",
+    "sha256": "fbc5c8f8d21e8b5a4f0704f2cb39de4c14016b66ab8de41fc793aafcf9e27cdb"
+  },
+  {
+    "app": "优酷",
+    "source": "work/upstream/LoonKissSurge-main/Surge/优酷视频去广告.sgmodule",
+    "sha256": "ed82fbe519c1ccd0b096f429058420f52157f99b4bf7db447bcc2c3c1c28f751"
+  },
+  {
+    "app": "高德地图",
+    "source": "work/upstream/LoonKissSurge-main/Surge/高德地图去广告.sgmodule",
+    "sha256": "88c8c5a57153c793ecb2a41f2f98e5687043f726afa45c6ac92890cfe38fc6cf"
+  },
+  {
+    "app": "小红书",
+    "source": "work/upstream/LoonKissSurge-main/Surge/小红书去广告.sgmodule",
+    "sha256": "c721c55908eea28a6c55b40ce649ad7980dbdc5332c4fe54e6173809811f38dc"
+  },
+  {
+    "app": "微信",
+    "source": "work/upstream/LoonKissSurge-main/Surge/微信公众号去广告.sgmodule",
+    "sha256": "af61e39efcd1669bfa6bacfc70bf662ffe8a57e3ca306b2df440de2ecccd54b5"
+  },
+  {
+    "app": "中国电信",
+    "source": "work/upstream/wool_scripts-main/Surge/module/split/partZ/ChinaTelecom.sgmodule",
+    "sha256": "c4d85e82774aa0c21699051559e4adde2e0159190de220965a881da347921c31"
+  },
+  {
+    "app": "WPS",
+    "source": "work/upstream/wool_scripts-main/Surge/module/split/partW/WPS.sgmodule",
+    "sha256": "881ef7488ed4ab5e2a08e90f78610092c1bdb9f5f7cb9f7215658553c473c738"
+  },
+  {
+    "app": "杭州市民卡",
+    "source": "work/upstream/wool_scripts-main/Surge/module/split/partH/HangZhouCitizen.sgmodule",
+    "sha256": "97aad4fb88db8f5663b6985673716af88aa0f32c1185762611cb818cf51452f2"
+  },
+  {
+    "app": "米家",
+    "source": "work/upstream/wool_scripts-main/Surge/module/split/partM/Mijia.sgmodule",
+    "sha256": "a84c5036b1089007377ceed27b4a95a9d24e486bffa423f3312acc71c9b1ee5f"
+  },
+  {
+    "app": "山姆",
+    "source": "work/upstream/wool_scripts-main/Surge/module/split/partS/SamClub.sgmodule",
+    "sha256": "b5cc82cd62af0e2bf3ce71ceac6ea6a34ef6de12b878f38258ea6196b227be2e"
+  },
+  {
+    "app": "小红书",
+    "source": "work/upstream/wool_scripts-main/Surge/module/split/partX/Xiaohongshu.sgmodule",
+    "sha256": "6dc58305c0453a654d44def91a4d995cb4e5345f0c89dd703e98b19be1584038"
+  }
+]
