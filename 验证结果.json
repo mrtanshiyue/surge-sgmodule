@@ -2,7 +2,7 @@
   "static_checks": "passed",
   "minimum": "Surge iOS 5.23.0+ / CORE_VERSION>=6010000",
   "module_variants": 3,
-  "domain_rules": 65,
+  "domain_rules": 68,
   "jq_expressions": 23,
   "empty_fixture_checks": 46,
   "compiled_url_patterns_across_modules": 122,
@@ -10,6 +10,9 @@
   "script_syntax_checks": 3,
   "script_argument_json_checks": 2,
   "external_script_resources": 3,
+  "redfruit_exact_ad_sign_hosts_per_variant": 3,
+  "redfruit_broad_byteimg_blocking": "not used",
+  "redfruit_ios_runtime_testing": "not performed",
   "surge_parser": "not available",
   "device_testing": "not performed"
 }
