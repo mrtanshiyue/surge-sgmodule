@@ -100,5 +100,11 @@
     "source": "https://github.com/v2ray/domain-list-community/blob/fb444f90c1ad5993ee9a7def78f3451c5f2a0c28/data/fqnovel-ads",
     "sha256": null,
     "note": "Reference only; domain classification, not evidence of iOS app traffic."
+  },
+  {
+    "app": "红果短剧（Android 抓包案例；规则仅取精确广告主机）",
+    "source": "https://github.com/abclq/home-dns-adblock/blob/main/docs/redguo-case-study.md",
+    "sha256": null,
+    "note": "Cross-reference config/adblock-fq.conf for six ads3/ads5 service hosts and nine reading-ad video hosts; domain names only, no code copied. Android-only source evidence; iOS not verified."
   }
 ]
