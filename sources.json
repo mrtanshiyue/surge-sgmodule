@@ -88,5 +88,17 @@
     "app": "小红书",
     "source": "work/upstream/wool_scripts-main/Surge/module/split/partX/Xiaohongshu.sgmodule",
     "sha256": "6dc58305c0453a654d44def91a4d995cb4e5345f0c89dd703e98b19be1584038"
+  },
+  {
+    "app": "红果短剧（有限域名推断，未在 iOS 实测）",
+    "source": "https://github.com/deezertidal/shadowrocket-rules/blob/ad358b839eabcc35ebb05a295ca916c13ffe80ee/rule/FanQienovel.list",
+    "sha256": null,
+    "note": "Reference only; exact p3/p6/p9 ad-sign domains, no file copied."
+  },
+  {
+    "app": "红果短剧（广告分类交叉核验）",
+    "source": "https://github.com/v2ray/domain-list-community/blob/fb444f90c1ad5993ee9a7def78f3451c5f2a0c28/data/fqnovel-ads",
+    "sha256": null,
+    "note": "Reference only; domain classification, not evidence of iOS app traffic."
   }
 ]
