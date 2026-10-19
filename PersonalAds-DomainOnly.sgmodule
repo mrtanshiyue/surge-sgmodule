@@ -3,7 +3,7 @@
 #!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
 #!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
 
-# Version: 0.3.0 / 2026-10-19
+# Version: 0.3.1 / 2026-10-19
 # Sources and limitations: see 使用说明.md and 来源与验证.md
 # Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
 # All-in-one local snapshot. Does not fetch executable scripts.
@@ -96,6 +96,9 @@ DOMAIN-SUFFIX,gdt.qq.com,extended-matching
 DOMAIN-SUFFIX,ugdtimg.com,extended-matching
 DOMAIN-SUFFIX,ubixioe.com,extended-matching
 DOMAIN-SUFFIX,ad.xiaomi.com,extended-matching
+# 京东广告素材 CDN（此版本不改写京东开屏 API 响应）
+DOMAIN,ads-img-x.jd.com,extended-matching
+DOMAIN,ads-video-x.jd.com,extended-matching
 DOMAIN,dsp-x.jd.com,extended-matching
 DOMAIN-SUFFIX,toponadss.com,extended-matching
 DOMAIN-SUFFIX,adx.yixin.im,extended-matching

@@ -3,7 +3,7 @@
 #!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
 #!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
 
-# Version: 0.3.0 / 2026-10-19
+# Version: 0.3.1 / 2026-10-19
 # Sources and limitations: see 使用说明.md and 来源与验证.md
 # Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
 # All-in-one local snapshot. Does not fetch executable scripts.
@@ -96,6 +96,9 @@ DOMAIN-SUFFIX,gdt.qq.com,extended-matching
 DOMAIN-SUFFIX,ugdtimg.com,extended-matching
 DOMAIN-SUFFIX,ubixioe.com,extended-matching
 DOMAIN-SUFFIX,ad.xiaomi.com,extended-matching
+# 京东广告素材 CDN
+DOMAIN,ads-img-x.jd.com,extended-matching
+DOMAIN,ads-video-x.jd.com,extended-matching
 DOMAIN,dsp-x.jd.com,extended-matching
 DOMAIN-SUFFIX,toponadss.com,extended-matching
 DOMAIN-SUFFIX,adx.yixin.im,extended-matching
@@ -119,6 +122,8 @@ DOMAIN,api-access.pangolin-sdk-toutiao.com,extended-matching
 ^https?:\/\/smkmp\.96225\.com\/smkcenter\/ad/ - reject
 # 山姆
 ^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v\d\/sams\/sams-user\/(window\/getGoUpPlus|screen_promotion\/get) - reject
+# 京东新开屏接口（start 响应仍由下方 jq 规则处理）
+^https?:\/\/api\.m\.jd\.com\/client\.action\?(?:[^#]*&)?functionId=getSplash(?:&|$) _ reject
 
 [Map Local]
 # 网易云音乐

@@ -2,11 +2,11 @@
   "static_checks": "passed",
   "minimum": "Surge iOS 5.23.0+ / CORE_VERSION>=6010000",
   "module_variants": 3,
-  "domain_rules": 83,
+  "domain_rules": 85,
   "jq_expressions": 23,
   "empty_fixture_checks": 46,
-  "compiled_url_patterns_across_modules": 122,
-  "behavioral_assertions": 13,
+  "compiled_url_patterns_across_modules": 124,
+  "behavioral_assertions": 17,
   "script_syntax_checks": 3,
   "script_argument_json_checks": 2,
   "external_script_resources": 3,
@@ -18,6 +18,6 @@
   "redfruit_broad_qznovelvod_blocking": "not used; positive video CDN preserved",
   "redfruit_broad_byte_domain_blocking": "zijieapi.com and snssdk.com suffixes not used",
   "redfruit_ios_runtime_testing": "not performed",
-  "surge_parser": "not available",
+  "surge_cli_validation": "Surge Mac 6.6.0 --check passed for synthetic full profiles containing each module; iOS runtime not tested",
   "device_testing": "not performed"
 }
