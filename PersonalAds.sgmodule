@@ -3,7 +3,7 @@
 #!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
 #!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
 
-# Version: 0.2.0 / 2026-10-19
+# Version: 0.3.0 / 2026-10-19
 # Sources and limitations: see 使用说明.md and 来源与验证.md
 # Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
 # All-in-one local snapshot. Includes remote Maasea and app2smile binary scripts.
@@ -54,7 +54,24 @@ DOMAIN,ads-img-qc.xhscdn.com,extended-matching
 DOMAIN,ads-video-al.xhscdn.com,extended-matching
 DOMAIN,ads-video-qc.xhscdn.com,extended-matching
 DOMAIN,t-ads.xiaohongshu.com,extended-matching
-# 字节系广告素材 CDN（精确主机；红果 iOS 命中情况待验证）
+# 红果短剧：广告服务端点（精确主机；iOS 命中情况待验证）
+DOMAIN,ads3-normal-hl.zijieapi.com,extended-matching
+DOMAIN,ads3-normal-lf.zijieapi.com,extended-matching
+DOMAIN,ads3-normal-lq.zijieapi.com,extended-matching
+DOMAIN,ads5-normal-hl.zijieapi.com,extended-matching
+DOMAIN,ads5-normal-lf.zijieapi.com,extended-matching
+DOMAIN,ads5-normal-lq.zijieapi.com,extended-matching
+# 红果广告视频 CDN（仅拦 reading-ad 子域；保留 qznovelvod 正片域）
+DOMAIN,v11-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v13-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v26-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v5-bd-daily-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v5-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v5-se-sjy-daily-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v6-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v9-reading-ad.qznovelvod.com,extended-matching
+DOMAIN,v96-reading-ad.qznovelvod.com,extended-matching
+# 字节系广告签名素材 CDN（精确主机）
 DOMAIN,p3-ad-sign.byteimg.com,extended-matching
 DOMAIN,p6-ad-sign.byteimg.com,extended-matching
 DOMAIN,p9-ad-sign.byteimg.com,extended-matching
