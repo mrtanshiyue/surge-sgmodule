@@ -545,7 +545,8 @@
         "Rule": 7,
         "Map Local": 8,
         "Script": 13
-      }
+      },
+      "note": "R-Store 的 Protobuf 响应脚本读取 response.bodyBytes；补充 binary-body-mode=true，避免 Surge 默认 UTF-8 文本模式破坏二进制响应。"
     },
     {
       "source": "zirawell/R-Store",
@@ -840,17 +841,17 @@
     "Rule": 881,
     "Body Rewrite": 81,
     "Map Local": 310,
-    "Script": 101,
+    "Script": 102,
     "URL Rewrite": 112
   },
   "domain_rules": 821,
   "mitm_hostnames": 208,
-  "script_hooks": 101,
+  "script_hooks": 102,
   "external_script_urls": 35,
   "exact_duplicate_lines_removed": "yes, only identical lines within the same section",
   "script_overlap_resolution": {
     "reason": "Surge runs only the first matching http-response script for a response; overlapping handlers are not cumulative.",
-    "policy": "Keep one handler per response because Surge does not chain matching response scripts. Preserve non-overlapping routes. Split Xiaohongshu by API version so Wool retains image/video/comment-download enhancements on supported versions and R-Store covers other versions plus unique routes. Use R-Store for overlapping JD/Taobao/Amap/Bilibili/Youku routes, where reviewed source handlers cover the shared cases, and keep Wool's parameterized NetEase handlers on ipv4 while R-Store handles interface hosts.",
+    "policy": "Keep one handler per response because Surge does not chain matching response scripts. Preserve non-overlapping routes. Split Xiaohongshu by API version so Wool retains image/video/comment-download enhancements on supported versions and R-Store covers other versions plus unique routes. Use R-Store for overlapping JD/Taobao/Amap/Bilibili/Youku routes, where reviewed source handlers cover the shared cases; retain KeLee's info.amap.com route because R-Store only matches m<digit>.amap.com. Keep Wool's parameterized NetEase handlers on ipv4 while R-Store handles interface hosts.",
     "resolved_hooks": "See work/build_module.py:resolve_script_overlaps and README.md."
   },
   "limitations": [
