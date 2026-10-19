@@ -1,19 +1,15 @@
-# Personal App Ad Filter for Surge
+# 截图 App 去广告聚合
 
-A Surge iOS ad-filtering module set assembled for the apps visible in the provided home-screen screenshots. Choose one module only; the enhanced version has the widest coverage, while the native version avoids remote scripts.
+这是给 Surge iOS 5.102.0 使用的上游聚合模块。上一版未覆盖开屏响应等规则；本版直接展开 `[Rule]`，并同步截图中找到的上游 Surge 模块。
 
-## Install one module
+[下载完整模块](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule) · [逐个 App 核对](截图App逐项核对.md) · [来源与验证](来源与验证.md) · [上游清单与 SHA-256](sources.json)
 
-- [Enhanced — native rules plus YouTube, Bilibili, and Meituan Waimai scripts](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule)
-- [Native — no remote executable scripts](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds-Native.sgmodule)
-- [Domain only — does not require MITM, with limited coverage; does not remove the JD splash API response](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds-DomainOnly.sgmodule)
+请只安装上方的 PersonalAds.sgmodule。仓库中的 PersonalAds-Native.sgmodule 和 PersonalAds-DomainOnly.sgmodule 是历史版本，没有同步本轮上游处理器。
 
-In Surge, add the chosen module from its URL. The enhanced and native variants require Surge iOS 5.23.0 or later, Rewrite, and MITM; the enhanced variant also requires Scripting. Read [使用说明.md](使用说明.md) before enabling it, especially the per-app coverage and known limitations. The full screenshot-by-screenshot audit is in [截图App逐项核对.md](截图App逐项核对.md). Source attribution and validation details are in [来源与验证.md](来源与验证.md) and [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt).
+目前合入 55 个截图 App 对应的上游模块，以及广告平台、YouTube、B 站和开屏补充来源。模块包含 881 行规则、112 条 URL Rewrite、81 条 Body Rewrite、310 条 Map Local、101 个有效脚本挂钩、208 个 MITM 主机名和 35 个不同的远程脚本地址。脚本挂钩按 Surge 的单响应单脚本行为核对：对同一响应重复匹配的处理器不能叠加执行，因此保留一个覆盖共享接口的处理器，同时保留不同接口、版本路径和其他独有规则；小红书按 API 版本拆分，以保留 Wool 的下载增强和 R-Store 的新增接口覆盖。具体裁决见[来源与验证](来源与验证.md)。
 
-The enhanced and native variants include JD `start` response editing and a targeted `getSplash` endpoint block. Both require a trusted Surge CA and MITM for `api.m.jd.com`; the domain-only variant cannot remove these API-delivered splash ads.
+导入后需要启用 Rewrite、MITM 和 Scripting，并安装、信任 Surge MITM 证书。到 Surge 的外部资源列表更新脚本并确认没有下载失败。20 个 GitHub 托管脚本已按固定上游提交逐个读取；15 个 Kelee kelee.one 脚本在当前环境无法验证可达性，需在 Surge 的外部资源列表确认。详细步骤见[使用说明](使用说明.md)。
 
-Red Fruit Short Drama has 18 exact host rules: six ad-service hosts, nine `reading-ad` video hosts, and three ad-sign image hosts. The source project reports a real-device Android capture; these rules have not been verified against Red Fruit on iOS. They are global host rules, so other apps using the same hosts are affected too. The rules leave the main `qznovelvod.com` video CDN and broad ByteDance domains unblocked; they cannot swipe past locally rendered full-screen ads or remove ads embedded in content.
+上游模块还会执行原作者提供的其他处理，包括界面元素、信息流、启动页、图片水印、微信小程序和遥测端点；通用广告 SDK 规则也可能影响部分应用连接。截图中的每个 App 是否在当前版本实际消除广告，仍要用 iPhone 请求日志和界面逐项验证；本次通过了本机 Surge CLI 语法检查，没有做 iPhone 实机流量测试。
 
-Version 0.3.2 adds narrowly selected upstream rules for Amazon, Alipay, Amap, Meituan, Tonghuashun, Xiaohongshu, JD, and Taobao. The enhanced module has four remote script URLs across five hooks. It adds a reviewed Blackmatrix7 Meituan Waimai startup-response hook; the native variant contains all the same native rules and no executable scripts.
-
-Surge Mac's CLI accepts the module contents when checked inside a complete profile; this does not test iOS behavior or guarantee every ad is removed. The enhanced YouTube initialization hook may send some playback-init requests to Maasea's third-party Worker; use the native variant if that is not acceptable.
+主要上游来源及固定快照见 `sources.json`。原作者许可和归属见 [第三方声明](THIRD_PARTY_NOTICES.txt) 与 `licenses/`。Kelee 与 Walvez 上游没有找到仓库级许可文件，Kelee 仓库要求遵循各模块原作者的分发要求；公开再分发时仍需确认相应作者许可。

@@ -1,113 +1,53 @@
-# 截图 App 逐项核对
+# 截图 App 上游覆盖核对
 
-核对日期：2026-10-19。只把可辨认的图标作为核对对象；文件夹里缩小到无法识别的图标不推测名称。状态说明：**已有规则**表示当前聚合里有对应规则；**本次新增**表示本次按上游证据补入；**无专项规则**表示本次没有找到足以安全纳入的 Surge 规则；**系统/工具**表示不做 App 专项广告改写。规则是否命中仍要看当前 App 请求记录。
+核对范围是截图中能辨认的 App 图标。文件夹图标里的小图标无法可靠辨认，所以没有按猜测补规则。表中“已合入”表示上游模块本身已完整纳入聚合，不代表已在这台 iPhone 上验证所有广告均消失。
 
-| 截图中的 App | 状态 | 核对结论 |
+## 已合入完整上游模块
+
+| 截图 App | 已合入上游 | 模块覆盖范围 |
 |---|---|---|
-| 天气 | 系统/工具 | Apple 天气；无 App 专项规则。 |
-| 查找 | 系统/工具 | Apple 系统服务；无 App 专项规则。 |
-| 文件 | 系统/工具 | Apple 文件；无 App 专项规则。 |
-| 无边记 | 系统/工具 | Apple 无边记；无 App 专项规则。 |
-| 效率文件夹 | 未识别 | 文件夹缩略图不足以可靠识别其中所有 App。 |
-| 健身 | 系统/工具 | Apple 健身；无 App 专项规则。 |
-| Watch | 系统/工具 | Apple Watch 配套 App；无 App 专项规则。 |
-| 实用工具文件夹（第一页） | 未识别 | 文件夹缩略图不足以可靠识别其中所有 App。 |
-| Gmail | 无专项规则 | 没有找到可确认适用于 iOS Gmail 的 Surge 广告清理规则；未阻断 Google 邮件服务域名。 |
-| YouTube | 已有规则 | 增强版使用 Maasea 请求/响应脚本；包含播放增强和第三方 Worker 路径，限制见使用说明。 |
-| ChatGPT | 系统/工具 | 无 App 专项广告改写。 |
-| Surge | 系统/工具 | Surge 本身不纳入广告规则。 |
-| Authenticator（两个图标） | 系统/工具 | 两个验证器 App 均未加入业务接口规则。 |
-| 密码 | 系统/工具 | Apple 密码；无 App 专项规则。 |
-| Secure SignIn | 系统/工具 | 登录/验证类工具；无 App 专项规则。 |
-| Amazon 购物 | 本次新增 | 采用 [Amazon Surge 模块](https://github.com/fmz200/wool_scripts/blob/main/Surge/module/split/partA/Amazon.sgmodule) 的广告主机；按 [R-Store Amazon 模块](https://github.com/zirawell/R-Store/blob/main/Rule/Surge/Adblock/App/Y/%E4%BA%9A%E9%A9%AC%E9%80%8A/amazon.sgmodule) 仅本地化 popup/floatingWindow 响应。商品推荐 API 未拦。 |
-| Starbucks | 无专项规则 | 没有足够的 Surge 规则证据可纳入；未阻断点单、会员或支付域名。 |
-| Shopify | 系统/工具 | 商家业务工具；未改写登录、订单或后台 API。 |
-| 支付宝 | 本次新增 | 只加入 [R-Store 支付宝模块](https://github.com/zirawell/R-Store/blob/main/Rule/Surge/Adblock/App/Z/%E6%94%AF%E4%BB%98%E5%AE%9D/alipay.sgmodule) 中明确命名的 `adgw.alipay.com`；AMDC、日志、DNS 等域名排除。 |
-| 微信 | 已有规则 | 限于公众号广告接口和通用广告 SDK；不处理聊天、朋友圈、视频号及所有小程序。 |
-| 钉钉 | 无专项规则 | 没有足以确认适用于该 iOS App 的广告规则；保留工作通知、审批及会议流量。 |
-| Tesla | 无专项规则 | 未阻断车辆、充电或账户服务域名。 |
-| 蔚来 | 无专项规则 | 未阻断车辆控制、充电或账户服务域名。 |
-| 网易云音乐 | 已有规则 | 广告素材域名、delivery/ad 接口；不保证首页和评论区所有广告。 |
-| 喜马拉雅 | 已有规则 | 广告域名、播放页推广资源及部分响应字段。 |
-| QQ 音乐 | 已有规则 | 腾讯音乐广告域名；未解密全部信息流或加密接口。 |
-| 财务文件夹 | 未识别 | 无法从文件夹缩略图逐一确认 App 名称；证券/银行 App 不做猜测性规则。 |
-| 哔哩哔哩 | 已有规则 | JSON 开屏/推荐广告标记；增强版另有视频详情 gRPC hook。未加入会隐藏普通导航入口的脚本。 |
-| Apple Store | 系统/工具 | Apple Store；无 App 专项广告改写。 |
-| 旅行文件夹（第二页） | 未识别 | 缩略图不足以可靠识别所有 App。 |
-| 实用工具文件夹（第二页） | 未识别 | 缩略图不足以可靠识别所有 App。 |
-| 萤石云视频 | 已有规则 | 广告接口与服务入口 banner；不拦摄像头视频流。 |
-| 开心消消乐 | 无专项规则 | 通用广告 SDK 可能拦截部分第三方请求，但没有验证可见广告的专用 Surge 规则。 |
-| 阿里巴巴 1688 | 已有规则 | 已有启动接口处理；未做信息流深度清理。 |
-| 淘宝 | 已有规则 + 本次新增 | 已有开屏 JSON/视频规则；从 [fmz200 淘宝模块](https://github.com/fmz200/wool_scripts/blob/main/Surge/module/split/partT/Taobao.sgmodule) 选择 7 个 Simba/广告分发主机；点击统计和 adash 域名排除。 |
-| 京东 | 已有规则 + 本次新增 | `start` 响应、候选 `getSplash` 和素材域名已在；新增上游中明确标为广告分发的 `ad.3.cn`、`bdsp.x.jd.com`。未导入会改个人页/订单页的综合脚本。 |
-| 拼多多 | 已有规则 | 仅清理已知首页/订单营销字段；商家版图标共享规则命中尚未实测。 |
-| 同花顺 | 已有规则 + 本次新增 | 已有启动/推荐接口处理；采用 [R-Store 同花顺模块](https://github.com/zirawell/R-Store/blob/main/Rule/Surge/Adblock/App/T/%E5%90%8C%E8%8A%B1%E9%A1%BA/tonghuashun.sgmodule) 明确标注的 `adm.10jqka.com.cn`。不拦行情/交易。 |
-| 安居客 | 无专项规则 | 没有足够可靠的 iOS Surge 广告规则；未拦房源图片或搜索接口。 |
-| Gemini | 系统/工具 | 无 App 专项广告接口规则。 |
-| Linx Camera | 无专项规则 | 摄影工具；未找到足以确认的广告接口。 |
-| Leica LUX | 无专项规则 | 摄影工具；未找到足以确认的广告接口。 |
-| GitHub | 系统/工具 | 未修改登录、仓库或通知流量。 |
-| 抖音 | 无专项规则 | 上游存在覆盖字节公共 CDN/SDK 的宽泛规则，但无法证明只对应广告，可能误伤视频、图片及核心请求，因此没有加入。 |
-| 抖音精选 | 无专项规则 | 未找到能与主站广告请求清晰区分的 iOS Surge 规则；不套用抖音主站的宽泛域名。 |
-| QMT | 无专项规则 | 未找到可确认的广告专用 Surge 规则；保留行情、交易和行情推送。 |
-| 领星 ERP | 无专项规则 | 商业后台工具；不改登录、订单和库存业务请求。 |
-| 美团 | 本次新增 | 从 [fmz200 美团模块](https://github.com/fmz200/wool_scripts/blob/main/Surge/module/split/partM/Meituan.sgmodule) 加入 `ad.e.waimai.sankuai.com`、`mads.meituan.com`。增强版另只对 `wmapi.meituan.com/api/v*/loadInfo` 调用[固定版本的 Blackmatrix7 开屏脚本](https://github.com/blackmatrix7/ios_rule_script/blob/016829d3584e4f9e8853c0836471ee0120e4963a/script/startup/startup.js)。不清理首页推荐。 |
-| 灯塔专业版 | 无专项规则 | 没有足够可靠的广告端点证据；保留搜索、登录、报告服务。 |
-| 米家 | 已有规则 | 已知开屏/轮播与广告配置接口；不拦商城或设备控制。 |
-| 小米音箱 | 已有规则 | 仅处理已知 advertise 接口；未迁移与归属不一致的开屏脚本。 |
-| 中国电信 | 已有规则 | 已知广告域名/旧欢迎页资源接口；不保证新版本开屏。 |
-| 松下智能家电 | 无专项规则 | 未找到足以确认的广告接口；保留设备控制和账户服务。 |
-| Voice | 无专项规则 | 图标不足以确认具体服务提供商和请求端点；不做推测性拦截。 |
-| Quantumult X | 系统/工具 | 代理客户端；无广告规则。 |
-| 淘票票 | 已有规则 | 已知广告接口、弹窗和浮动 banner；保留普通影片推荐。 |
-| 小门童 | 无专项规则 | 未找到可确认的广告专用规则；保留门禁/访客业务。 |
-| 手记 | 无专项规则 | 图标/名称不能唯一确认产品；没有可验证的专项规则。 |
-| AutoSleep | 系统/工具 | 健康工具；无广告接口改写。 |
-| Apple 支持 | 系统/工具 | Apple 支持 App；无专项广告规则。 |
-| 拼多多商家版 | 已有规则（未单独验证） | 与拼多多 API 规则可能共用部分主机；没有商家版专用流量证据，不新增规则。 |
-| Loon | 系统/工具 | 代理客户端；无广告规则。 |
-| Folo | 无专项规则 | 未找到可确认的 iOS Surge 广告规则。 |
-| Reko | 无专项规则 | 未找到可确认的 iOS Surge 广告规则。 |
-| 黑鲨装备箱 | 无专项规则 | 未找到可确认的广告接口；保留设备与账号功能。 |
-| HeartWatch | 系统/工具 | 健康工具；无广告接口改写。 |
-| Me | 无专项规则 | 名称无法唯一定位应用；不做域名猜测。 |
-| TP-LINK 物联 | 无专项规则 | 未找到可确认的广告端点；保留路由器/设备控制请求。 |
-| 条码扫描宝 | 无专项规则 | 未找到可确认的广告端点；通用 SDK 规则不算已验证覆盖。 |
-| WPS Office | 已有规则 | 目前只拦一条广告统计 URL；这不能证明可见广告已去掉。 |
-| 小翼管家 | 已有规则 | 精确拦截已知 8091 端口广告配置请求；未做手机实测。 |
-| Google Maps | 无专项规则 | 没有 iOS App 专项规则；不拦导航、地点或地图瓦片主机。 |
-| Speedtest | 无专项规则 | 没有已验证的广告端点；不拦测速与连接检测。 |
-| 优酷 | 已有规则 | 广告域名及播放信息 ad/ykad 字段；版本变化或服务端插入广告可能绕过。 |
-| 预览 | 系统/工具 | Apple 预览；无 App 专项广告规则。 |
-| 红果短剧 | 已有规则 | 18 个精确广告服务、广告视频和广告素材主机。来源是 Android 案例和域名分类；iOS 未验证，保留正片主域。 |
-| EpsonSmartPanel | 无专项规则 | 未找到可确认的广告端点；保留打印机发现/打印功能。 |
-| 瞬感宝 | 无专项规则 | 无法仅凭图标确认后端服务及广告端点。 |
-| 游戏文件夹 | 未识别 | 文件夹缩略图不足以识别具体游戏，不能对游戏逐个套规则。 |
-| 豆包 | 无专项规则 | 字节公共广告/素材域名与对话、语音和图片服务共享；未加入可能误伤核心功能的宽泛拦截。 |
-| 速度表 ∞ | 无专项规则 | 未找到可确认的广告端点。 |
-| 像素蛋糕 | 无专项规则 | 未找到可确认的广告专用规则；保留编辑和素材服务。 |
-| 中信证券 | 无专项规则 | 金融/交易 App；未找到明确广告专用端点，不改行情、登录或交易。 |
-| 杭州市民卡 | 已有规则 | 已知广告接口及素材占位响应；具体接口可能随版本变化。 |
-| Chrome | 系统/工具 | 浏览器网页广告不能由某一个 App API 规则完整去除；通用广告域名规则有限。 |
-| 高德地图 | 已有规则 + 本次新增 | 已有接口字段处理；增加 [R-Store 高德模块](https://github.com/zirawell/R-Store/blob/main/Rule/Surge/Adblock/App/G/%E9%AB%98%E5%BE%B7%E5%9C%B0%E5%9B%BE/amap.sgmodule) 中的 `optimus-ads.amap.com`。未纳入同时改推荐/优惠/界面的综合脚本。 |
-| 熊掌记 | 无专项规则 | 未找到可确认的广告端点。 |
-| Relay | 无专项规则 | 未找到可确认的 iOS Surge 广告规则。 |
-| 一点万象 | 无专项规则 | 未找到可确认的广告端点；保留会员/零售业务接口。 |
-| 王者荣耀 | 无专项规则 | 未找到可确认的广告专用规则；不拦游戏更新、登录和对局流量。 |
-| 国家网络身份认证 | 系统/工具 | 身份验证 App；不做推测性规则。 |
-| 企业手机银行 | 系统/工具 | 金融 App；不改登录、转账或交易接口。 |
-| Manus | 无专项规则 | 未找到可确认的 iOS Surge 广告规则。 |
-| Claude | 系统/工具 | 无 App 专项广告接口规则。 |
-| Photos Mobile | 无专项规则 | 未找到可确认的广告端点。 |
-| Sam's Club | 已有规则 | 开屏、AdgroupData 和部分弹窗；保留商品、会员与更新服务。 |
-| 小红书 | 已有规则 + 本次新增 | 已有开屏、信息流和搜索字段处理；按 [R-Store 小红书模块](https://github.com/zirawell/R-Store/blob/main/Rule/Surge/Adblock/App/X/%E5%B0%8F%E7%BA%A2%E4%B9%A6/xiaohongshu.sgmodule) 扩展至 6 个 ads/t-ads 命名的素材/投放主机，本次新补 5 个。未纳入会改水印、下载和关注推荐的综合脚本。 |
-| Telegram | 无专项规则 | 没有适用于该 App 的广告端点规则；Sponsored Messages 与内容/服务端策略相关，未拦主服务域名。 |
-| Instagram | 无专项规则 | 广告与信息流内容同源，未找到可安全通用的 Surge App 专项规则。 |
-| Dock：电话、Safari、音乐、信息 | 系统/工具 | iOS 系统应用；Safari 网页广告仅受通用域名规则有限影响，未做 App 专项改写。 |
+| 京东 | Kelee、Wool、R-Store、Walvez | 启动/首页/弹窗/推荐等接口、域名规则、脚本和 Map Local；Walvez 的京东开屏接口补充也已纳入 |
+| 淘宝 | Kelee、Wool、R-Store、Walvez | 开屏、弹窗、首页和推广接口，以及域名、Map Local、脚本 |
+| 阿里巴巴 1688 | Wool、Walvez | 启动与广告接口规则 |
+| 拼多多、拼多多商家版 | Kelee、Wool、R-Store、Walvez | 开屏、营销、首页/推荐响应、域名规则与本地响应 |
+| 美团 | Wool、R-Store、Kelee 广告平台、Walvez | 推广图片/接口、首页和启动接口处理 |
+| 美团外卖 | Wool、R-Store、Walvez、Blackmatrix7 | 开屏、图片素材和启动响应脚本 |
+| 亚马逊购物 | Wool、R-Store | 弹窗/推荐配置与广告域名处理 |
+| 支付宝 | R-Store | 上游广告域名规则 |
+| 山姆会员商店 | Wool、R-Store | 开屏、广告分组和本地响应 |
+| 哔哩哔哩 | Kelee、R-Store、app2smile、Blackmatrix7 | 开屏、信息流、搜索、详情等响应脚本及规则；共享响应由 R-Store 处理，重复挂钩不并行运行 |
+| YouTube | Maasea、app2smile | Maasea 完整规则及 3 个请求/响应脚本；它的响应脚本覆盖 app2smile 的 browse/next 共享路径 |
+| 优酷 | Kelee、Wool、R-Store | 广告域名、播放/首页响应和脚本 |
+| 网易云音乐 | Kelee、Wool、R-Store | 开屏、首页、发现、评论、推荐和广告接口 |
+| QQ 音乐 | Kelee、Wool、R-Store | 广告域名、接口与上游重写 |
+| 喜马拉雅 | Kelee、R-Store | 广告、开屏、推荐/内容响应 |
+| 红果短剧 | Kelee 番茄小说、Wool FanQieNovel、R-Store Fanqie，加既有精确主机规则 | 按你给出的“番茄小说模块”线索覆盖；没有把 `zijieapi.com`、`snssdk.com` 或 `qznovelvod.com` 整个主域加入拦截 |
+| 高德地图 | Kelee、R-Store | 开屏、首页、搜索、路线与出行推广响应 |
+| 米家 | Wool、R-Store | 开屏、首页横幅与推广接口 |
+| 小米音箱 | Kelee | 广告接口本地响应 |
+| 萤石云视频 | Kelee | 开屏与广告接口处理 |
+| 小红书 | Kelee、Wool、R-Store | 开屏、信息流、搜索、弹窗、详情响应、图片/视频功能和上游脚本 |
+| 微信 | Kelee 公众号、小程序模块；R-Store 微信模块；Walvez 相关组 | 公众号广告、小程序配置及相关接口 |
+| 钉钉 | Wool | 完整上游模块 |
+| 中国电信 | Wool、R-Store | 开屏、推广接口与域名规则 |
+| WPS Office | Wool、R-Store | 启动/活动/商店窗口接口 |
+| 淘票票 | Kelee | 完整上游模块 |
+| 同花顺 | R-Store、Walvez | 广告/推荐接口 |
+| 杭州市民卡 | Wool | 完整上游模块和响应映射 |
+| 小翼管家 | Walvez | 上游开屏/配置接口规则 |
 
-## 本次上游筛选摘要
+此外，纳入 Kelee 广告平台拦截器和 app2smile 广告联盟规则，覆盖穿山甲、腾讯优量汇、快手等通用广告 SDK。该组会影响所有经过这些 SDK 的 App，并非单一图标专用规则。重复的响应脚本按 Surge 每个响应只运行一个 http-response 脚本的行为裁决；各自独有路径及非脚本规则保留，详细分流见来源与验证。
 
-- 新规则只选可以指向具体广告服务/素材的域名，以及明确弹窗 API；排除了统计、日志、HTTPDNS、应用更新、商品推荐和主业务接口。
-- Amazon、淘宝等上游模块还包含更多域名/重写，但部分是商品推荐、点击统计或归因，因此没有整份导入。
-- 小红书和高德的上游综合脚本还会改水印、下载、关注推荐、优惠/路线界面等非广告行为，所以只采用可审计的域名或本地已有 jq 规则。
-- 增强版新增 1 个远程脚本 URL，但只挂到美团外卖开屏响应；其余已核实且只需域名/原生响应处理的条目继续内联到模块，不为增加外部资源计数而拆成更多依赖。
+## 截图中未找到专属完整去广告上游模块
+
+天气、查找、文件、无边记、健身、Watch、Gmail、ChatGPT、Surge、Authenticator、密码、Secure SignIn、星巴克、Shopify、Tesla、蔚来、Apple Store、开心消消乐、安居客、Gemini、Linx Camera、Leica LUX、GitHub、抖音、抖音精选、QMT、领星 ERP、灯塔专业版、Panasonic Smart China、Voice、Quantumult X、小门童、手记、AutoSleep、Apple 支持、Loon、Folo、Reko、黑鲨装备箱、HeartWatch、Me、TP-LINK、条码扫描宝、Google Maps、Speedtest、预览、Epson SmartPanel、瞬感宝、游戏、豆包、速度表、像素蛋糕、中信证券、Chrome、熊掌记、Relay、一点万象、王者荣耀、国家网络身份认证、企业手机银行、Manus、Claude、Photos Mobile、Telegram、Instagram。
+
+这些 App 仍会经过通用广告 SDK 规则；本包没有为它们自创未经上游验证的专属域名或响应修改。截图里的“旅行”“财务”“实用工具”等文件夹内容不可辨认，也未逐项推断。
+
+## 红果短剧说明
+
+番茄小说模块是有依据的起点，但红果短剧与番茄小说接口并不保证完全相同。已同步三套当前可用的番茄/FanQie Surge 上游模块，并保留精确广告主机。奖励视频广告、服务端内容插入和广告素材复用业务域名时，网络模块无法承诺全部消除。
+
+## 需要用户设备日志才能继续核对的内容
+
+本地 CLI 只能确认 Surge 能解析配置，不能证明每个 App 当前版本实际请求了这些接口。要逐个确认剩余广告，需要相应 App 版本、广告出现步骤和 Surge 请求日志；这次没有在 iPhone 上抓取这些请求。
