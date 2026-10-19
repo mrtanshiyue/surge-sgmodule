@@ -1,9 +1,9 @@
 #!name=个人 App 去广告聚合 · 仅域名版
-#!desc=精选广告域名拦截；需要 Surge iOS 5.23.0+（CORE_VERSION>=6010000）。无需 MITM、Rewrite 或脚本。
-#!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
+#!desc=精选广告域名拦截；需要 Surge iOS 5.23.0+（目前为 TestFlight RC）。无需 MITM、Rewrite 或脚本。
+#!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile、Blackmatrix7、R-Store
 #!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
 
-# Version: 0.3.1 / 2026-10-19
+# Version: 0.3.2 / 2026-10-19
 # Sources and limitations: see 使用说明.md and 来源与验证.md
 # Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
 # All-in-one local snapshot. Does not fetch executable scripts.
@@ -54,14 +54,43 @@ DOMAIN,ads-img-qc.xhscdn.com,extended-matching
 DOMAIN,ads-video-al.xhscdn.com,extended-matching
 DOMAIN,ads-video-qc.xhscdn.com,extended-matching
 DOMAIN,t-ads.xiaohongshu.com,extended-matching
-# 红果短剧：广告服务端点（精确主机；iOS 命中情况待验证）
+# 亚马逊
+DOMAIN-SUFFIX,amazon-adsystem.com,extended-matching
+DOMAIN-SUFFIX,mads.amazon.com,extended-matching
+DOMAIN-SUFFIX,airpushmarketing.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,epowernetworktrackerimages.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,gateways.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,kbnetworkz.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,secretmedia.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,smblock.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,whistleout.s3.amazonaws.com,extended-matching
+# 京东
+DOMAIN-SUFFIX,bdsp.x.jd.com,extended-matching
+DOMAIN-SUFFIX,ad.3.cn,extended-matching
+# 淘宝
+DOMAIN-SUFFIX,dsp.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,m.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,simba.m.taobao.com,extended-matching
+DOMAIN-SUFFIX,srd.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,textlink.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,unitacs.m.taobao.com,extended-matching
+DOMAIN-SUFFIX,acs4baichuan.m.taobao.com,extended-matching
+# 美团
+DOMAIN-SUFFIX,ad.e.waimai.sankuai.com,extended-matching
+DOMAIN-SUFFIX,mads.meituan.com,extended-matching
+# 支付宝
+DOMAIN,adgw.alipay.com,extended-matching
+# 高德地图
+DOMAIN,optimus-ads.amap.com,extended-matching
+# 同花顺
+DOMAIN,adm.10jqka.com.cn,extended-matching
+# 红果短剧
 DOMAIN,ads3-normal-hl.zijieapi.com,extended-matching
 DOMAIN,ads3-normal-lf.zijieapi.com,extended-matching
 DOMAIN,ads3-normal-lq.zijieapi.com,extended-matching
 DOMAIN,ads5-normal-hl.zijieapi.com,extended-matching
 DOMAIN,ads5-normal-lf.zijieapi.com,extended-matching
 DOMAIN,ads5-normal-lq.zijieapi.com,extended-matching
-# 红果广告视频 CDN（仅拦 reading-ad 子域；保留 qznovelvod 正片域）
 DOMAIN,v11-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v13-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v26-reading-ad.qznovelvod.com,extended-matching
@@ -71,10 +100,12 @@ DOMAIN,v5-se-sjy-daily-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v6-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v9-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v96-reading-ad.qznovelvod.com,extended-matching
-# 字节系广告签名素材 CDN（精确主机）
 DOMAIN,p3-ad-sign.byteimg.com,extended-matching
 DOMAIN,p6-ad-sign.byteimg.com,extended-matching
 DOMAIN,p9-ad-sign.byteimg.com,extended-matching
+# 小红书
+DOMAIN,ads-vp5.xhscdn.com,extended-matching
+DOMAIN,ads-img-al.xhscdn.com,extended-matching
 # 广告 SDK
 DOMAIN-SUFFIX,pangle.io,extended-matching
 DOMAIN,open.e.kuaishou.com,extended-matching
@@ -96,9 +127,6 @@ DOMAIN-SUFFIX,gdt.qq.com,extended-matching
 DOMAIN-SUFFIX,ugdtimg.com,extended-matching
 DOMAIN-SUFFIX,ubixioe.com,extended-matching
 DOMAIN-SUFFIX,ad.xiaomi.com,extended-matching
-# 京东广告素材 CDN（此版本不改写京东开屏 API 响应）
-DOMAIN,ads-img-x.jd.com,extended-matching
-DOMAIN,ads-video-x.jd.com,extended-matching
 DOMAIN,dsp-x.jd.com,extended-matching
 DOMAIN-SUFFIX,toponadss.com,extended-matching
 DOMAIN-SUFFIX,adx.yixin.im,extended-matching

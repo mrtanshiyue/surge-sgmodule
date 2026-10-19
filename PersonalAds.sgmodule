@@ -1,12 +1,12 @@
 #!name=个人 App 去广告聚合 · 增强版
 #!desc=Surge iOS 5.23+；需启用 Rewrite/MITM/Scripting。YouTube 播放初始化可能交给 Maasea Worker；未实测。
-#!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile
+#!author=个人聚合整理；规则来源 fmz200/奶思、可莉、RuCu6、QingRex、ddgksf2013/Walvez、app2smile、Blackmatrix7、R-Store
 #!requirement="CORE_VERSION>=6010000 && SYSTEM=='iOS'"
 
-# Version: 0.3.1 / 2026-10-19
+# Version: 0.3.2 / 2026-10-19
 # Sources and limitations: see 使用说明.md and 来源与验证.md
 # Derived rules retain original attribution; see THIRD_PARTY_NOTICES.txt.
-# All-in-one local snapshot. Includes remote Maasea and app2smile binary scripts.
+# All-in-one local snapshot. Includes remote Maasea, app2smile, and Blackmatrix7 scripts.
 
 [Rule]
 RULE-SET,PersonalAds20261019,REJECT,pre-matching
@@ -54,14 +54,43 @@ DOMAIN,ads-img-qc.xhscdn.com,extended-matching
 DOMAIN,ads-video-al.xhscdn.com,extended-matching
 DOMAIN,ads-video-qc.xhscdn.com,extended-matching
 DOMAIN,t-ads.xiaohongshu.com,extended-matching
-# 红果短剧：广告服务端点（精确主机；iOS 命中情况待验证）
+# 亚马逊
+DOMAIN-SUFFIX,amazon-adsystem.com,extended-matching
+DOMAIN-SUFFIX,mads.amazon.com,extended-matching
+DOMAIN-SUFFIX,airpushmarketing.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,epowernetworktrackerimages.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,gateways.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,kbnetworkz.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,secretmedia.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,smblock.s3.amazonaws.com,extended-matching
+DOMAIN-SUFFIX,whistleout.s3.amazonaws.com,extended-matching
+# 京东
+DOMAIN-SUFFIX,bdsp.x.jd.com,extended-matching
+DOMAIN-SUFFIX,ad.3.cn,extended-matching
+# 淘宝
+DOMAIN-SUFFIX,dsp.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,m.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,simba.m.taobao.com,extended-matching
+DOMAIN-SUFFIX,srd.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,textlink.simba.taobao.com,extended-matching
+DOMAIN-SUFFIX,unitacs.m.taobao.com,extended-matching
+DOMAIN-SUFFIX,acs4baichuan.m.taobao.com,extended-matching
+# 美团
+DOMAIN-SUFFIX,ad.e.waimai.sankuai.com,extended-matching
+DOMAIN-SUFFIX,mads.meituan.com,extended-matching
+# 支付宝
+DOMAIN,adgw.alipay.com,extended-matching
+# 高德地图
+DOMAIN,optimus-ads.amap.com,extended-matching
+# 同花顺
+DOMAIN,adm.10jqka.com.cn,extended-matching
+# 红果短剧
 DOMAIN,ads3-normal-hl.zijieapi.com,extended-matching
 DOMAIN,ads3-normal-lf.zijieapi.com,extended-matching
 DOMAIN,ads3-normal-lq.zijieapi.com,extended-matching
 DOMAIN,ads5-normal-hl.zijieapi.com,extended-matching
 DOMAIN,ads5-normal-lf.zijieapi.com,extended-matching
 DOMAIN,ads5-normal-lq.zijieapi.com,extended-matching
-# 红果广告视频 CDN（仅拦 reading-ad 子域；保留 qznovelvod 正片域）
 DOMAIN,v11-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v13-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v26-reading-ad.qznovelvod.com,extended-matching
@@ -71,10 +100,12 @@ DOMAIN,v5-se-sjy-daily-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v6-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v9-reading-ad.qznovelvod.com,extended-matching
 DOMAIN,v96-reading-ad.qznovelvod.com,extended-matching
-# 字节系广告签名素材 CDN（精确主机）
 DOMAIN,p3-ad-sign.byteimg.com,extended-matching
 DOMAIN,p6-ad-sign.byteimg.com,extended-matching
 DOMAIN,p9-ad-sign.byteimg.com,extended-matching
+# 小红书
+DOMAIN,ads-vp5.xhscdn.com,extended-matching
+DOMAIN,ads-img-al.xhscdn.com,extended-matching
 # 广告 SDK
 DOMAIN-SUFFIX,pangle.io,extended-matching
 DOMAIN,open.e.kuaishou.com,extended-matching
@@ -96,9 +127,6 @@ DOMAIN-SUFFIX,gdt.qq.com,extended-matching
 DOMAIN-SUFFIX,ugdtimg.com,extended-matching
 DOMAIN-SUFFIX,ubixioe.com,extended-matching
 DOMAIN-SUFFIX,ad.xiaomi.com,extended-matching
-# 京东广告素材 CDN
-DOMAIN,ads-img-x.jd.com,extended-matching
-DOMAIN,ads-video-x.jd.com,extended-matching
 DOMAIN,dsp-x.jd.com,extended-matching
 DOMAIN-SUFFIX,toponadss.com,extended-matching
 DOMAIN-SUFFIX,adx.yixin.im,extended-matching
@@ -122,7 +150,7 @@ DOMAIN,api-access.pangolin-sdk-toutiao.com,extended-matching
 ^https?:\/\/smkmp\.96225\.com\/smkcenter\/ad/ - reject
 # 山姆
 ^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v\d\/sams\/sams-user\/(window\/getGoUpPlus|screen_promotion\/get) - reject
-# 京东新开屏接口（start 响应仍由下方 jq 规则处理）
+# 京东新开屏候选
 ^https?:\/\/api\.m\.jd\.com\/client\.action\?(?:[^#]*&)?functionId=getSplash(?:&|$) _ reject
 
 [Map Local]
@@ -165,6 +193,8 @@ DOMAIN,api-access.pangolin-sdk-toutiao.com,extended-matching
 ^https?:\/\/home\.mi\.com\/cgi-op\/api\/v1\/resource\/realtime\/openingBanner data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 # 山姆
 ^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v\d\/sams\/channel\/portal\/AdgroupData data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 亚马逊
+^https?:\/\/(?:api-cslp-emt|api\.globalstore)\.amazon\.cn\/gateway\/content\/widget\/(?:popup|floatingWindow) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 # 1688
 ^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.cbu\.app\.homepage\.startup data-type=text data="{}" status-code=200 header="Content-Type:application/json"
@@ -212,7 +242,7 @@ http-response-jq ^https?://app\.bilibili\.com/x/v2/feed/index(?:\?|$) 'if (.data
 http-response-jq ^https?://app\.bilibili\.com/x/v2/feed/index/story(?:\?|$) 'if (.data.items | type) == "array" then .data.items |= map(select(.ad_info == null and ((.card_goto // "") | startswith("ad") | not))) else . end'
 
 [MITM]
-hostname = %APPEND% youtubei.googleapis.com, *.googlevideo.com, grpc.biliapi.net, interface*.music.163.com, mobile.ximalaya.com, mobilehera.ximalaya.com, mobwsa.ximalaya.com, api.ys7.com, marketing-aibox.v.mitvos.com, acs.m.taobao.com, guide-acs.m.taobao.com, api.m.jd.com, api.pinduoduo.com, un-acs.youku.com, m5.amap.com, m5-zb.amap.com, oss.amap.com, edith.xiaohongshu.com, rec.xiaohongshu.com, so.xiaohongshu.com, www.xiaohongshu.com, mp.weixin.qq.com, cloud.189.cn, zt-app.go189.cn, ios.wps.cn, ads.iconntech.com, smkmp.96225.com, home.mi.com, api-sams.walmartmobile.cn, app.bilibili.com, img.meituan.net, p*.meituan.net, peisongapi.meituan.com, www.meituan.com, wmapi.meituan.com, adm.10jqka.com.cn, zjh5api.ott4china.com:8091
+hostname = %APPEND% youtubei.googleapis.com, *.googlevideo.com, grpc.biliapi.net, interface*.music.163.com, mobile.ximalaya.com, mobilehera.ximalaya.com, mobwsa.ximalaya.com, api.ys7.com, marketing-aibox.v.mitvos.com, acs.m.taobao.com, guide-acs.m.taobao.com, api.m.jd.com, api.pinduoduo.com, un-acs.youku.com, m5.amap.com, m5-zb.amap.com, oss.amap.com, edith.xiaohongshu.com, rec.xiaohongshu.com, so.xiaohongshu.com, www.xiaohongshu.com, mp.weixin.qq.com, cloud.189.cn, zt-app.go189.cn, ios.wps.cn, ads.iconntech.com, smkmp.96225.com, home.mi.com, api-sams.walmartmobile.cn, app.bilibili.com, img.meituan.net, p*.meituan.net, peisongapi.meituan.com, www.meituan.com, wmapi.meituan.com, api-cslp-emt.amazon.cn, api.globalstore.amazon.cn, adm.10jqka.com.cn, zjh5api.ott4china.com:8091
 
 [Script]
 # Maasea / Apache-2.0; fixed UI flags; up to 4 MiB per body
@@ -221,3 +251,5 @@ youtube.request.init = type=http-request,pattern=^https?:\/\/[\w-]+\.googlevideo
 youtube.request.log_event = type=http-request,pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/log_event,requires-body=true,max-size=1048576,binary-body-mode=true,script-path=https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/youtube.request.js
 # app2smile: only video-detail advertising endpoint
 personal.bili.video = type=http-response,pattern=^https://(?:grpc\.biliapi\.net|app\.bilibili\.com)/bilibili\.app\.viewunite\.v1\.View/View$,requires-body=true,binary-body-mode=true,max-size=4194304,timeout=10,script-update-interval=86400,script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-proto.js
+# Blackmatrix7: only the Meituan Waimai startup response hook
+meituan.takeout.startup = type=http-response,pattern=^https?:\/\/wmapi\.meituan\.com\/api\/v\d+\/loadInfo(?:\?|$),requires-body=true,max-size=1048576,timeout=10,script-update-interval=86400,script-path=https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/016829d3584e4f9e8853c0836471ee0120e4963a/script/startup/startup.js
