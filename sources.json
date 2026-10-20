@@ -807,13 +807,13 @@
     {
       "source": "Walvez/surge-startup-ads",
       "revision": "d68d7cbff3eb6402d35a22ff1fbe43a8074e06b1",
-      "path": "dist/StartUpAds_Selected.sgmodule; only screenshot-app groups: MeiTuan, MeiTuanWaiMai, WeChat, alibaba, jingdong[invalid], pinduoduo, shanmu, taobao, tonghuashun, xiaomi, xiaomiyinxiang, xiaoyiguanjia",
+      "path": "dist/StartUpAds_Selected.sgmodule; only screenshot-app groups: MeiTuan, MeiTuanWaiMai, WeChat, alibaba, jingdong[invalid], pinduoduo, shanmu, taobao, tonghuashun, xiaomi, xiaomiyinxiang, xiaoyiguanjia; omit JD start stub and Taobao splash stub because R-Store rewrites their real responses",
       "local_snapshot": "work/upstream/walvez-current.sgmodule",
       "sha256": "6ab63d04765e5cad9c7d8805b33d22ba940d5e7adde471c0db2416ee7e4ec29d",
       "app": "截图 App 开屏组",
       "active_lines_by_section": {
         "Body Rewrite": 1,
-        "Map Local": 20,
+        "Map Local": 18,
         "Script": 1
       }
     },
@@ -841,7 +841,7 @@
   "generated_counts": {
     "Rule": 882,
     "Body Rewrite": 82,
-    "Map Local": 312,
+    "Map Local": 310,
     "Script": 102,
     "URL Rewrite": 112
   },
