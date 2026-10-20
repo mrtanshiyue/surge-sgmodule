@@ -839,16 +839,16 @@
     }
   ],
   "generated_counts": {
-    "Rule": 881,
+    "Rule": 882,
     "Body Rewrite": 82,
-    "Map Local": 310,
-    "Script": 101,
+    "Map Local": 312,
+    "Script": 102,
     "URL Rewrite": 112
   },
-  "domain_rules": 821,
+  "domain_rules": 822,
   "mitm_hostnames": 208,
-  "script_hooks": 101,
-  "external_script_urls": 34,
+  "script_hooks": 102,
+  "external_script_urls": 35,
   "exact_duplicate_lines_removed": "yes, only identical lines within the same section",
   "script_overlap_resolution": {
     "reason": "Surge runs only the first matching http-response script for a response; overlapping handlers are not cumulative.",

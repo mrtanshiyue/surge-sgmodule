@@ -6,9 +6,9 @@
 
 请只安装上方的 PersonalAds.sgmodule。仓库中的 PersonalAds-Native.sgmodule 和 PersonalAds-DomainOnly.sgmodule 是历史版本，没有同步本轮上游处理器。
 
-目前合入 55 个截图 App 对应的上游模块，以及广告平台、YouTube、B 站和开屏补充来源。模块包含 881 行规则、112 条 URL Rewrite、82 条 Body Rewrite、310 条 Map Local、101 个有效脚本挂钩、208 个 MITM 主机名和 34 个不同的远程脚本地址。脚本挂钩按 Surge 的单响应单脚本行为核对：共享接口只保留一条覆盖处理器，独有接口和版本路径继续保留。高德旧版失效脚本已由 R-Store 脚本和 Surge JQ 规则覆盖；B 站旧版失效脚本已换成 Kokoryh/Sparkle 的固定版本脚本，并仅接管 R-Store 未覆盖的 Protobuf 接口。具体裁决见[来源与验证](来源与验证.md)。
+目前合入 55 个截图 App 对应的上游模块，以及广告平台、YouTube、B 站和开屏补充来源。模块包含 882 行规则、112 条 URL Rewrite、82 条 Body Rewrite、312 条 Map Local、102 个有效脚本挂钩、208 个 MITM 主机名和 35 个不同的远程脚本地址。脚本挂钩按 Surge 的单响应单脚本行为核对：共享接口只保留一条覆盖处理器，独有接口和版本路径继续保留。高德旧版失效脚本已由 R-Store 脚本和 Surge JQ 规则覆盖；B 站旧版失效脚本已换成 Kokoryh/Sparkle 的固定版本脚本，并仅接管 R-Store 未覆盖的 Protobuf 接口，同时保留评论与投稿赞助过滤及 gRPC 搜索默认词接口。具体裁决见[来源与验证](来源与验证.md)。
 
-导入后需要启用 Rewrite、MITM 和 Scripting，并安装、信任 Surge MITM 证书。到 Surge 的外部资源列表更新脚本并确认没有下载失败。21 个 GitHub 脚本已按固定提交读取并做 JavaScript 语法检查；13 个 Kelee CDN 脚本只对公开镜像副本做了语法检查，无法证明与 `kelee.one` 当前实际返回内容一致。详细步骤见[使用说明](使用说明.md)。
+导入后需要启用 Rewrite、MITM 和 Scripting，并安装、信任 Surge MITM 证书。到 Surge 的外部资源列表更新脚本并确认没有下载失败。22 个 GitHub 脚本已按固定提交读取并做 JavaScript 语法检查；13 个 Kelee CDN 脚本只对公开镜像副本做了语法检查，无法证明与 `kelee.one` 当前实际返回内容一致。详细步骤见[使用说明](使用说明.md)。
 
 上游模块还会执行原作者提供的其他处理，包括界面元素、信息流、启动页、图片水印、微信小程序和遥测端点；通用广告 SDK 规则也可能影响部分应用连接。截图中的每个 App 是否在当前版本实际消除广告，仍要用 iPhone 请求日志和界面逐项验证；本次通过了本机 Surge CLI 语法检查，没有做 iPhone 实机流量测试。
 

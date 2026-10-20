@@ -15,7 +15,7 @@
 | 亚马逊购物 | Wool、R-Store | 弹窗/推荐配置与广告域名处理 |
 | 支付宝 | R-Store | 上游广告域名规则 |
 | 山姆会员商店 | Wool、R-Store | 开屏、广告分组和本地响应 |
-| 哔哩哔哩 | Kelee、R-Store、Kokoryh/Sparkle、app2smile、Blackmatrix7 | 开屏、信息流、搜索、详情等响应脚本及规则；共享 Protobuf 响应由 R-Store 处理，Sparkle 接管其余选定接口 |
+| 哔哩哔哩 | Kelee、R-Store、Kokoryh/Sparkle、app2smile、Blackmatrix7 | 开屏、信息流、搜索、详情等响应脚本及规则；共享 Protobuf 响应由 R-Store 处理，Sparkle 补足独有播放、评论和投稿赞助过滤接口 |
 | YouTube | Maasea、app2smile | Maasea 完整规则及 3 个请求/响应脚本；它的响应脚本覆盖 app2smile 的 browse/next 共享路径 |
 | 优酷 | Kelee、Wool、R-Store | 广告域名、播放/首页响应和脚本 |
 | 网易云音乐 | Kelee、Wool、R-Store | 开屏、首页、发现、评论、推荐和广告接口 |

@@ -29,7 +29,7 @@ Apache License 2.0. The full license text is included at licenses/Apache-2.0.txt
 
 kokoryh/Sparkle
 https://github.com/kokoryh/Sparkle
-GNU GPL version 3. The Bilibili Protobuf response bundle is loaded from a pinned commit; the full license text is included at licenses/GPL-3.0.txt.
+GNU GPL version 3. The Bilibili Protobuf request and response bundles and selected Map Local response data are loaded or adapted from a pinned commit; the full license text is included at licenses/GPL-3.0.txt.
 
 Walvez/surge-startup-ads
 https://github.com/Walvez/surge-startup-ads
