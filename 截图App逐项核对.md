@@ -6,8 +6,8 @@
 
 | 截图 App | 已合入上游 | 模块覆盖范围 |
 |---|---|---|
-| 京东 | Kelee、Wool、R-Store、Walvez | 启动/首页/弹窗/推荐等接口、域名规则、脚本和 Map Local；Walvez 的京东开屏接口补充也已纳入 |
-| 淘宝 | Kelee、Wool、R-Store、Walvez | 开屏、弹窗、首页和推广接口，以及域名、Map Local、脚本 |
+| 京东 | Kelee、Wool、R-Store、Walvez | 启动/首页/弹窗/推荐等接口、域名规则、脚本和 Map Local；`start` 开屏由 R-Store 清理真实响应，不用 Walvez 空响应覆盖 |
+| 淘宝 | Kelee、Wool、R-Store、Walvez | 开屏、弹窗、首页和推广接口，以及域名、Map Local、脚本；主开屏由 R-Store 清理真实响应 |
 | 阿里巴巴 1688 | Wool、Walvez | 启动与广告接口规则 |
 | 拼多多、拼多多商家版 | Kelee、Wool、R-Store、Walvez | 开屏、营销、首页/推荐响应、域名规则与本地响应 |
 | 美团 | Wool、R-Store、Kelee 广告平台、Walvez | 推广图片/接口、首页和启动接口处理 |
