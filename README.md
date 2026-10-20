@@ -6,7 +6,7 @@
 
 请只安装上方的 PersonalAds.sgmodule。仓库中的 PersonalAds-Native.sgmodule 和 PersonalAds-DomainOnly.sgmodule 是历史版本，没有同步本轮上游处理器。
 
-目前合入 55 个截图 App 对应的上游模块，以及广告平台、YouTube、B 站和开屏补充来源。模块包含 875 行规则、112 条 URL Rewrite、82 条 Body Rewrite、310 条 Map Local、102 个有效脚本挂钩、208 个 MITM 主机名和 35 个不同的远程脚本地址。脚本挂钩按 Surge 的单响应单脚本行为核对：共享接口只保留一条覆盖处理器，独有接口和版本路径继续保留。京东与淘宝主开屏接口保留真实响应，由 R-Store 上游脚本清理，避免空的 Map Local 响应挡住清理；高德旧版失效脚本已由 R-Store 脚本和 Surge JQ 规则覆盖；B 站旧版失效脚本已换成 Kokoryh/Sparkle 的固定版本脚本，并仅接管 R-Store 未覆盖的 Protobuf 接口，同时保留评论与投稿赞助过滤及 gRPC 搜索默认词接口。具体裁决见[来源与验证](来源与验证.md)。
+目前合入 55 个截图 App 对应的上游模块，以及广告平台、YouTube、B 站和开屏补充来源。模块包含 873 行规则、112 条 URL Rewrite、82 条 Body Rewrite、310 条 Map Local、102 个有效脚本挂钩、208 个 MITM 主机名和 35 个不同的远程脚本地址。脚本挂钩按 Surge 的单响应单脚本行为核对：共享接口只保留一条覆盖处理器，独有接口和版本路径继续保留。京东与淘宝主开屏接口保留真实响应，由 R-Store 上游脚本清理，避免空的 Map Local 响应挡住清理；高德旧版失效脚本已由 R-Store 脚本和 Surge JQ 规则覆盖；B 站旧版失效脚本已换成 Kokoryh/Sparkle 的固定版本脚本，并仅接管 R-Store 未覆盖的 Protobuf 接口，同时保留评论与投稿赞助过滤及 gRPC 搜索默认词接口。抖音 HTTPDNS 主机 `dig.bdurl.net` 已从拒绝规则中排除，避免影响视频域名解析。具体裁决见[来源与验证](来源与验证.md)。
 
 这次全面复核还修复了会让规则“存在但走不到”的冲突：把 58 个仍在用、但原来标成 `max-size=0` 的响应钩子改为 Surge 的无限制值 `-1`；放通网易云 `ipv4` 响应处理；清除拼多多、猫眼和同花顺的相互遮蔽规则。`-1` 会完整缓冲匹配的响应体，iOS 上可能增加内存使用，特别是 Protobuf/信息流响应；设备测试需留意 Surge 进程稳定性。
 

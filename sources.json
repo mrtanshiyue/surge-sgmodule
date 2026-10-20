@@ -250,7 +250,7 @@
       "sha256": "f9eb1e97d4c58d97c3d6831aa8f1c937897baa030607131f5b52e6060946f012",
       "app": "通用广告平台拦截器",
       "active_lines_by_section": {
-        "Rule": 307,
+        "Rule": 306,
         "URL Rewrite": 4
       }
     },
@@ -309,7 +309,7 @@
       "sha256": "129d92fd687247e1b76c978a47d09b1bcdf5cb15b230a60ab4f66b02e5ae483a",
       "app": "番茄小说（红果短剧线索）",
       "active_lines_by_section": {
-        "Rule": 22,
+        "Rule": 21,
         "URL Rewrite": 13
       }
     },
@@ -839,13 +839,13 @@
     }
   ],
   "generated_counts": {
-    "Rule": 875,
+    "Rule": 873,
     "Body Rewrite": 82,
     "Map Local": 310,
     "Script": 102,
     "URL Rewrite": 112
   },
-  "domain_rules": 815,
+  "domain_rules": 813,
   "mitm_hostnames": 208,
   "script_hooks": 102,
   "external_script_urls": 35,
@@ -861,7 +861,8 @@
     "max_size_policy": "Surge documents max-size as a byte limit and -1 as unlimited; upstream max-size=0 would skip every non-empty response, so imported hooks now use -1. These narrowly matched hooks buffer full response bodies and may increase iOS memory use.",
     "netease_ipv4": "Removed upstream pre-matching REJECT for ipv4.music.163.com so the six retained Wool response hooks can inspect responses; the ipv6 ad-domain block remains.",
     "pinduoduo_titan": "Kept the first REJECT-NO-DROP rule and removed later conflicting plain REJECT duplicates.",
-    "maoyan_and_tonghuashun": "Removed broad pre-matching rejects for ad.maoyan.com and adm.10jqka.com.cn so their exact Map Local JSON responses can execute."
+    "maoyan_and_tonghuashun": "Removed broad pre-matching rejects for ad.maoyan.com and adm.10jqka.com.cn so their exact Map Local JSON responses can execute.",
+    "douyin_httpdns": "Removed upstream REJECT rules for dig.bdurl.net; it is a Douyin HTTPDNS endpoint, and the user reproduced that blocking it prevents Douyin Selection video playback."
   },
   "limitations": [
     "No iPhone runtime or per-app request capture was available; syntax and local fixture checks do not prove each current ad endpoint is intercepted.",
