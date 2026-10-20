@@ -27,6 +27,10 @@ Maasea/sgmodule
 https://github.com/Maasea/sgmodule
 Apache License 2.0. The full license text is included at licenses/Apache-2.0.txt.
 
+kokoryh/Sparkle
+https://github.com/kokoryh/Sparkle
+GNU GPL version 3. The Bilibili Protobuf response bundle is loaded from a pinned commit; the full license text is included at licenses/GPL-3.0.txt.
+
 Walvez/surge-startup-ads
 https://github.com/Walvez/surge-startup-ads
 The selected rules are adapted from its Surge startup aggregate. No repository-level license file was found. Its file also attributes the underlying startup rules to ddgksf2013/Moyu. Permission to redistribute those rules has not been independently confirmed.

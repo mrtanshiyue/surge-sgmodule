@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19",
+  "generated_at": "2026-10-20",
   "surge_target": "iOS app 5.102.0; module has no CORE_VERSION gate",
   "repositories": {
     "kelee": {
@@ -45,7 +45,8 @@
     "Maasea/sgmodule": "65075cdb388fc5e3094afd7e7314c67b243f3525",
     "blackmatrix7/ios_rule_script": "7dd06b44f5093dd5404e1e5f3bca5452d97146ef",
     "Keywos/rule": "a06d921d370ad6fca9e972a3f76e64d90bc8cfae",
-    "ddgksf2013/Scripts": "0cddbb6bc31344315afba773ebb4e7ce29f7fd8f"
+    "ddgksf2013/Scripts": "0cddbb6bc31344315afba773ebb4e7ce29f7fd8f",
+    "kokoryh/Sparkle": "290bcbdd2f158cdd8f7db9c996e90fe63490e16f"
   },
   "source_count": 63,
   "sources": [
@@ -839,19 +840,19 @@
   ],
   "generated_counts": {
     "Rule": 881,
-    "Body Rewrite": 81,
+    "Body Rewrite": 82,
     "Map Local": 310,
-    "Script": 102,
+    "Script": 101,
     "URL Rewrite": 112
   },
   "domain_rules": 821,
   "mitm_hostnames": 208,
-  "script_hooks": 102,
-  "external_script_urls": 35,
+  "script_hooks": 101,
+  "external_script_urls": 34,
   "exact_duplicate_lines_removed": "yes, only identical lines within the same section",
   "script_overlap_resolution": {
     "reason": "Surge runs only the first matching http-response script for a response; overlapping handlers are not cumulative.",
-    "policy": "Keep one handler per response because Surge does not chain matching response scripts. Preserve non-overlapping routes. Split Xiaohongshu by API version so Wool retains image/video/comment-download enhancements on supported versions and R-Store covers other versions plus unique routes. Use R-Store for overlapping JD/Taobao/Amap/Bilibili/Youku routes, where reviewed source handlers cover the shared cases; retain KeLee's info.amap.com route because R-Store only matches m<digit>.amap.com. Keep Wool's parameterized NetEase handlers on ipv4 while R-Store handles interface hosts.",
+    "policy": "Keep one handler per response because Surge does not chain matching response scripts. Preserve non-overlapping routes. Split Xiaohongshu by API version so Wool retains image/video/comment-download enhancements on supported versions and R-Store covers other versions plus unique routes. Use R-Store for overlapping JD/Taobao/Amap/Bilibili/Youku routes where reviewed handlers cover shared cases. Replace the dead KeLee Amap script dependency with R-Store handlers for hotword, splash-screen and info.amap.com routes, plus an equivalent JQ body rewrite for af-nearby. Replace the dead KeLee Bilibili Proto script with Kokoryh/Sparkle's pinned current response bundle, restricted to routes not handled by R-Store. Keep Wool's parameterized NetEase handlers on ipv4 while R-Store handles interface hosts.",
     "resolved_hooks": "See work/build_module.py:resolve_script_overlaps and README.md."
   },
   "limitations": [
