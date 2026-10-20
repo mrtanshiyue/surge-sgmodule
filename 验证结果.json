@@ -20,6 +20,7 @@
   "json_script_arguments": 6,
   "bilibili_binary_proto_hooks": 7,
   "jq_expression_parse_checks": 80,
+  "jd_taobao_body_rewrite_fixtures": "passed; the pre-script JQ transforms preserve unrelated business fields",
   "iphone_runtime_testing": "not performed",
   "response_script_overlap_fixtures": 60,
   "jd_taobao_splash_conflict_fixtures": "passed; real response handlers receive both splash APIs, no matching empty Map Local stubs",
