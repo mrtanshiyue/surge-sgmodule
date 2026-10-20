@@ -1503,8 +1503,6 @@ https?:\/\/(ipv4|interface\d?)\.music\.163.com\/e?api\/ad data-type=text data="{
 # 开屏聚合/alibaba
 ^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.cbu\.app\.homepage\.startup data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-# 开屏聚合/jingdong[invalid]
-^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(start|queryMaterialAdverts) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 # 开屏聚合/MeiTuan
 ^https?:\/\/peisongapi\.meituan\.com\/client\/getInitiateImage data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/img\.meituan\.net\/(adunion|display|midas)\/\w+\.(gif|jpg|jpg\.webp)$ data-type=tiny-gif status-code=200
@@ -1520,8 +1518,6 @@ https?:\/\/(ipv4|interface\d?)\.music\.163.com\/e?api\/ad data-type=text data="{
 ^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v1\/sams\/sams-user\/(window\/getGoUpPlus|screen_promotion\/get) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 # 开屏聚合/tonghuashun
 ^https?:\/\/adm\.10jqka\.com\.cn\/interface\/ad\/recommend data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-# 开屏聚合/taobao
-^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.wireless\.home\.splash\.awesome\.get data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 # 开屏聚合/WeChat
 ^https?:\/\/mp\.weixin\.qq\.com\/mp\/relatedsearchword data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 # 开屏聚合/xiaomi
