@@ -85,7 +85,7 @@
       "sha256": "fbc5c8f8d21e8b5a4f0704f2cb39de4c14016b66ab8de41fc793aafcf9e27cdb",
       "app": "拼多多",
       "active_lines_by_section": {
-        "Rule": 17,
+        "Rule": 16,
         "Body Rewrite": 17,
         "Map Local": 19
       }
@@ -138,7 +138,7 @@
       "sha256": "5e6f36260e314a37548e40b008f2c6c11edd5d8a679f1f2dcd9e764dfa6b49de",
       "app": "微信小程序",
       "active_lines_by_section": {
-        "Rule": 6,
+        "Rule": 5,
         "URL Rewrite": 23,
         "Body Rewrite": 11,
         "Map Local": 89,
@@ -179,7 +179,7 @@
       "sha256": "feef07eaf32ac53b65325d0255b167c44c0bd15703ef759858fe2a3486444ba3",
       "app": "网易云音乐",
       "active_lines_by_section": {
-        "Rule": 6,
+        "Rule": 5,
         "Map Local": 7,
         "Script": 6
       }
@@ -494,7 +494,7 @@
       "sha256": "972c0e636f0c9bccb3f5a9ab3a539725cf68e7701355d38795d2e87c27163a6a",
       "app": "网易云音乐",
       "active_lines_by_section": {
-        "Rule": 9,
+        "Rule": 8,
         "Map Local": 6,
         "Script": 7
       }
@@ -622,7 +622,7 @@
       "sha256": "3a970f715011cba1e03902dfcb0fd548af28bc4315070dff9679b93578344e69",
       "app": "拼多多",
       "active_lines_by_section": {
-        "Rule": 12,
+        "Rule": 11,
         "URL Rewrite": 4,
         "Map Local": 13,
         "Script": 2
@@ -688,7 +688,7 @@
       "sha256": "9cfa12ea4531b2988260caacdb51dc2ef990ba8bb5c5cc59df0cc655d5269e98",
       "app": "同花顺",
       "active_lines_by_section": {
-        "Rule": 2,
+        "Rule": 1,
         "URL Rewrite": 1
       }
     },
@@ -839,13 +839,13 @@
     }
   ],
   "generated_counts": {
-    "Rule": 882,
+    "Rule": 875,
     "Body Rewrite": 82,
     "Map Local": 310,
     "Script": 102,
     "URL Rewrite": 112
   },
-  "domain_rules": 822,
+  "domain_rules": 815,
   "mitm_hostnames": 208,
   "script_hooks": 102,
   "external_script_urls": 35,
@@ -854,6 +854,14 @@
     "reason": "Surge runs only the first matching http-response script for a response; overlapping handlers are not cumulative.",
     "policy": "Keep one handler per response because Surge does not chain matching response scripts. Preserve non-overlapping routes. Split Xiaohongshu by API version so Wool retains image/video/comment-download enhancements on supported versions and R-Store covers other versions plus unique routes. Use R-Store for overlapping JD/Taobao/Amap/Bilibili/Youku routes where reviewed handlers cover shared cases. Replace the dead KeLee Amap dependency with R-Store handlers for all shared routes and an equivalent JQ body rewrite for the unique af-nearby fields. Replace the dead KeLee Bilibili Proto dependency with Kokoryh/Sparkle's pinned current request and response bundles, preserving non-overlapping response routes, comment/sponsor filtering, and gRPC Map Local responses for legacy/unique endpoints. Keep Wool's parameterized NetEase handlers on ipv4 while R-Store handles interface hosts.",
     "resolved_hooks": "See work/build_module.py:resolve_script_overlaps and README.md."
+  },
+  "conflict_and_runtime_repairs": {
+    "max_size_zero_hooks_normalized": 66,
+    "max_size_zero_hooks_active_after_overlap_resolution": 58,
+    "max_size_policy": "Surge documents max-size as a byte limit and -1 as unlimited; upstream max-size=0 would skip every non-empty response, so imported hooks now use -1. These narrowly matched hooks buffer full response bodies and may increase iOS memory use.",
+    "netease_ipv4": "Removed upstream pre-matching REJECT for ipv4.music.163.com so the six retained Wool response hooks can inspect responses; the ipv6 ad-domain block remains.",
+    "pinduoduo_titan": "Kept the first REJECT-NO-DROP rule and removed later conflicting plain REJECT duplicates.",
+    "maoyan_and_tonghuashun": "Removed broad pre-matching rejects for ad.maoyan.com and adm.10jqka.com.cn so their exact Map Local JSON responses can execute."
   },
   "limitations": [
     "No iPhone runtime or per-app request capture was available; syntax and local fixture checks do not prove each current ad endpoint is intercepted.",
