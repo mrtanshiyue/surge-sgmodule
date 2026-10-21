@@ -1,43 +1,16 @@
-Third-party rules and script references
-=======================================
+This repository redistributes a filtered derivative of:
 
-This aggregate incorporates or references configuration rules and scripts maintained by the projects below. Individual source modules may contain additional original author attribution. The source commit and file snapshot hashes are recorded in sources.json.
+  Project: Wool Scripts
+  Repository: https://github.com/fmz200/wool_scripts
+  File: Surge/module/blockAds.module
+  Upstream author: fmz200
+  Upstream license: GNU General Public License v3.0
 
-QingRex/LoonKissSurge
-https://github.com/QingRex/LoonKissSurge
-The repository README states that it does not claim copyright in its Surge modules and asks distributors to follow each module author's requirements. No repository-level license file was found. Original module author metadata and links are retained in the source snapshots. Redistribution rights for every included module have not been independently confirmed.
+The generated module preserves upstream blocks for Apps identified in the user's
+screenshots, removes unrelated app groups and the global ad-network group, and
+omits DOMAIN,dig.bdurl.net,REJECT because it breaks Douyin Selection video
+playback on the user's device. The source revision and SHA-256 are recorded in
+sources.json. Upstream script URLs are retained from the source module.
 
-fmz200/wool_scripts
-https://github.com/fmz200/wool_scripts
-GNU GPL version 3. The full license text is included at licenses/GPL-3.0.txt.
-
-zirawell/R-Store
-https://github.com/zirawell/R-Store
-GNU GPL version 3. The full license text is included at licenses/GPL-3.0.txt.
-
-blackmatrix7/ios_rule_script
-https://github.com/blackmatrix7/ios_rule_script
-GNU GPL version 2. The full license text is included at licenses/GPL-2.0.txt.
-
-app2smile/rules
-https://github.com/app2smile/rules
-MIT License. The full license text is included at licenses/MIT.txt.
-
-Maasea/sgmodule
-https://github.com/Maasea/sgmodule
-Apache License 2.0. The full license text is included at licenses/Apache-2.0.txt.
-
-kokoryh/Sparkle
-https://github.com/kokoryh/Sparkle
-GNU GPL version 3. The Bilibili Protobuf request and response bundles and selected Map Local response data are loaded or adapted from a pinned commit; the full license text is included at licenses/GPL-3.0.txt.
-
-Walvez/surge-startup-ads
-https://github.com/Walvez/surge-startup-ads
-The selected rules are adapted from its Surge startup aggregate. No repository-level license file was found. Its file also attributes the underlying startup rules to ddgksf2013/Moyu. Permission to redistribute those rules has not been independently confirmed.
-
-Remote script resources
------------------------
-
-The module references remote script resources from upstream URLs; it does not bundle their JavaScript source. Those resources remain subject to the terms set by their respective authors and hosting repositories. The generated module records the currently selected script paths in PersonalAds.sgmodule; the source module inputs and their hashes are in sources.json.
-
-No warranty is provided by this aggregate. Trademarks and app names belong to their owners.
+The upstream project includes its own attribution and contributor notes in the
+source file. This repository does not claim authorship of those upstream rules.

@@ -1,0 +1,33 @@
+name: Sync screenshot app rules
+
+on:
+  schedule:
+    - cron: "23 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-wool-blockads
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Build filtered module from the latest upstream commit
+        run: python3 scripts/build_personal_ads.py
+      - name: Commit upstream changes
+        run: |
+          if git diff --quiet -- PersonalAds.sgmodule sources.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PersonalAds.sgmodule sources.json
+          git commit -m "Sync screenshot app rules from Wool Scripts"
+          git push origin HEAD:main

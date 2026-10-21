@@ -1,872 +1,103 @@
 {
-  "generated_at": "2026-10-20",
-  "surge_target": "iOS app 5.102.0; module has no CORE_VERSION gate",
-  "repositories": {
-    "kelee": {
-      "repository": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "license": "No repository license found; README defers to each module author."
-    },
-    "wool": {
-      "repository": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "license": "GPL-3.0"
-    },
-    "rstore": {
-      "repository": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "license": "GPL-3.0"
-    },
-    "app2smile": {
-      "repository": "app2smile/rules",
-      "revision": "df6366a7024e0b3f0aa3510c5b791eea6f3cba89",
-      "license": "MIT"
-    },
-    "blackmatrix": {
-      "repository": "blackmatrix7/ios_rule_script",
-      "revision": "7dd06b44f5093dd5404e1e5f3bca5452d97146ef",
-      "license": "GPL-2.0"
-    },
-    "walvez": {
-      "repository": "Walvez/surge-startup-ads",
-      "revision": "d68d7cbff3eb6402d35a22ff1fbe43a8074e06b1",
-      "license": "No repository license found; module attributes underlying rules to ddgksf2013/Moyu."
-    },
-    "maasea": {
-      "repository": "Maasea/sgmodule",
-      "revision": "65075cdb388fc5e3094afd7e7314c67b243f3525",
-      "license": "Apache-2.0"
-    }
+  "upstream_repository": "https://github.com/fmz200/wool_scripts",
+  "upstream_path": "Surge/module/blockAds.module",
+  "upstream_commit": "3ca7487b4e4b86d9af76e50df72c62eacfbb659e",
+  "upstream_sha256": "d75a30e3410fccc4269c2749cdc430f2c6ef5b092bca1bc342279642f9918423",
+  "upstream_date": "2026-09-10 21:10:39",
+  "selected_groups": {
+    "Rule": [
+      "Amazon",
+      "Apple",
+      "哔哩哔哩",
+      "抖音",
+      "番茄小说",
+      "Facebook",
+      "高德地图",
+      "Google",
+      "京东",
+      "美团",
+      "米家",
+      "网易云音乐",
+      "小红书",
+      "QQ音乐",
+      "淘宝",
+      "腾讯系",
+      "同花顺",
+      "网易云音乐",
+      "喜马拉雅",
+      "小爱音箱",
+      "小红书",
+      "小米",
+      "优酷",
+      "中国电信",
+      "字节跳动"
+    ],
+    "Header Rewrite": [
+      "哔哩哔哩"
+    ],
+    "URL Rewrite": [
+      "番茄小说",
+      "高德地图",
+      "杭州市民",
+      "京东",
+      "拼多多",
+      "QQ音乐",
+      "山姆会员商店",
+      "淘票票",
+      "腾讯游戏",
+      "同花顺",
+      "WPS",
+      "小爱音箱",
+      "萤石",
+      "中国电信",
+      "字节跳动"
+    ],
+    "Body Rewrite": [
+      "哔哩哔哩",
+      "拼多多",
+      "喜马拉雅"
+    ],
+    "Map Local": [
+      "阿里巴巴",
+      "Amazon",
+      "哔哩哔哩",
+      "钉钉",
+      "高德地图",
+      "Google",
+      "杭州市民",
+      "美团 & 美团外卖",
+      "米家",
+      "拼多多",
+      "网易云音乐",
+      "小红书",
+      "QQ音乐",
+      "山姆会员商店",
+      "淘宝",
+      "同花顺",
+      "网易云音乐",
+      "喜马拉雅",
+      "小爱音箱",
+      "小红书",
+      "优酷",
+      "YouTube",
+      "中国电信",
+      "字节跳动"
+    ],
+    "Script": [
+      "阿里巴巴",
+      "哔哩哔哩",
+      "京东",
+      "网易云音乐",
+      "小红书",
+      "淘宝",
+      "网易云音乐",
+      "小红书",
+      "优酷",
+      "YouTube"
+    ]
   },
-  "external_script_revisions": {
-    "fmz200/wool_scripts": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-    "zirawell/R-Store": "b41120d9434c4382cbea97153573a0ab9daae321",
-    "app2smile/rules": "df6366a7024e0b3f0aa3510c5b791eea6f3cba89",
-    "Maasea/sgmodule": "65075cdb388fc5e3094afd7e7314c67b243f3525",
-    "blackmatrix7/ios_rule_script": "7dd06b44f5093dd5404e1e5f3bca5452d97146ef",
-    "Keywos/rule": "a06d921d370ad6fca9e972a3f76e64d90bc8cfae",
-    "ddgksf2013/Scripts": "0cddbb6bc31344315afba773ebb4e7ce29f7fd8f",
-    "kokoryh/Sparkle": "290bcbdd2f158cdd8f7db9c996e90fe63490e16f"
-  },
-  "source_count": 63,
-  "sources": [
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/京东去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/jd.sgmodule",
-      "sha256": "8ce577fd1d91ba5971607748b2354310dc20df3c554a881a3d29e56c4c02ce37",
-      "app": "京东",
-      "active_lines_by_section": {
-        "Rule": 1,
-        "Body Rewrite": 3,
-        "Map Local": 1,
-        "Script": 1
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/淘宝去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/taobao.sgmodule",
-      "sha256": "60f0d96e614961c994c0915c13624484bdbb342fb22bdea46c0e5c48e1185c6e",
-      "app": "淘宝",
-      "active_lines_by_section": {
-        "Rule": 6,
-        "Map Local": 11,
-        "Script": 2
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/拼多多去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/pdd.sgmodule",
-      "sha256": "fbc5c8f8d21e8b5a4f0704f2cb39de4c14016b66ab8de41fc793aafcf9e27cdb",
-      "app": "拼多多",
-      "active_lines_by_section": {
-        "Rule": 16,
-        "Body Rewrite": 17,
-        "Map Local": 19
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/高德地图去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/amap.sgmodule",
-      "sha256": "88c8c5a57153c793ecb2a41f2f98e5687043f726afa45c6ac92890cfe38fc6cf",
-      "app": "高德地图",
-      "active_lines_by_section": {
-        "Rule": 3,
-        "Body Rewrite": 5,
-        "Map Local": 15,
-        "Script": 14
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/小红书去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/xhs.sgmodule",
-      "sha256": "c721c55908eea28a6c55b40ce649ad7980dbdc5332c4fe54e6173809811f38dc",
-      "app": "小红书",
-      "active_lines_by_section": {
-        "Rule": 1,
-        "Body Rewrite": 5,
-        "Map Local": 5,
-        "Script": 12
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/微信公众号去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/wechat-official.sgmodule",
-      "sha256": "af61e39efcd1669bfa6bacfc70bf662ffe8a57e3ca306b2df440de2ecccd54b5",
-      "app": "微信公众号",
-      "active_lines_by_section": {
-        "Rule": 1,
-        "Map Local": 2
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/微信小程序去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/wechat-mini.sgmodule",
-      "sha256": "5e6f36260e314a37548e40b008f2c6c11edd5d8a679f1f2dcd9e764dfa6b49de",
-      "app": "微信小程序",
-      "active_lines_by_section": {
-        "Rule": 5,
-        "URL Rewrite": 23,
-        "Body Rewrite": 11,
-        "Map Local": 89,
-        "Script": 12
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/哔哩哔哩去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/bilibili.sgmodule",
-      "sha256": "576ccbee26f4e20ddde3c407fc2e3c349338832a875868c154fb9aa391a522b3",
-      "app": "哔哩哔哩",
-      "active_lines_by_section": {
-        "Rule": 6,
-        "Body Rewrite": 10,
-        "Map Local": 2,
-        "Script": 1
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/优酷视频去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/youku.sgmodule",
-      "sha256": "ed82fbe519c1ccd0b096f429058420f52157f99b4bf7db447bcc2c3c1c28f751",
-      "app": "优酷",
-      "active_lines_by_section": {
-        "Rule": 24,
-        "Body Rewrite": 5
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/网易云音乐去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/netease.sgmodule",
-      "sha256": "feef07eaf32ac53b65325d0255b167c44c0bd15703ef759858fe2a3486444ba3",
-      "app": "网易云音乐",
-      "active_lines_by_section": {
-        "Rule": 5,
-        "Map Local": 7,
-        "Script": 6
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/QQ音乐去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/qqmusic.sgmodule",
-      "sha256": "ce292f4816f65ddc910fd904da6cb149ad013102e3fd5a70dc43ab34cae845fd",
-      "app": "QQ音乐",
-      "active_lines_by_section": {
-        "Rule": 11
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/喜马拉雅去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/xmly.sgmodule",
-      "sha256": "5ea2c795921716e43dd68c046068e817d1470d3c94904eeb0f5fba6367befedd",
-      "app": "喜马拉雅",
-      "active_lines_by_section": {
-        "Rule": 5,
-        "Body Rewrite": 9,
-        "Map Local": 15
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/番茄小说去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/fanqie.sgmodule",
-      "sha256": "aa87d0c73512bdd72280c7deec8c37f08a6b2cd9baa6dfc61cbd9f15332bfb2b",
-      "app": "番茄小说（红果短剧线索）",
-      "active_lines_by_section": {
-        "Rule": 34
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/小米音箱去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/speaker.sgmodule",
-      "sha256": "9330082a71ed6174b8e118748a53c6b592e09be9d1962e3c8880505e1a0a33e9",
-      "app": "小米音箱",
-      "active_lines_by_section": {
-        "Map Local": 3
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/萤石云视频去广告.sgmodule",
-      "local_snapshot": "work/upstream/kelee-current/ezviz.sgmodule",
-      "sha256": "11767bc7c239144bd0c1b506b6e5da53a82c106998bbc35a72a5e6cc1e0a7d01",
-      "app": "萤石云视频",
-      "active_lines_by_section": {
-        "URL Rewrite": 1,
-        "Map Local": 5
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/广告平台拦截器.sgmodule",
-      "local_snapshot": "work/upstream/LoonKissSurge-main/Surge/广告平台拦截器.sgmodule",
-      "sha256": "f9eb1e97d4c58d97c3d6831aa8f1c937897baa030607131f5b52e6060946f012",
-      "app": "通用广告平台拦截器",
-      "active_lines_by_section": {
-        "Rule": 306,
-        "URL Rewrite": 4
-      }
-    },
-    {
-      "source": "QingRex/LoonKissSurge",
-      "revision": "913ec005f544221e6c56a7d0ecec81c4b3b914bb",
-      "path": "Surge/淘票票去广告.sgmodule",
-      "local_snapshot": "work/upstream/LoonKissSurge-main/Surge/淘票票去广告.sgmodule",
-      "sha256": "fe90a095b16d9bd3725d6d96ddfa0e1c3ea97bff66369c7d03c104e0e653efa1",
-      "app": "淘票票",
-      "active_lines_by_section": {
-        "Body Rewrite": 4,
-        "Map Local": 3
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partA/Alibaba.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/alibaba.sgmodule",
-      "sha256": "889288f32ed2e2b7aeb53504749d3a4d851963acc05f8aefa627d75aa5484278",
-      "app": "1688",
-      "active_lines_by_section": {
-        "Map Local": 12,
-        "Script": 3
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partA/Amazon.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/amazon.sgmodule",
-      "sha256": "2bf281d11fef14ef9546c239c99a7a3a18bb4f856ae3eaabd940c9c14daae3c4",
-      "app": "亚马逊",
-      "active_lines_by_section": {
-        "Rule": 10,
-        "Map Local": 2
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partD/DingTalk.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/dingtalk.sgmodule",
-      "sha256": "a6d82476d7a3d6a15cd7939b69eaa6f73237682a6960210af4387d0e764ee616",
-      "app": "钉钉",
-      "active_lines_by_section": {
-        "Map Local": 1
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partF/FanQieNovel.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/fanqie.sgmodule",
-      "sha256": "129d92fd687247e1b76c978a47d09b1bcdf5cb15b230a60ab4f66b02e5ae483a",
-      "app": "番茄小说（红果短剧线索）",
-      "active_lines_by_section": {
-        "Rule": 21,
-        "URL Rewrite": 13
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partJ/JD.com.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/jd.sgmodule",
-      "sha256": "fa55604eb4a7202fb75b41b6ca6bbfab19f5f2d8cf5f4e830242897778c95222",
-      "app": "京东",
-      "active_lines_by_section": {
-        "Rule": 16,
-        "URL Rewrite": 1,
-        "Script": 1
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partM/Meituan.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/meituan.sgmodule",
-      "sha256": "3cea369e9ff0f5593344ecffdc67f0516964ba3a0d98863c2425aa8fb5685549",
-      "app": "美团",
-      "active_lines_by_section": {
-        "Rule": 10
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partM/Meituan-MeituanWaimai.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/meituan-waimai.sgmodule",
-      "sha256": "dafef6d577651c2e9639cdf2f863bada9572b41a0bd30f0b892c26c84fa20857",
-      "app": "美团外卖",
-      "active_lines_by_section": {
-        "Map Local": 7
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partM/Mijia.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/mijia.sgmodule",
-      "sha256": "a84c5036b1089007377ceed27b4a95a9d24e486bffa423f3312acc71c9b1ee5f",
-      "app": "米家",
-      "active_lines_by_section": {
-        "Rule": 1,
-        "Map Local": 2
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partW/NetEaseCloudMusic.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/netease.sgmodule",
-      "sha256": "e6eb44b1db27d67877b6de247f6227cb02240c83117ac9108a4029203405906d",
-      "app": "网易云音乐",
-      "active_lines_by_section": {
-        "Rule": 5,
-        "Map Local": 5,
-        "Script": 6
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partP/Pinduoduo.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/pdd.sgmodule",
-      "sha256": "3042090a0b36ab0d248a765e0e6f1737a8d993ecaa6eab16d24145c6447795dc",
-      "app": "拼多多",
-      "active_lines_by_section": {
-        "URL Rewrite": 1,
-        "Body Rewrite": 1,
-        "Map Local": 1
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partQ/QQMusic.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/qqmusic.sgmodule",
-      "sha256": "22d9ae859892ace66b99b3f5e5f5f214db60f9657adc5158e1a15dbaf7297d3f",
-      "app": "QQ音乐",
-      "active_lines_by_section": {
-        "Rule": 32,
-        "URL Rewrite": 5,
-        "Map Local": 2
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partS/SamClub.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/samsclub.sgmodule",
-      "sha256": "b5cc82cd62af0e2bf3ce71ceac6ea6a34ef6de12b878f38258ea6196b227be2e",
-      "app": "山姆会员商店",
-      "active_lines_by_section": {
-        "URL Rewrite": 1,
-        "Map Local": 6
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partT/Taobao.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/taobao.sgmodule",
-      "sha256": "15f461ce0737004a181669637dfa50711960373c70669d9ba1dd74ad7367993c",
-      "app": "淘宝",
-      "active_lines_by_section": {
-        "Rule": 32,
-        "Map Local": 9,
-        "Script": 2
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partZ/ChinaTelecom.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/telecom.sgmodule",
-      "sha256": "c4d85e82774aa0c21699051559e4adde2e0159190de220965a881da347921c31",
-      "app": "中国电信",
-      "active_lines_by_section": {
-        "Rule": 6,
-        "URL Rewrite": 1,
-        "Map Local": 1
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partW/WPS.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/wps.sgmodule",
-      "sha256": "881ef7488ed4ab5e2a08e90f78610092c1bdb9f5f7cb9f7215658553c473c738",
-      "app": "WPS Office",
-      "active_lines_by_section": {
-        "URL Rewrite": 1
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partX/Xiaohongshu.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/xiaohongshu.sgmodule",
-      "sha256": "6dc58305c0453a654d44def91a4d995cb4e5345f0c89dd703e98b19be1584038",
-      "app": "小红书",
-      "active_lines_by_section": {
-        "Rule": 5,
-        "Map Local": 7,
-        "Script": 12
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partY/Youku.sgmodule",
-      "local_snapshot": "work/upstream/wool-current/youku.sgmodule",
-      "sha256": "a20401edc4bc4f189a72edc05253b4c997fee610412d673aa4d62cdfd0278ab8",
-      "app": "优酷",
-      "active_lines_by_section": {
-        "Rule": 28,
-        "Map Local": 1,
-        "Script": 6
-      }
-    },
-    {
-      "source": "fmz200/wool_scripts",
-      "revision": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
-      "path": "Surge/module/split/partH/HangZhouCitizen.sgmodule",
-      "local_snapshot": "work/upstream/wool_scripts-main/Surge/module/split/partH/HangZhouCitizen.sgmodule",
-      "sha256": "97aad4fb88db8f5663b6985673716af88aa0f32c1185762611cb818cf51452f2",
-      "app": "杭州市民卡",
-      "active_lines_by_section": {
-        "URL Rewrite": 1,
-        "Map Local": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/163music.sgmodule",
-      "local_snapshot": "work/upstream/rstore/163music.sgmodule",
-      "sha256": "972c0e636f0c9bccb3f5a9ab3a539725cf68e7701355d38795d2e87c27163a6a",
-      "app": "网易云音乐",
-      "active_lines_by_section": {
-        "Rule": 8,
-        "Map Local": 6,
-        "Script": 7
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/alipay.sgmodule",
-      "local_snapshot": "work/upstream/rstore/alipay.sgmodule",
-      "sha256": "ae2495478265caff42018cba989993a8354bf95475f63460fb42d07e96852850",
-      "app": "支付宝",
-      "active_lines_by_section": {
-        "Rule": 8
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/amap.sgmodule",
-      "local_snapshot": "work/upstream/rstore/amap.sgmodule",
-      "sha256": "7083bb0249805c35ba68803c2da002bba499b143faafed457eacc091ecac154f",
-      "app": "高德地图",
-      "active_lines_by_section": {
-        "Rule": 9,
-        "URL Rewrite": 2,
-        "Map Local": 10,
-        "Script": 14
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/amazon.sgmodule",
-      "local_snapshot": "work/upstream/rstore/amazon.sgmodule",
-      "sha256": "bf4351093e000fff643748f0c98c4f71c84f31bbc08bad4fc2ab2f555740ba35",
-      "app": "亚马逊",
-      "active_lines_by_section": {
-        "Map Local": 3
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/bilibili.sgmodule",
-      "local_snapshot": "work/upstream/rstore/bilibili.sgmodule",
-      "sha256": "14881284366f45ac465cdcf51d64580393310415cbd649415e474bd1e26733cc",
-      "app": "哔哩哔哩",
-      "active_lines_by_section": {
-        "Rule": 7,
-        "Map Local": 8,
-        "Script": 13
-      },
-      "note": "R-Store 的 Protobuf 响应脚本读取 response.bodyBytes；补充 binary-body-mode=true，避免 Surge 默认 UTF-8 文本模式破坏二进制响应。"
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/fanqie.sgmodule",
-      "local_snapshot": "work/upstream/rstore/fanqie.sgmodule",
-      "sha256": "b79aabc494da17ea5716a936af6c301984d6a0172807361ffc4eee59fdaac7d5",
-      "app": "番茄小说（红果短剧线索）",
-      "active_lines_by_section": {
-        "Rule": 7,
-        "URL Rewrite": 12
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/jd.sgmodule",
-      "local_snapshot": "work/upstream/rstore/jd.sgmodule",
-      "sha256": "6a901b7f4147a7d89509576cca8b6fbfb3655b86e71a94f777e63739b396c226",
-      "app": "京东",
-      "active_lines_by_section": {
-        "Rule": 29,
-        "URL Rewrite": 11,
-        "Map Local": 2,
-        "Script": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/meituan.sgmodule",
-      "local_snapshot": "work/upstream/rstore/meituan.sgmodule",
-      "sha256": "d1034f219f9af2156b2d41907da330ecd5d9a3395ecdf2297959e1397978b012",
-      "app": "美团",
-      "active_lines_by_section": {
-        "Rule": 16,
-        "URL Rewrite": 8,
-        "Map Local": 8,
-        "Script": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/meituanwm.sgmodule",
-      "local_snapshot": "work/upstream/rstore/meituanwm.sgmodule",
-      "sha256": "284fe1c214f85fc56dd9e447477957b3b105c72a64c382d2fc1e0dd695c86f0c",
-      "app": "美团外卖",
-      "active_lines_by_section": {
-        "URL Rewrite": 2,
-        "Map Local": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/mihome.sgmodule",
-      "local_snapshot": "work/upstream/rstore/mihome.sgmodule",
-      "sha256": "9abeee35efa505321bb17703ab057c617ebc119dd82cfd03146087bdad0efd8c",
-      "app": "米家",
-      "active_lines_by_section": {
-        "Rule": 1,
-        "URL Rewrite": 1,
-        "Map Local": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/pdd.sgmodule",
-      "local_snapshot": "work/upstream/rstore/pdd.sgmodule",
-      "sha256": "3a970f715011cba1e03902dfcb0fd548af28bc4315070dff9679b93578344e69",
-      "app": "拼多多",
-      "active_lines_by_section": {
-        "Rule": 11,
-        "URL Rewrite": 4,
-        "Map Local": 13,
-        "Script": 2
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/qqmusic.sgmodule",
-      "local_snapshot": "work/upstream/rstore/qqmusic.sgmodule",
-      "sha256": "0d740937f0bf923149d4e3e9f5edfa27499ba893999945866e3b37b46251b7e0",
-      "app": "QQ音乐",
-      "active_lines_by_section": {
-        "Rule": 25,
-        "URL Rewrite": 2,
-        "Map Local": 2
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/samsclub.sgmodule",
-      "local_snapshot": "work/upstream/rstore/samsclub.sgmodule",
-      "sha256": "013644d27c511f9bf120c4717696d2d70b6afee1b768dc4fe7c8e79b0f21f12d",
-      "app": "山姆会员商店",
-      "active_lines_by_section": {
-        "URL Rewrite": 1,
-        "Map Local": 6
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/taobao.sgmodule",
-      "local_snapshot": "work/upstream/rstore/taobao.sgmodule",
-      "sha256": "c2bb658b242a955bb585e2f3f7c57304c76b46e7bf0a8ed0bba9740a8883e3c1",
-      "app": "淘宝",
-      "active_lines_by_section": {
-        "Rule": 28,
-        "URL Rewrite": 2,
-        "Map Local": 6,
-        "Script": 2
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/telecom.sgmodule",
-      "local_snapshot": "work/upstream/rstore/telecom.sgmodule",
-      "sha256": "57285f67d9d97a329ca8516b20d09862d9eb8f185077d0f019ccd62875e8476d",
-      "app": "中国电信",
-      "active_lines_by_section": {
-        "Rule": 9,
-        "URL Rewrite": 1,
-        "Map Local": 2
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/tonghuashun.sgmodule",
-      "local_snapshot": "work/upstream/rstore/tonghuashun.sgmodule",
-      "sha256": "9cfa12ea4531b2988260caacdb51dc2ef990ba8bb5c5cc59df0cc655d5269e98",
-      "app": "同花顺",
-      "active_lines_by_section": {
-        "Rule": 1,
-        "URL Rewrite": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/wechat.sgmodule",
-      "local_snapshot": "work/upstream/rstore/wechat.sgmodule",
-      "sha256": "aa437e9d072d4829c3d8eb531c2cd374cc39a191e85e668e18768dfc6263398c",
-      "app": "微信",
-      "active_lines_by_section": {
-        "Rule": 4,
-        "URL Rewrite": 1,
-        "Map Local": 2,
-        "Script": 1
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/wps.sgmodule",
-      "local_snapshot": "work/upstream/rstore/wps.sgmodule",
-      "sha256": "d6a22c791b78a49a80dde76b5147820ed4e9ebe33c388fd31ecb0efdd9d3cc27",
-      "app": "WPS Office",
-      "active_lines_by_section": {
-        "URL Rewrite": 1,
-        "Map Local": 3
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/xiaohongshu.sgmodule",
-      "local_snapshot": "work/upstream/rstore/xiaohongshu.sgmodule",
-      "sha256": "a01e19165fd903eb06a22e60a5ebb12ace181a54189d971a1a5cc7299d90be96",
-      "app": "小红书",
-      "active_lines_by_section": {
-        "Rule": 10,
-        "URL Rewrite": 3,
-        "Map Local": 8,
-        "Script": 11
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/xmly.sgmodule",
-      "local_snapshot": "work/upstream/rstore/xmly.sgmodule",
-      "sha256": "b4abd7a91ffa94bf60287df8e13c82fdafaa263ec424815bebea031cbf24b3c2",
-      "app": "喜马拉雅",
-      "active_lines_by_section": {
-        "Rule": 15,
-        "URL Rewrite": 18,
-        "Script": 5
-      }
-    },
-    {
-      "source": "zirawell/R-Store",
-      "revision": "b41120d9434c4382cbea97153573a0ab9daae321",
-      "path": "Rule/Surge/Adblock/App/youku.sgmodule",
-      "local_snapshot": "work/upstream/rstore/youku.sgmodule",
-      "sha256": "320570176edc2673c0157b1859fee031c5a714be9c034a25b373b74ffe10f238",
-      "app": "优酷",
-      "active_lines_by_section": {
-        "Rule": 57,
-        "Map Local": 1,
-        "Script": 6
-      }
-    },
-    {
-      "source": "app2smile/rules",
-      "revision": "df6366a7024e0b3f0aa3510c5b791eea6f3cba89",
-      "path": "module/adsense.sgmodule",
-      "local_snapshot": "work/upstream/rules-master/module/adsense.sgmodule",
-      "sha256": "0086ac27353181cd1ce7da1ccaffd1dd56c2ec769374fb00ac81479de222a65a",
-      "app": "广告联盟脚本",
-      "active_lines_by_section": {
-        "Script": 1
-      }
-    },
-    {
-      "source": "app2smile/rules",
-      "revision": "df6366a7024e0b3f0aa3510c5b791eea6f3cba89",
-      "path": "module/bilibili.sgmodule",
-      "local_snapshot": "work/upstream/rules-master/module/bilibili.sgmodule",
-      "sha256": "af7ee5612cd71318d81bbcda51eafc53e62a2a19f5d438fced97a7ac96689434",
-      "app": "哔哩哔哩",
-      "active_lines_by_section": {
-        "Script": 2
-      }
-    },
-    {
-      "source": "app2smile/rules",
-      "revision": "df6366a7024e0b3f0aa3510c5b791eea6f3cba89",
-      "path": "module/youtube.sgmodule",
-      "local_snapshot": "work/upstream/rules-master/module/youtube.sgmodule",
-      "sha256": "4f5dd670d5763e8d3727cf1e76063eba6744f2d6c03c784e0bd98058a2f06515",
-      "app": "YouTube",
-      "active_lines_by_section": {
-        "Script": 1
-      }
-    },
-    {
-      "source": "Maasea/sgmodule",
-      "revision": "65075cdb388fc5e3094afd7e7314c67b243f3525",
-      "path": "YouTube.Enhance.sgmodule",
-      "local_snapshot": "work/upstream/Maasea-YouTube.Enhance.sgmodule",
-      "sha256": "9c7464733c54417da36aff09482d1287cee5ecd531ad856842912704b5b3f64d",
-      "app": "YouTube",
-      "active_lines_by_section": {
-        "Script": 3,
-        "MITM": 1
-      },
-      "note": "保留上游完整规则和三个请求/响应脚本；仅将模块参数按上游默认值展开并转义 JSON。"
-    },
-    {
-      "source": "Walvez/surge-startup-ads",
-      "revision": "d68d7cbff3eb6402d35a22ff1fbe43a8074e06b1",
-      "path": "dist/StartUpAds_Selected.sgmodule; only screenshot-app groups: MeiTuan, MeiTuanWaiMai, WeChat, alibaba, jingdong[invalid], pinduoduo, shanmu, taobao, tonghuashun, xiaomi, xiaomiyinxiang, xiaoyiguanjia; omit JD start stub and Taobao splash stub because R-Store rewrites their real responses",
-      "local_snapshot": "work/upstream/walvez-current.sgmodule",
-      "sha256": "6ab63d04765e5cad9c7d8805b33d22ba940d5e7adde471c0db2416ee7e4ec29d",
-      "app": "截图 App 开屏组",
-      "active_lines_by_section": {
-        "Body Rewrite": 1,
-        "Map Local": 18,
-        "Script": 1
-      }
-    },
-    {
-      "source": "blackmatrix7/ios_rule_script",
-      "revision": "7dd06b44f5093dd5404e1e5f3bca5452d97146ef",
-      "path": "rewrite/Surge/AdvertisingScript/AdvertisingScript.sgmodule + script/startup/startup.js",
-      "local_snapshot": "work/upstream/blackmatrix/advertising-script",
-      "sha256": "b7bb346fcfdf79250019a29e58b6528c0b254dbbec7f722cf7aa460e4ca3e816",
-      "app": "B站、小米启动接口、美团外卖开屏",
-      "active_lines_by_section": {
-        "Script": 3
-      },
-      "note": "上游名为“京东_开屏去广告”的钩子实际匹配 hd.mina.mi.com；保留其原始匹配行为，不把它归到京东。"
-    },
-    {
-      "source": "mrtanshiyue/surge-sgmodule (previous local version)",
-      "revision": "985a1ea642786eff03944f5572e6d460f9667735",
-      "path": "PersonalAds.sgmodule",
-      "local_snapshot": "work/upstream/previous-PersonalAds.sgmodule",
-      "sha256": "669a067c8e2296f5d115228fa7a11acd600123d8c55be646d927bad2ae8d822a",
-      "app": "保留此前自定义内容；移除内联规则集和整模块版本门槛"
-    }
+  "excluded_rules": [
+    "DOMAIN,dig.bdurl.net,REJECT"
   ],
-  "generated_counts": {
-    "Rule": 873,
-    "Body Rewrite": 82,
-    "Map Local": 310,
-    "Script": 102,
-    "URL Rewrite": 112
-  },
-  "domain_rules": 813,
-  "mitm_hostnames": 208,
-  "script_hooks": 102,
-  "external_script_urls": 35,
-  "exact_duplicate_lines_removed": "yes, only identical lines within the same section",
-  "script_overlap_resolution": {
-    "reason": "Surge runs only the first matching http-response script for a response; overlapping handlers are not cumulative.",
-    "policy": "Keep one handler per response because Surge does not chain matching response scripts. Preserve non-overlapping routes. Split Xiaohongshu by API version so Wool retains image/video/comment-download enhancements on supported versions and R-Store covers other versions plus unique routes. Use R-Store for overlapping JD/Taobao/Amap/Bilibili/Youku routes where reviewed handlers cover shared cases. Replace the dead KeLee Amap dependency with R-Store handlers for all shared routes and an equivalent JQ body rewrite for the unique af-nearby fields. Replace the dead KeLee Bilibili Proto dependency with Kokoryh/Sparkle's pinned current request and response bundles, preserving non-overlapping response routes, comment/sponsor filtering, and gRPC Map Local responses for legacy/unique endpoints. Keep Wool's parameterized NetEase handlers on ipv4 while R-Store handles interface hosts.",
-    "resolved_hooks": "See work/build_module.py:resolve_script_overlaps and README.md."
-  },
-  "conflict_and_runtime_repairs": {
-    "max_size_zero_hooks_normalized": 66,
-    "max_size_zero_hooks_active_after_overlap_resolution": 58,
-    "max_size_policy": "Surge documents max-size as a byte limit and -1 as unlimited; upstream max-size=0 would skip every non-empty response, so imported hooks now use -1. These narrowly matched hooks buffer full response bodies and may increase iOS memory use.",
-    "netease_ipv4": "Removed upstream pre-matching REJECT for ipv4.music.163.com so the six retained Wool response hooks can inspect responses; the ipv6 ad-domain block remains.",
-    "pinduoduo_titan": "Kept the first REJECT-NO-DROP rule and removed later conflicting plain REJECT duplicates.",
-    "maoyan_and_tonghuashun": "Removed broad pre-matching rejects for ad.maoyan.com and adm.10jqka.com.cn so their exact Map Local JSON responses can execute.",
-    "douyin_httpdns": "Removed upstream REJECT rules for dig.bdurl.net; it is a Douyin HTTPDNS endpoint, and the user reproduced that blocking it prevents Douyin Selection video playback."
-  },
-  "limitations": [
-    "No iPhone runtime or per-app request capture was available; syntax and local fixture checks do not prove each current ad endpoint is intercepted.",
-    "External script availability is not guaranteed by the static module; verify Surge's external-resource list after import.",
-    "The Red Fruit Short Drama coverage uses the complete upstream Tomato/Fanqie modules plus exact ad-host rules; the upstream sources do not guarantee every Red Fruit ad is removed."
-  ]
+  "module_sha256": "352f700059bc85771c6ae4851e93cc5907b41ecf1c9c4d4ec53e91e7d03869f6"
 }
