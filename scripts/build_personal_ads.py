@@ -179,7 +179,7 @@ def build(source, commit):
     if mitm_hosts:
         output.extend(["", "[MITM]", "hostname = %APPEND% " + ", ".join(mitm_hosts)])
 
-    module = "\n".join(output).rstrip() + "\n"
+    module = re.sub(r"\n{3,}", "\n\n", "\n".join(output)).rstrip() + "\n"
     manifest = {
         "upstream_repository": f"https://github.com/{UPSTREAM_REPO}",
         "upstream_path": UPSTREAM_PATH,
