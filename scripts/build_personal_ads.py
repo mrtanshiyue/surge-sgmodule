@@ -18,9 +18,9 @@ UPSTREAM_API = (
 RAW_URL = "https://raw.githubusercontent.com/fmz200/wool_scripts/{commit}/" + UPSTREAM_PATH
 MODULE_URL = "https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule"
 
-# These upstream headings map to Apps visible in the user's screenshots.
-# Broader ad-network groups and headings for other Apps are deliberately excluded.
+# Screenshot app groups plus the requested general ad-alliance rules.
 ALLOWED_GROUPS = {
+    "广告联盟",
     "Amazon",
     "Apple",
     "Facebook",
@@ -54,7 +54,6 @@ ALLOWED_GROUPS = {
     "萤石",
     "优酷",
     "QQ音乐",
-    "小红书",
 }
 
 SECTIONS = ("Rule", "Header Rewrite", "URL Rewrite", "Body Rewrite", "Map Local", "Script")
@@ -157,15 +156,15 @@ def build(source, commit):
     upstream_date = next((line.split("=", 1)[1].strip() for line in metadata if line.startswith("#!date=")), "unknown")
     output = [
         "#!name=截图 App 去广告（Wool 上游精选）",
-        "#!desc=只保留截图中有对应上游去广告分组的规则；规则来自 fmz200/wool_scripts。",
+        "#!desc=保留截图 App 对应的上游规则并包含广告联盟通用规则；来源：fmz200/wool_scripts。",
         "#!author=mrtanshiyue（上游规则：fmz200）",
         "#!category=个人模块",
         "#!homepage=https://github.com/mrtanshiyue/surge-sgmodule",
         f"#!raw-url={MODULE_URL}",
-        "#!tag=去广告,截图App,Wool",
+        "#!tag=去广告,截图App,广告联盟,Wool",
         "#!system=ios",
         f"#!date={upstream_date}",
-        "#!remark=筛选自上游 blockAds.module；未纳入通用广告联盟组。dig.bdurl.net 已排除，以免影响抖音精选视频播放。",
+        "#!remark=筛选自上游 blockAds.module；已移除小红书分组并恢复通用广告联盟规则。dig.bdurl.net 已排除，以免影响抖音精选视频播放。",
     ]
 
     for section in SECTIONS:
@@ -190,8 +189,8 @@ def build(source, commit):
         "excluded_rules": sorted(SKIP_RULES),
         "module_sha256": hashlib.sha256(module.encode()).hexdigest(),
     }
-    if "# > 广告联盟" in module or any(line.strip() in SKIP_RULES for line in module.splitlines()):
-        raise RuntimeError("Filtered module contains a forbidden group or playback-breaking host")
+    if "# > 小红书" in module or "xiaohongshu" in module.lower() or any(line.strip() in SKIP_RULES for line in module.splitlines()):
+        raise RuntimeError("Filtered module contains Xiaohongshu rules or the playback-breaking host")
     return module, manifest
 
 
