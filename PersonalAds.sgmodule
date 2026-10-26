@@ -6,7 +6,7 @@
 #!raw-url=https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule
 #!tag=去广告,截图App,广告联盟,Wool
 #!system=ios
-#!date=2026-09-10 21:10:39
+#!date=2026-10-25 22:36:13
 #!remark=筛选自上游 blockAds.module；已移除小红书分组并恢复通用广告联盟规则。dig.bdurl.net 已排除，以免影响抖音精选视频播放。
 
 [Rule]

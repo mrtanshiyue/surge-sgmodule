@@ -1,9 +1,9 @@
 {
   "upstream_repository": "https://github.com/fmz200/wool_scripts",
   "upstream_path": "Surge/module/blockAds.module",
-  "upstream_commit": "3ca7487b4e4b86d9af76e50df72c62eacfbb659e",
-  "upstream_sha256": "d75a30e3410fccc4269c2749cdc430f2c6ef5b092bca1bc342279642f9918423",
-  "upstream_date": "2026-09-10 21:10:39",
+  "upstream_commit": "c3f8128dd03c6b3cb35821c347968282cc45b34f",
+  "upstream_sha256": "084197a83ab68a19746f6c51334735dbc6e330ba7ff65f97ae26e1faa9b60370",
+  "upstream_date": "2026-10-25 22:36:13",
   "selected_groups": {
     "Rule": [
       "广告联盟",
@@ -94,5 +94,5 @@
   "excluded_rules": [
     "DOMAIN,dig.bdurl.net,REJECT"
   ],
-  "module_sha256": "d2bd74a58db0bc82729833871fde857589b659508fdb9457995fa7d80bb192e2"
+  "module_sha256": "cb1db8f8fb6dc800ff37d3ea0566107ed242055cbb07d4df464f2e0f85bc32f9"
 }
