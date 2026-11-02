@@ -1,9 +1,9 @@
 {
   "upstream_repository": "https://github.com/fmz200/wool_scripts",
   "upstream_path": "Surge/module/blockAds.module",
-  "upstream_commit": "c3f8128dd03c6b3cb35821c347968282cc45b34f",
-  "upstream_sha256": "084197a83ab68a19746f6c51334735dbc6e330ba7ff65f97ae26e1faa9b60370",
-  "upstream_date": "2026-10-25 22:36:13",
+  "upstream_commit": "4b7830670baf235ed945085cb926dc499cf619e0",
+  "upstream_sha256": "cc306fc3e061d106d5197a5a1be42f940193c32bc7234302ff31b357f4a01076",
+  "upstream_date": "2026-10-30 16:26:43",
   "selected_groups": {
     "Rule": [
       "广告联盟",
@@ -18,7 +18,6 @@
       "京东",
       "美团",
       "米家",
-      "网易云音乐",
       "QQ音乐",
       "淘宝",
       "腾讯系",
@@ -67,7 +66,6 @@
       "美团 & 美团外卖",
       "米家",
       "拼多多",
-      "网易云音乐",
       "QQ音乐",
       "山姆会员商店",
       "淘宝",
@@ -84,7 +82,6 @@
       "阿里巴巴",
       "哔哩哔哩",
       "京东",
-      "网易云音乐",
       "淘宝",
       "网易云音乐",
       "优酷",
@@ -94,5 +91,5 @@
   "excluded_rules": [
     "DOMAIN,dig.bdurl.net,REJECT"
   ],
-  "module_sha256": "cb1db8f8fb6dc800ff37d3ea0566107ed242055cbb07d4df464f2e0f85bc32f9"
+  "module_sha256": "efca2cb8b99b73cea4de8fa2f241e6146c5f922551b0cfe55fa630c968c5dbe0"
 }
