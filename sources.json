@@ -88,16 +88,49 @@
       "YouTube"
     ]
   },
-  "supplemental_rules": {
-    "小红书（仅广告素材域名）": [
-      "DOMAIN,ads-img-qc.xhscdn.com,REJECT",
-      "DOMAIN,ads-video-al.xhscdn.com,REJECT",
-      "DOMAIN,ads-video-qc.xhscdn.com,REJECT",
-      "DOMAIN,t-ads.xiaohongshu.com,REJECT"
-    ]
-  },
   "excluded_rules": [
     "DOMAIN,dig.bdurl.net,REJECT"
   ],
-  "module_sha256": "4387e099ddb0b57997dcb9f34b447b2deabb622036f259ebb9fd9868e72dc0d8"
+  "module_sha256": "ecc251e53e57e97cb2023d3a4934825fa2aa68564e892659f7cbf424406db7dd",
+  "module_arguments": {
+    "DT": "false",
+    "FX": "true",
+    "MY": "true",
+    "logLevel": "error",
+    "sponsorBlock": "false"
+  },
+  "argument_sources": [
+    {
+      "repository": "fmz200/wool_scripts",
+      "path": "Surge/module/split/partB/bilibili.sgmodule",
+      "commit": "4b7830670baf235ed945085cb926dc499cf619e0"
+    },
+    {
+      "repository": "fmz200/wool_scripts",
+      "path": "Surge/module/split/partW/NetEaseCloudMusic.sgmodule",
+      "commit": "4b7830670baf235ed945085cb926dc499cf619e0"
+    }
+  ],
+  "deferred_candidates": {
+    "repository": "abclq/home-dns-adblock",
+    "path": "config/adblock-fq.conf",
+    "commit": "ee9c7c7929c71519728c18f6b5488b25598d92c9",
+    "blob_sha": "b866fdaa3238d3e3605183d03762fea78fead6cc",
+    "source_date": "2026-10-14",
+    "reason": "精确 reading-ad 主机用于看广告解锁章节；等待用户确认后再加入。",
+    "rules": [
+      "DOMAIN,v11-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v13-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v26-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v5-bd-daily-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v5-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v5-se-sjy-daily-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v6-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v9-reading-ad.qznovelvod.com,REJECT",
+      "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
+    ]
+  },
+  "excluded_apps": [
+    "小红书"
+  ]
 }
