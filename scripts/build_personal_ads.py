@@ -58,15 +58,36 @@ ALLOWED_GROUPS = {
 
 SECTIONS = ("Rule", "Header Rewrite", "URL Rewrite", "Body Rewrite", "Map Local", "Script")
 SKIP_RULES = {"DOMAIN,dig.bdurl.net,REJECT"}
-SUPPLEMENTAL_RULES = {
-    "小红书（仅广告素材域名）": [
-        "DOMAIN,ads-img-qc.xhscdn.com,REJECT",
-        "DOMAIN,ads-video-al.xhscdn.com,REJECT",
-        "DOMAIN,ads-video-qc.xhscdn.com,REJECT",
-        "DOMAIN,t-ads.xiaohongshu.com,REJECT",
-    ]
+ARGUMENT_DEFAULTS = {
+    "DT": "false",
+    "FX": "true",
+    "MY": "true",
+    "logLevel": '"error"',
+    "sponsorBlock": "false",
 }
-
+ARGUMENT_SOURCES = [
+    {"repository": UPSTREAM_REPO, "path": "Surge/module/split/partB/bilibili.sgmodule"},
+    {"repository": UPSTREAM_REPO, "path": "Surge/module/split/partW/NetEaseCloudMusic.sgmodule"},
+]
+DEFERRED_CANDIDATES = {
+    "repository": "abclq/home-dns-adblock",
+    "path": "config/adblock-fq.conf",
+    "commit": "ee9c7c7929c71519728c18f6b5488b25598d92c9",
+    "blob_sha": "b866fdaa3238d3e3605183d03762fea78fead6cc",
+    "source_date": "2026-10-14",
+    "reason": "精确 reading-ad 主机用于看广告解锁章节；等待用户确认后再加入。",
+    "rules": [
+        "DOMAIN,v11-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v13-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v26-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v5-bd-daily-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v5-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v5-se-sjy-daily-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v6-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v9-reading-ad.qznovelvod.com,REJECT",
+        "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT",
+    ],
+}
 
 def read_upstream(source_path):
     if source_path:
@@ -151,6 +172,12 @@ def source_mitm_hosts(plain_sections):
 def build(source, commit):
     metadata, sections, plain_sections = parse_module(source)
     groups = selected_groups(sections)
+    selected_text = "\n".join(line for blocks in groups.values() for _, lines in blocks for line in lines)
+    argument_names = sorted(set(re.findall(r"\{\{\{([A-Za-z0-9_]+)\}\}\}", selected_text)))
+    missing_arguments = set(argument_names) - ARGUMENT_DEFAULTS.keys()
+    if missing_arguments:
+        raise RuntimeError("Missing Surge module arguments: " + ", ".join(sorted(missing_arguments)))
+    module_arguments = ",".join(f"{name}:{ARGUMENT_DEFAULTS[name]}" for name in argument_names)
 
     group_hosts = set()
     for blocks in groups.values():
@@ -163,16 +190,19 @@ def build(source, commit):
 
     upstream_date = next((line.split("=", 1)[1].strip() for line in metadata if line.startswith("#!date=")), "unknown")
     output = [
-        "#!name=截图 App 去广告（Wool 上游精选）",
-        "#!desc=筛选截图 App 的上游规则；含通用广告联盟规则及小红书 4 个广告素材域名。",
+        "#!name=截图 App 去广告综合模块",
+        "#!desc=Surge iOS 6 综合去广告模块，按截图筛选可用上游分组。",
         "#!author=mrtanshiyue（上游规则：fmz200）",
         "#!category=个人模块",
         "#!homepage=https://github.com/mrtanshiyue/surge-sgmodule",
         f"#!raw-url={MODULE_URL}",
-        "#!tag=去广告,截图App,广告联盟,小红书,Wool",
+        "#!tag=去广告,截图App,广告联盟,Wool",
         "#!system=ios",
         f"#!date={upstream_date}",
-        "#!remark=筛选自上游 blockAds.module；小红书仅拦截 4 个广告素材域名，不启用其全域 QUIC 阻断、MITM 或响应脚本。dig.bdurl.net 已排除，以免影响抖音精选视频播放。",
+        "#!requirement=CORE_VERSION>=20",
+        f"#!arguments={module_arguments}",
+        "#!arguments-desc=保留 B 站视频内创作者赞助片段；日志级别为 error；网易云音乐选项沿用上游默认值。",
+        "#!remark=筛选自 Wool Scripts blockAds.module；dig.bdurl.net 已排除，以免影响抖音精选视频播放。",
     ]
 
     for section in SECTIONS:
@@ -182,9 +212,6 @@ def build(source, commit):
         output.extend(["", f"[{section}]"])
         for _, lines in blocks:
             output.extend([""] + lines)
-        if section == "Rule":
-            for name, rules in SUPPLEMENTAL_RULES.items():
-                output.extend(["", f"# > {name}", *rules])
 
     if mitm_hosts:
         output.extend(["", "[MITM]", "hostname = %APPEND% " + ", ".join(mitm_hosts)])
@@ -197,14 +224,22 @@ def build(source, commit):
         "upstream_sha256": hashlib.sha256(source.encode()).hexdigest(),
         "upstream_date": upstream_date,
         "selected_groups": {section: [name for name, _ in blocks] for section, blocks in groups.items()},
-        "supplemental_rules": SUPPLEMENTAL_RULES,
+        "module_arguments": {name: ARGUMENT_DEFAULTS[name].strip('"') for name in argument_names},
+        "argument_sources": [
+            {**source, "commit": commit} for source in ARGUMENT_SOURCES
+        ],
         "excluded_rules": sorted(SKIP_RULES),
+        "excluded_apps": ["小红书"],
+        "deferred_candidates": DEFERRED_CANDIDATES,
         "module_sha256": hashlib.sha256(module.encode()).hexdigest(),
     }
     if any(line.strip() in SKIP_RULES for line in module.splitlines()):
         raise RuntimeError("Filtered module contains the playback-breaking host")
-    if "AND,((PROTOCOL,QUIC),(DOMAIN-SUFFIX,xiaohongshu.com)),REJECT" in module:
-        raise RuntimeError("Filtered module contains broad Xiaohongshu blocking")
+    if re.search(r"(?:xhscdn\.com|xiaohongshu\.com)", module, re.IGNORECASE):
+        raise RuntimeError("Filtered module contains Xiaohongshu-specific rules")
+    unbound = set(re.findall(r"\{\{\{([A-Za-z0-9_]+)\}\}\}", module)) - set(argument_names)
+    if unbound:
+        raise RuntimeError("Unbound Surge module arguments: " + ", ".join(sorted(unbound)))
     return module, manifest
 
 
