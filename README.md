@@ -2,7 +2,7 @@
 
 [安装 Surge 模块](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule) · [查看上游模块](https://github.com/fmz200/wool_scripts/blob/main/Surge/module/blockAds.module)
 
-模块从 Wool Scripts 当前的 Surge `blockAds.module` 中筛选与截图 App 对应的分组：Amazon、Apple、Facebook/Instagram、Google、YouTube、WPS、哔哩哔哩、抖音、番茄小说/红果短剧、阿里巴巴、淘宝、京东、拼多多、美团、米家/小爱音箱、小米、萤石、网易云音乐、QQ 音乐、喜马拉雅、优酷、淘票票、同花顺、高德地图、杭州市民、山姆会员商店、中国电信、钉钉、腾讯系和腾讯游戏。
+模块从 Wool Scripts 当前的 Surge `blockAds.module` 中筛选与截图 App 对应的分组：Amazon、Apple、Facebook/Instagram、Google、YouTube、WPS、哔哩哔哩、抖音、番茄小说（不含红果短剧专属规则）、阿里巴巴、淘宝、京东、拼多多、美团、米家/小爱音箱、小米、萤石、网易云音乐、QQ 音乐、喜马拉雅、优酷、淘票票、同花顺、高德地图、杭州市民、山姆会员商店、中国电信、钉钉、腾讯系和腾讯游戏。
 
 小红书额外只拦截上游列出的 4 个独立广告素材域名：`ads-img-qc.xhscdn.com`、`ads-video-al.xhscdn.com`、`ads-video-qc.xhscdn.com`、`t-ads.xiaohongshu.com`。没有导入上游小红书组中的全域 QUIC 阻断、MITM 主机或响应脚本，以缩小对登录、信息流和视频的影响。小红书信息流内嵌广告因此可能仍会出现。
 
