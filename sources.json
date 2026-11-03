@@ -91,7 +91,7 @@
   "excluded_rules": [
     "DOMAIN,dig.bdurl.net,REJECT"
   ],
-  "module_sha256": "ecc251e53e57e97cb2023d3a4934825fa2aa68564e892659f7cbf424406db7dd",
+  "module_sha256": "96f176f4058357f9b7c5ba6217ebee55f0855502ad086fdce5752ecb01e82e4e",
   "module_arguments": {
     "DT": "false",
     "FX": "true",
