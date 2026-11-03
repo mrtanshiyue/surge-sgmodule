@@ -1,13 +1,13 @@
 #!name=截图 App 去广告（Wool 上游精选）
-#!desc=保留截图 App 对应的上游规则并包含广告联盟通用规则；来源：fmz200/wool_scripts。
+#!desc=筛选截图 App 的上游规则；含通用广告联盟规则及小红书 4 个广告素材域名。
 #!author=mrtanshiyue（上游规则：fmz200）
 #!category=个人模块
 #!homepage=https://github.com/mrtanshiyue/surge-sgmodule
 #!raw-url=https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule
-#!tag=去广告,截图App,广告联盟,Wool
+#!tag=去广告,截图App,广告联盟,小红书,Wool
 #!system=ios
 #!date=2026-10-30 16:26:43
-#!remark=筛选自上游 blockAds.module；已移除小红书分组并恢复通用广告联盟规则。dig.bdurl.net 已排除，以免影响抖音精选视频播放。
+#!remark=筛选自上游 blockAds.module；小红书仅拦截 4 个广告素材域名，不启用其全域 QUIC 阻断、MITM 或响应脚本。dig.bdurl.net 已排除，以免影响抖音精选视频播放。
 
 [Rule]
 
@@ -976,6 +976,12 @@ DOMAIN-SUFFIX,track.toutiao.com,REJECT
 DOMAIN-SUFFIX,dm.pstatp.com,REJECT
 DOMAIN-SUFFIX,pb3.pstatp.com,REJECT
 DOMAIN-SUFFIX,s3a.pstatp.com,REJECT
+
+# > 小红书（仅广告素材域名）
+DOMAIN,ads-img-qc.xhscdn.com,REJECT
+DOMAIN,ads-video-al.xhscdn.com,REJECT
+DOMAIN,ads-video-qc.xhscdn.com,REJECT
+DOMAIN,t-ads.xiaohongshu.com,REJECT
 
 [Header Rewrite]
 

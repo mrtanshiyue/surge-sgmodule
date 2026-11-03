@@ -58,6 +58,14 @@ ALLOWED_GROUPS = {
 
 SECTIONS = ("Rule", "Header Rewrite", "URL Rewrite", "Body Rewrite", "Map Local", "Script")
 SKIP_RULES = {"DOMAIN,dig.bdurl.net,REJECT"}
+SUPPLEMENTAL_RULES = {
+    "小红书（仅广告素材域名）": [
+        "DOMAIN,ads-img-qc.xhscdn.com,REJECT",
+        "DOMAIN,ads-video-al.xhscdn.com,REJECT",
+        "DOMAIN,ads-video-qc.xhscdn.com,REJECT",
+        "DOMAIN,t-ads.xiaohongshu.com,REJECT",
+    ]
+}
 
 
 def read_upstream(source_path):
@@ -156,15 +164,15 @@ def build(source, commit):
     upstream_date = next((line.split("=", 1)[1].strip() for line in metadata if line.startswith("#!date=")), "unknown")
     output = [
         "#!name=截图 App 去广告（Wool 上游精选）",
-        "#!desc=保留截图 App 对应的上游规则并包含广告联盟通用规则；来源：fmz200/wool_scripts。",
+        "#!desc=筛选截图 App 的上游规则；含通用广告联盟规则及小红书 4 个广告素材域名。",
         "#!author=mrtanshiyue（上游规则：fmz200）",
         "#!category=个人模块",
         "#!homepage=https://github.com/mrtanshiyue/surge-sgmodule",
         f"#!raw-url={MODULE_URL}",
-        "#!tag=去广告,截图App,广告联盟,Wool",
+        "#!tag=去广告,截图App,广告联盟,小红书,Wool",
         "#!system=ios",
         f"#!date={upstream_date}",
-        "#!remark=筛选自上游 blockAds.module；已移除小红书分组并恢复通用广告联盟规则。dig.bdurl.net 已排除，以免影响抖音精选视频播放。",
+        "#!remark=筛选自上游 blockAds.module；小红书仅拦截 4 个广告素材域名，不启用其全域 QUIC 阻断、MITM 或响应脚本。dig.bdurl.net 已排除，以免影响抖音精选视频播放。",
     ]
 
     for section in SECTIONS:
@@ -174,6 +182,9 @@ def build(source, commit):
         output.extend(["", f"[{section}]"])
         for _, lines in blocks:
             output.extend([""] + lines)
+        if section == "Rule":
+            for name, rules in SUPPLEMENTAL_RULES.items():
+                output.extend(["", f"# > {name}", *rules])
 
     if mitm_hosts:
         output.extend(["", "[MITM]", "hostname = %APPEND% " + ", ".join(mitm_hosts)])
@@ -186,11 +197,14 @@ def build(source, commit):
         "upstream_sha256": hashlib.sha256(source.encode()).hexdigest(),
         "upstream_date": upstream_date,
         "selected_groups": {section: [name for name, _ in blocks] for section, blocks in groups.items()},
+        "supplemental_rules": SUPPLEMENTAL_RULES,
         "excluded_rules": sorted(SKIP_RULES),
         "module_sha256": hashlib.sha256(module.encode()).hexdigest(),
     }
-    if "# > 小红书" in module or "xiaohongshu" in module.lower() or any(line.strip() in SKIP_RULES for line in module.splitlines()):
-        raise RuntimeError("Filtered module contains Xiaohongshu rules or the playback-breaking host")
+    if any(line.strip() in SKIP_RULES for line in module.splitlines()):
+        raise RuntimeError("Filtered module contains the playback-breaking host")
+    if "AND,((PROTOCOL,QUIC),(DOMAIN-SUFFIX,xiaohongshu.com)),REJECT" in module:
+        raise RuntimeError("Filtered module contains broad Xiaohongshu blocking")
     return module, manifest
 
 

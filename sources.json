@@ -88,8 +88,16 @@
       "YouTube"
     ]
   },
+  "supplemental_rules": {
+    "小红书（仅广告素材域名）": [
+      "DOMAIN,ads-img-qc.xhscdn.com,REJECT",
+      "DOMAIN,ads-video-al.xhscdn.com,REJECT",
+      "DOMAIN,ads-video-qc.xhscdn.com,REJECT",
+      "DOMAIN,t-ads.xiaohongshu.com,REJECT"
+    ]
+  },
   "excluded_rules": [
     "DOMAIN,dig.bdurl.net,REJECT"
   ],
-  "module_sha256": "efca2cb8b99b73cea4de8fa2f241e6146c5f922551b0cfe55fa630c968c5dbe0"
+  "module_sha256": "4387e099ddb0b57997dcb9f34b447b2deabb622036f259ebb9fd9868e72dc0d8"
 }
