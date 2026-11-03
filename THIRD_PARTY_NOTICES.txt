@@ -6,11 +6,52 @@ This repository redistributes a filtered derivative of:
   Upstream author: fmz200
   Upstream license: GNU General Public License v3.0
 
-The generated module preserves upstream blocks for Apps identified in the user's
-screenshots, removes unrelated app groups and the global ad-network group, and
-omits DOMAIN,dig.bdurl.net,REJECT because it breaks Douyin Selection video
-playback on the user's device. The source revision and SHA-256 are recorded in
-sources.json. Upstream script URLs are retained from the source module.
+The generated module preserves selected screenshot-app groups, including the
+upstream global ad-alliance group, and omits unrelated app groups. No
+Xiaohongshu-specific hostname, MITM target, rewrite, or script is included.
+DOMAIN,dig.bdurl.net,REJECT is deliberately omitted because it breaks Douyin
+Selection video playback on the user's device. The source revision and SHA-256
+are recorded in sources.json. Upstream script URLs are retained from the source
+module.
 
-The upstream project includes its own attribution and contributor notes in the
-source file. This repository does not claim authorship of those upstream rules.
+Surge module argument defaults were checked against the upstream Bilibili and
+NetEase Cloud Music split modules at the same Wool Scripts revision. The local
+sponsorBlock default is false so creator-sponsorship segments remain intact.
+
+Candidate domains recorded for review, but not enabled in the generated module,
+are derived from abclq/home-dns-adblock:
+  Repository: https://github.com/abclq/home-dns-adblock
+  File: config/adblock-fq.conf
+  License: MIT
+  Revision and selected exact hosts are recorded in sources.json.
+
+This repository does not claim authorship of upstream rules or scripts.
+
+MIT License notice for the deferred candidate list
+
+  Project: home-dns-adblock
+  Repository: https://github.com/abclq/home-dns-adblock
+  File: config/adblock-fq.conf
+  Copyright (c) 2026 abclq
+
+MIT License
+
+Copyright (c) 2026 abclq
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
