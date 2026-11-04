@@ -1,47 +1,29 @@
 # 截图 App 去广告综合模块（Surge iOS 6）
 
-[安装 Surge 模块](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule) · [查看生成器](scripts/build_personal_ads.py) · [规则来源记录](sources.json)
+[安装模块](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule) · [来源记录](sources.json) · [合并脚本](scripts/merge_modules.py)
 
-## 收录范围
+## 来源与更新
 
-模块按截图中可识别且有可用 Surge 规则的 App 选取上游分组，包含：
+模块先采用 [Feng-Feng1/surge](https://github.com/Feng-Feng1/surge) 的秋风奶思综合规则，再补充 [fmz200/wool_scripts](https://github.com/fmz200/wool_scripts) 中截图 App 对应的规则。相同脚本类型及完全相同的 URL 匹配表达式只保留前者；其他规则按来源顺序保留，表达式不同但匹配范围重叠时不保证自动识别。
 
-- Amazon、Apple、Google、YouTube、Instagram/Facebook；
-- 京东、淘宝、拼多多、阿里巴巴/1688、美团、山姆、淘票票；
-- 哔哩哔哩、抖音/抖音精选相关字节规则、番茄小说、优酷；
-- 网易云音乐、QQ 音乐、喜马拉雅；
-- 高德地图、同花顺、杭州市民卡；
-- WPS、钉钉、腾讯系/腾讯游戏、中国电信；
-- 米家、小米、小爱音箱、萤石。
+GitHub Actions 每天检查上游并在保护检查通过后重建模块。构建时将 Feng 的仓库内资源 URL 固定到此次源文件提交；其他上游脚本仍可能使用各自的动态 URL。来源版本和输出 SHA-256 记录于 sources.json。若上游格式或参数发生无法识别的变化，构建会失败并保留上次版本。
 
-模块保留 Wool Scripts 的通用广告联盟规则。Surge 按域名和 URL 匹配，通用广告域可能被多个 App 共用，因此规则也可能影响截图外的 App。规则是否能去掉某个广告，仍取决于 App 当前接口和缓存。
+## 用户指定的保护范围
 
-**小红书不在本模块中**：没有小红书专属域名、MITM 主机或重写规则；你可继续使用独立模块。通用广告联盟规则仍可能命中共享的广告域名。
+- 不纳入小红书专属脚本、重写或 MITM 主机；对 Feng 的外部拒绝规则集增加小红书域名排除。共享广告网络仍可能命中多个 App。
+- 不拦截 `dig.bdurl.net`，避免此前抖音精选播放问题；外部拒绝规则集亦包含此例外。
+- 外部拒绝规则集排除 `v*-reading-ad.qznovelvod.com`，原来 9 条候选规则不加入。其他已启用模块仍可能拦截这些域名，尤其是独立红果模块。
+- 未纳入小象助力车专属模拟响应，以免未经验证地隐藏骑行卡或影响充值。
+- 未纳入 `Spotify.Crack.Dev.js` 及包含会员状态改写的 `wyres.js`；网易云部分脚本去广告功能因而不包含在本模块内。
 
-## 未加入的截图 App 规则
+## Surge 6 设置
 
-在本轮检索的维护中来源里，没有找到适合直接加入且范围明确的 Starbucks、Shopify、安居客、Tesla、蔚来、开心消消乐、豆包等 Surge 专属广告规则。银行、证券、支付及系统工具也没有凭域名猜测添加拦截项。
+模块要求 Core 6.11.0 或更新版本（`CORE_VERSION>=6011000`），包含 Rule、URL/Header/Body Rewrite、Map Local、Script 和 MITM。部分广告处理需要在 Surge 中开启 Rewrite、MITM、Scripting 并信任 MITM 证书。B 站 protobuf 脚本采用 JSON 对象参数，并默认保留创作者赞助片段。
 
-红果短剧与番茄小说不能视为同一个专属规则组。已找到一组精确的红果/番茄章节广告视频主机，但它们用于“看广告解锁章节”；拦截会使这类解锁不可用，因此暂未加入主模块。候选来源和 9 条候选规则记在 sources.json，确认后再纳入。
+安装更新后应避免同时启用旧的秋风奶思综合模块，否则同一请求仍可能命中重复脚本。若发现登录、播放、消息、支付或内容加载异常，先停用本模块并重新打开受影响的 App；可从 GitHub 历史提交恢复先前版本。
 
-## Surge 6 写法与参数
+## 版权与限制
 
-本模块使用 Surge 原生 .sgmodule 配置语法、#!requirement=CORE_VERSION>=20、模块参数表和 [MITM] 的 %APPEND% 写法。Core 20 对应 Body Rewrite 支持；参数为选中上游脚本提供有效默认值，避免遗留未绑定占位符。
+详细来源及第三方说明见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。上游 Feng 仓库未标明整个综合模块的许可证，不能从单个第三方脚本的许可证推定整个模块的授权范围。
 
-- sponsorBlock=false：保留 B 站视频内创作者赞助片段；
-- logLevel=error：减少脚本日志；
-- 网易云音乐参数采用上游默认值。
-
-详见 [Surge Modules 文档](https://manual.nssurge.com/profile/module.html)、[Requirement 文档](https://manual.nssurge.com/profile/requirement.html)、[MITM 文档](https://manual.nssurge.com/http/mitm.html) 和 [Scripting 文档](https://manual.nssurge.com/scripting/overview.html)。
-
-## 使用与回退
-
-需要在 Surge 中启用模块使用到的 Rewrite、MITM 和 Scripting，并安装、信任 MITM 证书。模块只把所选上游分组标记的主机追加到 MITM；仍可能与证书锁定的 App 或接口版本不兼容。
-
-如登录、播放、评论、支付或内容加载异常，先停用本模块并重开 App。已知 dig.bdurl.net 会影响抖音精选视频播放，因此未收录。
-
-## 更新与来源
-
-仓库按周检查并从 [fmz200/wool_scripts](https://github.com/fmz200/wool_scripts) 的 Surge blockAds.module 生成规则；当前规则快照为 [2026-10-30 上游提交](https://github.com/fmz200/wool_scripts/commit/4b7830670baf235ed945085cb926dc499cf619e0)。脚本、参数源、选中分组及 SHA-256 记录在 sources.json。
-
-上游归属、改动和许可证见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。仓库没有把模块自动安装到 iPhone。
+合并和规则匹配检查不等于逐个 App 的功能验证；广告能否去除取决于 App 版本、接口和缓存。

@@ -88,16 +88,8 @@
       "YouTube"
     ]
   },
-  "excluded_rules": [
-    "DOMAIN,dig.bdurl.net,REJECT"
-  ],
-  "module_sha256": "96f176f4058357f9b7c5ba6217ebee55f0855502ad086fdce5752ecb01e82e4e",
   "module_arguments": {
-    "DT": "false",
-    "FX": "true",
-    "MY": "true",
-    "logLevel": "error",
-    "sponsorBlock": "false"
+    "per_filter_video_thread": "0"
   },
   "argument_sources": [
     {
@@ -110,6 +102,12 @@
       "path": "Surge/module/split/partW/NetEaseCloudMusic.sgmodule",
       "commit": "4b7830670baf235ed945085cb926dc499cf619e0"
     }
+  ],
+  "excluded_rules": [
+    "DOMAIN,dig.bdurl.net,REJECT"
+  ],
+  "excluded_apps": [
+    "小红书"
   ],
   "deferred_candidates": {
     "repository": "abclq/home-dns-adblock",
@@ -130,7 +128,28 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "excluded_apps": [
-    "小红书"
-  ]
+  "module_sha256": "df2471bfeefe908558fd5480ff65ca6e5cca497bb062e10c4f2026b3ccaa9d3f",
+  "feng": {
+    "repository": "https://github.com/Feng-Feng1/surge",
+    "path": "AdBlock-AllInOne.sgmodule",
+    "commit": "1b0e85e5767ff8e12e41e2597b57290bbd754e5c",
+    "sha256": "af46e1f380c4d5d8d41d26c8301ac83d945fb8eff7df1bb7bd730757960fe19e"
+  },
+  "merge_notes": {
+    "priority": "Feng before Wool",
+    "protected": [
+      "DOMAIN,dig.bdurl.net",
+      "DOMAIN-SUFFIX,xiaohongshu.com",
+      "DOMAIN-SUFFIX,xhscdn.com",
+      "DOMAIN-SUFFIX,xhslink.com",
+      "DOMAIN-SUFFIX,rednote.com",
+      "DOMAIN-WILDCARD,v*-reading-ad.qznovelvod.com"
+    ],
+    "excluded": [
+      "小红书专属规则",
+      "小象助力车专属规则",
+      "Spotify.Crack.Dev.js",
+      "wyres.js（包含会员状态改写）"
+    ]
+  }
 }

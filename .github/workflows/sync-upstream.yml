@@ -1,8 +1,8 @@
-name: Sync screenshot app rules
+name: Sync merged ad module
 
 on:
   schedule:
-    - cron: "23 4 * * 1"
+    - cron: "23 4 * * *"
   workflow_dispatch:
 
 permissions:
@@ -19,8 +19,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Build filtered module from the latest upstream commit
-        run: python3 scripts/build_personal_ads.py
+      - name: Check merge protections
+        run: python3 -m unittest discover -s scripts -p 'test_merge_modules.py' -v
+      - name: Build from the latest upstream commits
+        run: python3 scripts/merge_modules.py
       - name: Commit upstream changes
         run: |
           if git diff --quiet -- PersonalAds.sgmodule sources.json; then
@@ -29,5 +31,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add PersonalAds.sgmodule sources.json
-          git commit -m "Sync screenshot app rules from Wool Scripts"
+          git commit -m "Sync merged ad module from upstream"
           git push origin HEAD:main

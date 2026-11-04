@@ -1,4 +1,15 @@
-This repository redistributes a filtered derivative of:
+The merged module includes a filtered derivative of:
+
+  Project: Feng-Feng1/surge
+  Repository: https://github.com/Feng-Feng1/surge
+  File: AdBlock-AllInOne.sgmodule
+  Upstream repository license: not stated at the repository root as of 2026-11-04
+  Snapshot: recorded in sources.json
+
+Upstream rules and scripts may have their own authors and licenses. The absence
+of a stated repository-wide license does not establish redistribution rights.
+
+The module also includes a filtered derivative of:
 
   Project: Wool Scripts
   Repository: https://github.com/fmz200/wool_scripts
@@ -6,17 +17,18 @@ This repository redistributes a filtered derivative of:
   Upstream author: fmz200
   Upstream license: GNU General Public License v3.0
 
-The generated module preserves selected screenshot-app groups, including the
-upstream global ad-alliance group, and omits unrelated app groups. No
-Xiaohongshu-specific hostname, MITM target, rewrite, or script is included.
-DOMAIN,dig.bdurl.net,REJECT is deliberately omitted because it breaks Douyin
-Selection video playback on the user's device. The source revision and SHA-256
-are recorded in sources.json. Upstream script URLs are retained from the source
-module.
+The Wool portion preserves selected screenshot-app groups, including its global
+ad-alliance group. The Feng portion covers additional apps. Xiaohongshu-specific
+hostnames, MITM targets, rewrites and scripts are excluded; exclusions are also
+applied to Feng's external block lists. dig.bdurl.net is protected because it
+broke Douyin Selection playback on the user's device. Source revisions and
+SHA-256 values are recorded in sources.json. Feng repository resource URLs are
+pinned to the selected commit; third-party script URLs may still track branches.
 
-Surge module argument defaults were checked against the upstream Bilibili and
-NetEase Cloud Music split modules at the same Wool Scripts revision. The local
-sponsorBlock default is false so creator-sponsorship segments remain intact.
+Surge module argument defaults were checked against upstream split modules.
+Bilibili protobuf scripts receive JSON object parameters; sponsorBlock is false
+so creator-sponsorship segments remain intact. Membership-state scripts are
+excluded from the merged output.
 
 Candidate domains recorded for review, but not enabled in the generated module,
 are derived from abclq/home-dns-adblock:
