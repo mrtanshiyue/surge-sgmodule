@@ -14,7 +14,7 @@ DOMAIN,ok.example,REJECT
 [Map Local]
 ^https://ebike-client\.xiaoantech\.com/client/ad/ data-type=text data="{}"
 [Script]
-upstream = type=http-response, pattern=^https://api\.example/test, script-path=https://example.com/a.js
+京东-upstream = type=http-response, pattern=^https://api\.example/test, script-path=https://example.com/a.js
 [MITM]
 hostname = %APPEND% api.example, edith.xiaohongshu.com
 '''
@@ -27,7 +27,7 @@ hostname = %APPEND% api.example
 '''
         result = merge(feng, "abcdef", fallback)
         self.assertEqual(result.count("DOMAIN,ok.example,REJECT"), 1)
-        self.assertIn("upstream = type=http-response", result)
+        self.assertIn("京东-upstream = type=http-response", result)
         self.assertNotIn("old = type=http-response", result)
         self.assertNotIn("xiaoantech", result)
         self.assertNotIn("edith.xiaohongshu.com", result)
@@ -37,6 +37,30 @@ hostname = %APPEND% api.example
                       "DOMAIN-SUFFIX,xhscdn.com", "DOMAIN-SUFFIX,xhslink.com",
                       "DOMAIN-SUFFIX,rednote.com", "DOMAIN-WILDCARD,v*-reading-ad.qznovelvod.com"):
             self.assertIn(guard, rule)
+
+    def test_excludes_absent_apps_and_preserves_shared_rules(self):
+        feng = r"""[URL Rewrite]
+^https://absent.example/ad _ reject
+^https://shared.example/ad _ reject
+[Script]
+V5-知乎 = type=http-response, pattern=^https://zhihu.com/, script-path=https://example.com/a.js
+V5-京东 = type=http-response, pattern=^https://jd.com/, script-path=https://example.com/a.js
+[MITM]
+hostname = %APPEND% absent.example, shared.example, api.zhihu.com
+"""
+        source = """[URL Rewrite]
+# > 知乎
+# hostname = absent.example
+^https://absent.example/ad _ reject
+# > 淘宝
+# hostname = shared.example
+^https://shared.example/ad _ reject
+"""
+        result = merge(feng, "abc", "", source)
+        self.assertNotIn("absent.example", result)
+        self.assertNotIn("zhihu", result)
+        self.assertIn("shared.example", result)
+        self.assertIn("V5-京东", result)
 
     def test_script_identity_includes_type(self):
         self.assertNotEqual(script_key("a=type=http-response, pattern=^https://example.com"),
@@ -54,9 +78,9 @@ hostname = %APPEND% api.example
         source = r'''[Script]
 netease=type=http-response,pattern=^https://music.example/,script-path=https://example.com/wyres.js
 spotify=type=http-response,pattern=^https://spotify.example/,script-path=https://example.com/Spotify.Crack.Dev.js
-bili=type=http-request,pattern=^https://bili.example/,script-path=https://example.com/bilibili.protobuf.request.js,argument=[{{{logLevel}}}]
+bili=type=http-request,pattern=^https://app.bilibili.com/,script-path=https://example.com/bilibili.protobuf.request.js,argument=[{{{logLevel}}}]
 [MITM]
-hostname = %APPEND% bili.example
+hostname = %APPEND% app.bilibili.com
 '''
         output = merge(source, "abc123", "")
         self.assertNotIn("wyres.js", output)

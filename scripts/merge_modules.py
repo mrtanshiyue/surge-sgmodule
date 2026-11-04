@@ -23,6 +23,11 @@ PROTECTED_HOSTS = ("dig.bdurl.net", "edith.xiaohongshu.com", "ads-video-al.xhscd
                    "xhslink.com", "rednote.com") + tuple(
                        rule.split(",")[1] for rule in wool.DEFERRED_CANDIDATES["rules"]
                    )
+# App-specific hosts not visible in the supplied screenshots.
+ABSENT_APPS = re.compile(r"weibo|weibocdn|weibomingzi|viber|zhihu|smzdm|coolapk|csdn|chelaile|gotokeep|xueqiu|douban|cainiao|goofish|taobao\.idle|pupuapi|iqiyi|kugou|dftoutiao|weilitoutiao|jiemian|ixiaochuan|瓜子漫画|微博|知乎|闲鱼|菜鸟|什么值得买|酷安|哔哩哔哩漫画", re.I)
+# Unlabelled upstream rewrites are kept only for visible apps and shared ad SDKs.
+FENG_APP_PATTERNS = re.compile(r"(?:bilibili|biliapi|pinduoduo|yangkeduo|pddpic|taobao|alimama|alibaba|jdcloud|\.jd\.|meituan|amap|10jqka|walmartmobile|film\.mtop|ys7|lechange|music\.163|ximalaya|mina\.mi\.|xiaoaisound|mitvos|home\.mi\.|youku|wps|kingsoft-office|googlevideo|googleapis|youtube|byteurl|bytescm|bytedance|pangolin|toutiao|snssdk|amemv|qq\.com|gtimg|122\.gov|cloud\.189|api\.cloud\.189|mcd\.cn|96225\.com|neteasecloud|ad-sdk|adunion)", re.I)
+FENG_SCRIPT_APPS = re.compile(r"哔哩哔哩|bilibili|bili|喜马拉雅|京东|美团|小爱音箱|优酷|YouTube|阿里巴巴|淘宝|NetEaseCloudMusic|网易云|微信小程序个人中心|广告联盟|myBlockAds", re.I)
 ARGUMENTS = {**wool.ARGUMENT_DEFAULTS, "per_filter_video_thread": '"0"'}
 
 
@@ -109,8 +114,21 @@ def clean_line(section, line, revision):
     return line.replace(FENG_PREFIX + "main/", FENG_PREFIX + revision + "/")
 
 
-def merge(feng, revision, wool_module):
+def merge(feng, revision, wool_module, wool_source=None):
     src, fallback = sections(feng), sections(wool_module)
+    groups = wool.parse_module(wool_source)[1] if wool_source else {}
+    attribution = {}
+    selected_hosts, other_hosts = set(), set()
+    for section, blocks in groups.items():
+        for name, lines in blocks:
+            for line in lines:
+                host_comment = re.match(r"\s*#\s*hostname\s*=\s*(.*)", line, re.I)
+                if host_comment:
+                    hosts = selected_hosts if name in wool.ALLOWED_GROUPS else other_hosts
+                    hosts.update(host.strip().lower() for host in host_comment.group(1).split(","))
+                line = line.strip()
+                if line and not line.startswith(("#", ";", "//")):
+                    attribution.setdefault((section, line), set()).add(name)
     unknown = set(src) - set(SECTIONS) - {"MITM"}
     if unknown:
         raise ValueError("Upstream has unsupported sections: " + ", ".join(sorted(unknown)))
@@ -127,6 +145,17 @@ def merge(feng, revision, wool_module):
                 line = raw.strip()
                 if not line or line.startswith(("#", ";", "//")):
                     continue
+                if name == "Feng-Feng1":
+                    known_groups = attribution.get((section, line), set())
+                    if known_groups and not known_groups.intersection(wool.ALLOWED_GROUPS):
+                        continue
+                    normalized = line.replace("\\", "")
+                    if ABSENT_APPS.search(normalized):
+                        continue
+                    if section in ("URL Rewrite", "Header Rewrite", "Body Rewrite", "Map Local") and not known_groups and not FENG_APP_PATTERNS.search(normalized):
+                        continue
+                    if section == "Script" and not FENG_SCRIPT_APPS.search(line.split("=", 1)[0]):
+                        continue
                 line = clean_line(section, line, revision)
                 if line is None:
                     continue
@@ -152,13 +181,14 @@ def merge(feng, revision, wool_module):
     for section, lines in section_lines.items():
         output.extend(["", "[" + section + "]"] + lines)
     hosts = []
+    other_hosts.difference_update(selected_hosts)
     for part in (src, fallback):
         for line in part.get("MITM", []):
             match = re.fullmatch(r"\s*hostname\s*=\s*%APPEND%\s*(.*)", line, re.I)
             if match:
                 for host in match.group(1).split(","):
                     host = host.strip()
-                    if host and not EXCLUDED.search(host) and host != "dig.bdurl.net" and host not in hosts:
+                    if host and not EXCLUDED.search(host) and not ABSENT_APPS.search(host) and host.lower() not in other_hosts and (part is fallback or host.lower() in selected_hosts or FENG_APP_PATTERNS.search(host)) and host != "dig.bdurl.net" and host not in hosts:
                         hosts.append(host)
     if not hosts:
         raise ValueError("No MITM hostnames found")
@@ -184,13 +214,13 @@ def main():
         raise ValueError("--wool-commit is required with --wool-source")
     wc = args.wool_commit or wc
     baseline, manifest = wool.build(src, wc)
-    module = merge(feng, revision, baseline)
+    module = merge(feng, revision, baseline, src)
     manifest["feng"] = {"repository": "https://github.com/" + FENG_REPO, "path": FENG_PATH,
                         "commit": revision, "sha256": hashlib.sha256(feng.encode()).hexdigest()}
     names = sorted(set(re.findall(r"\{\{\{([A-Za-z0-9_]+)\}\}\}", module)))
     manifest["module_arguments"] = {name: ARGUMENTS[name].strip('"') for name in names}
     manifest["module_sha256"] = hashlib.sha256(module.encode()).hexdigest()
-    manifest["merge_notes"] = {"priority": "Feng before Wool", "protected": list(PROTECTIONS),
+    manifest["merge_notes"] = {"priority": "Feng before Wool", "scope": "截图可识别 App；保留共享及无法确定归属的规则", "protected": list(PROTECTIONS),
                                "excluded": ["小红书专属规则", "小象助力车专属规则", "Spotify.Crack.Dev.js", "wyres.js（包含会员状态改写）"]}
     Path(args.output).write_text(module, encoding="utf-8")
     Path(args.manifest).write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

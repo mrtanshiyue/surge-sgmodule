@@ -7,11 +7,11 @@
   "selected_groups": {
     "Rule": [
       "广告联盟",
+      "12123",
       "Amazon",
       "Apple",
       "哔哩哔哩",
       "抖音",
-      "番茄小说",
       "Facebook",
       "高德地图",
       "Google",
@@ -34,7 +34,7 @@
       "哔哩哔哩"
     ],
     "URL Rewrite": [
-      "番茄小说",
+      "12123",
       "高德地图",
       "杭州市民",
       "京东",
@@ -88,9 +88,7 @@
       "YouTube"
     ]
   },
-  "module_arguments": {
-    "per_filter_video_thread": "0"
-  },
+  "module_arguments": {},
   "argument_sources": [
     {
       "repository": "fmz200/wool_scripts",
@@ -128,7 +126,7 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "df2471bfeefe908558fd5480ff65ca6e5cca497bb062e10c4f2026b3ccaa9d3f",
+  "module_sha256": "8d35c6ba82a698d055f01a5d06d55055f1ef8a1ce9913278d25c15be25338b2b",
   "feng": {
     "repository": "https://github.com/Feng-Feng1/surge",
     "path": "AdBlock-AllInOne.sgmodule",
@@ -137,6 +135,7 @@
   },
   "merge_notes": {
     "priority": "Feng before Wool",
+    "scope": "截图可识别 App；保留共享及无法确定归属的规则",
     "protected": [
       "DOMAIN,dig.bdurl.net",
       "DOMAIN-SUFFIX,xiaohongshu.com",

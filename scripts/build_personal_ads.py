@@ -21,6 +21,7 @@ MODULE_URL = "https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/
 # Screenshot app groups plus the requested general ad-alliance rules.
 ALLOWED_GROUPS = {
     "广告联盟",
+    "12123",
     "Amazon",
     "Apple",
     "Facebook",
@@ -38,7 +39,6 @@ ALLOWED_GROUPS = {
     "中国电信",
     "阿里巴巴",
     "抖音",
-    "番茄小说",
     "高德地图",
     "钉钉",
     "腾讯系",
