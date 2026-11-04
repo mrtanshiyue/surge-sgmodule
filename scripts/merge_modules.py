@@ -13,6 +13,8 @@ import build_personal_ads as wool
 
 FENG_REPO = "Feng-Feng1/surge"
 FENG_PATH = "AdBlock-AllInOne.sgmodule"
+STARTUP_REPO = "Walvez/surge-startup-ads"
+STARTUP_PATH = "dist/StartUpAds_Selected.sgmodule"
 FENG_PREFIX = "https://raw.githubusercontent.com/Feng-Feng1/surge/"
 SECTIONS = ("Rule", "Header Rewrite", "URL Rewrite", "Body Rewrite", "Map Local", "Script")
 EXCLUDED = re.compile(r"xiaohongshu|xhscdn|(?<![a-z])xhs|rednote\.com|小红书|xiaoantech|spotify\.crack", re.I)
@@ -48,6 +50,58 @@ def feng_source(path, revision):
         raise RuntimeError("No upstream Feng commit found")
     revision = commits[0]["sha"]
     return fetch(FENG_PREFIX + revision + "/" + FENG_PATH), revision
+
+
+def startup_source(path, revision):
+    if path:
+        if not revision:
+            raise ValueError("--startup-commit is required with --startup-source")
+        return Path(path).read_text(encoding="utf-8"), revision
+    url = "https://api.github.com/repos/" + STARTUP_REPO + "/commits?path=" + STARTUP_PATH + "&per_page=1"
+    commits = json.loads(fetch(url))
+    if not commits:
+        raise RuntimeError("No startup source commit found")
+    revision = commits[0]["sha"]
+    return fetch("https://raw.githubusercontent.com/" + STARTUP_REPO + "/" + revision + "/" + STARTUP_PATH), revision
+
+
+def add_wechat(module, source):
+    source_sections = sections(source)
+    selected = {}
+    for section, group, expected in (
+        ("URL Rewrite", "weixindaihuo", r"^https?:\/\/mp\.weixin\.qq\.com\/mp\/cps_product_info - reject-200"),
+        ("Body Rewrite", "WeChat", r"http-response ^https?:\/\/mp\.weixin\.qq\.com\/mp\/getappmsgad advertisement ddgksf2013"),
+    ):
+        lines, active = [], False
+        for line in source_sections.get(section, []):
+            if line.startswith("# ===== "):
+                active = line.strip() == "# ===== " + group + " ====="
+            elif active and line.strip() and not line.lstrip().startswith("#"):
+                lines.append(line.strip())
+        if lines != [expected]:
+            raise ValueError("WeChat upstream rule changed; review " + group)
+        if section == "URL Rewrite":
+            pattern = lines[0].removesuffix(" - reject-200")
+            selected["Map Local"] = pattern + ' data-type=text data="" status-code=200'
+        else:
+            selected[section] = lines[0]
+    parts = module.splitlines()
+    for section, line in selected.items():
+        header = "[" + section + "]"
+        if header not in parts:
+            raise ValueError("Missing output section " + section)
+        if line not in parts:
+            i = parts.index(header) + 1
+            parts[i:i] = ["# 微信公众号：Walvez / 墨鱼", line]
+    for i, line in enumerate(parts):
+        if line.startswith("hostname = %APPEND% "):
+            hosts = [x.strip() for x in line.split("%APPEND% ", 1)[1].split(",")]
+            if "mp.weixin.qq.com" not in hosts:
+                parts[i] += ", mp.weixin.qq.com"
+            break
+    else:
+        raise ValueError("MITM hostname list missing")
+    return "\n".join(parts) + "\n"
 
 
 def sections(text):
@@ -248,18 +302,22 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--feng-source")
     p.add_argument("--feng-commit")
+    p.add_argument("--startup-source")
+    p.add_argument("--startup-commit")
     p.add_argument("--wool-source")
     p.add_argument("--wool-commit")
     p.add_argument("--output", default="PersonalAds.sgmodule")
     p.add_argument("--manifest", default="sources.json")
     args = p.parse_args()
     feng, revision = feng_source(args.feng_source, args.feng_commit)
+    startup, startup_revision = startup_source(args.startup_source, args.startup_commit)
     src, wc = wool.read_upstream(args.wool_source)
     if args.wool_source and not args.wool_commit:
         raise ValueError("--wool-commit is required with --wool-source")
     wc = args.wool_commit or wc
     baseline, manifest = wool.build(src, wc)
     module = merge(feng, revision, baseline, src)
+    module = add_wechat(module, startup)
     module, assets = externalize_rules(module)
     asset_dir = Path(args.output).resolve().parent / "rules"
     asset_dir.mkdir(exist_ok=True)
@@ -269,6 +327,7 @@ def main():
                         "commit": revision, "sha256": hashlib.sha256(feng.encode()).hexdigest()}
     names = sorted(set(re.findall(r"\{\{\{([A-Za-z0-9_]+)\}\}\}", module)))
     manifest["module_arguments"] = {name: ARGUMENTS[name].strip('"') for name in names}
+    manifest["wechat_source"] = {"repository": "https://github.com/" + STARTUP_REPO, "path": STARTUP_PATH, "commit": startup_revision, "sha256": hashlib.sha256(startup.encode()).hexdigest(), "scope": "微信公众号广告接口和商品推广"}
     manifest["remote_rules"] = sorted(assets)
     manifest["module_sha256"] = hashlib.sha256(module.encode()).hexdigest()
     manifest["merge_notes"] = {"priority": "Feng before Wool", "scope": "截图可识别 App；保留共享及无法确定归属的规则", "protected": list(PROTECTIONS),

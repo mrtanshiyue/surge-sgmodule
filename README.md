@@ -24,6 +24,10 @@
 - B 站会员状态、账号菜单及首页标签重排等响应改写按上游保留；会员状态改写只影响客户端返回数据，不等于开通服务端权益。其他第三方脚本仍按上游更新，其实际行为可能随上游变化。
 - 远程脚本沿用上游地址；响应改写直接保留在模块内。远程规则文件由自动更新工作流一并生成和提交。
 
+## 微信公众号补充
+
+来自 [Walvez/surge-startup-ads](https://github.com/Walvez/surge-startup-ads) 的两条规则针对公众号文章广告接口及商品推广接口；启用需对 `mp.weixin.qq.com` 使用 MITM。它们不等于适用于所有微信小程序，也不能保证清除朋友圈广告。上游改变这两条规则时自动同步会停止，等待人工复核。
+
 ## Surge 6 设置
 
 模块要求 Core 6.11.0 或更新版本（`CORE_VERSION>=6011000`），包含 Rule、URL/Header/Body Rewrite、Map Local、Script 和 MITM。部分广告处理需要在 Surge 中开启 Rewrite、MITM、Scripting 并信任 MITM 证书。B 站 protobuf 脚本采用 JSON 对象参数，并默认保留创作者赞助片段。

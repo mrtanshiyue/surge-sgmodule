@@ -2,7 +2,7 @@ import json
 import re
 import unittest
 
-from merge_modules import externalize_rules, merge, script_key
+from merge_modules import add_wechat, externalize_rules, merge, script_key
 
 
 class MergeTests(unittest.TestCase):
@@ -61,6 +61,26 @@ hostname = %APPEND% absent.example, shared.example, api.zhihu.com
         self.assertNotIn("zhihu", result)
         self.assertIn("shared.example", result)
         self.assertIn("V5-京东", result)
+
+    def test_wechat_is_narrow_and_fails_if_upstream_changes(self):
+        module = "[URL Rewrite]\n[Body Rewrite]\n[Map Local]\n[MITM]\nhostname = %APPEND% existing.example\n"
+        source = r"""[URL Rewrite]
+# ===== weixindaihuo =====
+^https?:\/\/mp\.weixin\.qq\.com\/mp\/cps_product_info - reject-200
+# ===== other =====
+^https://other.example/ - reject
+[Body Rewrite]
+# ===== WeChat =====
+http-response ^https?:\/\/mp\.weixin\.qq\.com\/mp\/getappmsgad advertisement ddgksf2013
+"""
+        result = add_wechat(module, source)
+        self.assertIn("mp.weixin.qq.com", result)
+        self.assertIn("getappmsgad", result)
+        self.assertIn('cps_product_info data-type=text data="" status-code=200', result)
+        self.assertNotIn("other.example", result)
+        self.assertEqual(add_wechat(result, source), result)
+        with self.assertRaises(ValueError):
+            add_wechat(module, source.replace("advertisement ddgksf2013", "anything else"))
 
     def test_remote_rule_lists_preserve_order_and_options(self):
         rules = [f"DOMAIN,ad{i}.example,REJECT" for i in range(8)]

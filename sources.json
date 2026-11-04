@@ -126,12 +126,19 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "1d1e80d660966494f8f59f2af9e6455e3d9cecacdd62ab126ad865307a3104ad",
+  "module_sha256": "b7d6c1492d6431afa9731fd65bb21f949cfde7fb0bf9b57748d3395bc1807655",
   "feng": {
     "repository": "https://github.com/Feng-Feng1/surge",
     "path": "AdBlock-AllInOne.sgmodule",
     "commit": "1b0e85e5767ff8e12e41e2597b57290bbd754e5c",
     "sha256": "af46e1f380c4d5d8d41d26c8301ac83d945fb8eff7df1bb7bd730757960fe19e"
+  },
+  "wechat_source": {
+    "repository": "https://github.com/Walvez/surge-startup-ads",
+    "path": "dist/StartUpAds_Selected.sgmodule",
+    "commit": "98dd76ce86afe4a641ffbc482c5da004d7367200",
+    "sha256": "a1946a5688350408f1354b460f20e50e3583fe3c6d523d52be83df8e69e2a591",
+    "scope": "微信公众号广告接口和商品推广"
   },
   "remote_rules": [
     "personal-06e5c1a09d4fdf89705a.list",
