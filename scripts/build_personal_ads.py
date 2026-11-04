@@ -190,7 +190,7 @@ def build(source, commit):
 
     upstream_date = next((line.split("=", 1)[1].strip() for line in metadata if line.startswith("#!date=")), "unknown")
     output = [
-        "#!name=截图 App 去广告综合模块",
+        "#!name=才才的去广告集合",
         "#!desc=Surge iOS 6 综合去广告模块，按截图筛选可用上游分组。",
         "#!author=mrtanshiyue（上游规则：fmz200）",
         "#!category=个人模块",

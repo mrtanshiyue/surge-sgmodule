@@ -26,6 +26,7 @@ old = type=http-response, pattern=^https://api\.example/test, script-path=https:
 hostname = %APPEND% api.example
 '''
         result = merge(feng, "abcdef", fallback)
+        self.assertTrue(result.startswith("#!name=才才的去广告集合\n"))
         self.assertEqual(result.count("DOMAIN,ok.example,REJECT"), 1)
         self.assertIn("京东-upstream = type=http-response", result)
         self.assertNotIn("old = type=http-response", result)

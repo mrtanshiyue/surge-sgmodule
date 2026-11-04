@@ -192,7 +192,7 @@ def merge(feng, revision, wool_module, wool_source=None):
     unknown = set(src) - set(SECTIONS) - {"MITM"}
     if unknown:
         raise ValueError("Upstream has unsupported sections: " + ", ".join(sorted(unknown)))
-    output = ["#!name=截图 App 去广告综合模块", "#!desc=秋风奶思优先，合并截图 App 去广告规则。",
+    output = ["#!name=才才的去广告集合", "#!desc=秋风奶思优先，合并截图 App 去广告规则。",
               "#!author=上游：Feng-Feng1、fmz200；合并：mrtanshiyue", "#!system=ios",
               "#!homepage=https://github.com/mrtanshiyue/surge-sgmodule",
               "#!raw-url=" + wool.MODULE_URL, "#!requirement=CORE_VERSION>=6011000"]

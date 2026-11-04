@@ -126,7 +126,7 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "b7d6c1492d6431afa9731fd65bb21f949cfde7fb0bf9b57748d3395bc1807655",
+  "module_sha256": "8c193ab9f325ff3f1dfbb13c9d79370961ea2b99fc19267b78bb93750855aec1",
   "feng": {
     "repository": "https://github.com/Feng-Feng1/surge",
     "path": "AdBlock-AllInOne.sgmodule",

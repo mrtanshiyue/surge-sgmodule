@@ -1,4 +1,4 @@
-# 截图 App 去广告综合模块（Surge iOS 6）
+# 才才的去广告集合（Surge iOS 6）
 
 [安装模块](https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/PersonalAds.sgmodule) · [来源记录](sources.json) · [合并脚本](scripts/merge_modules.py)
 
