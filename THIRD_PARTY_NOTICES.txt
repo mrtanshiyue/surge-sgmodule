@@ -27,8 +27,9 @@ pinned to the selected commit; third-party script URLs may still track branches.
 
 Surge module argument defaults were checked against upstream split modules.
 Bilibili protobuf scripts receive JSON object parameters; sponsorBlock is false
-so creator-sponsorship segments remain intact. Membership-state scripts are
-excluded from the merged output.
+so creator-sponsorship segments remain intact. Two identified scripts with
+membership-state changes, Spotify.Crack.Dev.js and wyres.js, are excluded;
+the remaining upstream scripts have not all been audited for such behavior.
 
 Candidate domains recorded for review, but not enabled in the generated module,
 are derived from abclq/home-dns-adblock:
