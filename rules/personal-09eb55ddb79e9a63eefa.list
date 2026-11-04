@@ -1,0 +1,12 @@
+DOMAIN,et.tanx.com,extended-matching
+DOMAIN,sdk-config.tanx.com,extended-matching
+DOMAIN,tdid.m.qq.com,extended-matching
+DOMAIN,tpns.qq.com,extended-matching
+DOMAIN,access1.tpns.tencent.com,extended-matching
+DOMAIN,init.sms.mob.com,extended-matching
+DOMAIN,sdkapi.sms.mob.com,extended-matching
+DOMAIN,code.sms.mob.com,extended-matching
+DOMAIN,smartop-sdkapi.jiguang.cn,extended-matching
+DOMAIN,sdk.verification.jiguang.cn,extended-matching
+DOMAIN,client.app.coc.10086.cn,extended-matching
+DOMAIN,clientaccess.10086.cn,extended-matching

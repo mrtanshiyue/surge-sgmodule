@@ -126,13 +126,24 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "8d35c6ba82a698d055f01a5d06d55055f1ef8a1ce9913278d25c15be25338b2b",
+  "module_sha256": "deff1ee13914cc11c0b6cf05eb8defb89d02220bf0774ea509d630999937a529",
   "feng": {
     "repository": "https://github.com/Feng-Feng1/surge",
     "path": "AdBlock-AllInOne.sgmodule",
     "commit": "1b0e85e5767ff8e12e41e2597b57290bbd754e5c",
     "sha256": "af46e1f380c4d5d8d41d26c8301ac83d945fb8eff7df1bb7bd730757960fe19e"
   },
+  "remote_rules": [
+    "personal-06e5c1a09d4fdf89705a.list",
+    "personal-09eb55ddb79e9a63eefa.list",
+    "personal-3b052c69af51db0643b1.list",
+    "personal-473763c72577f0cb71f2.list",
+    "personal-7aee6a37b618f486eb42.list",
+    "personal-91af77528dcd28129492.list",
+    "personal-a6146bf486e4add39cf6.list",
+    "personal-b308336f937cfc366a37.list",
+    "personal-b425bd661808c2a18eb8.list"
+  ],
   "merge_notes": {
     "priority": "Feng before Wool",
     "scope": "截图可识别 App；保留共享及无法确定归属的规则",

@@ -28,6 +28,9 @@ ABSENT_APPS = re.compile(r"weibo|weibocdn|weibomingzi|viber|zhihu|smzdm|coolapk|
 # Unlabelled upstream rewrites are kept only for visible apps and shared ad SDKs.
 FENG_APP_PATTERNS = re.compile(r"(?:bilibili|biliapi|pinduoduo|yangkeduo|pddpic|taobao|alimama|alibaba|jdcloud|\.jd\.|meituan|amap|10jqka|walmartmobile|film\.mtop|ys7|lechange|music\.163|ximalaya|mina\.mi\.|xiaoaisound|mitvos|home\.mi\.|youku|wps|kingsoft-office|googlevideo|googleapis|youtube|byteurl|bytescm|bytedance|pangolin|toutiao|snssdk|amemv|qq\.com|gtimg|122\.gov|cloud\.189|api\.cloud\.189|mcd\.cn|96225\.com|neteasecloud|ad-sdk|adunion)", re.I)
 FENG_SCRIPT_APPS = re.compile(r"哔哩哔哩|bilibili|bili|喜马拉雅|京东|美团|小爱音箱|优酷|YouTube|阿里巴巴|淘宝|NetEaseCloudMusic|网易云|微信小程序个人中心|广告联盟|myBlockAds", re.I)
+REMOTE_RULES = "https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/rules/"
+# Keep only the clearly ad-specific body rewrites; UI and membership rewrites are excluded.
+BODY_ALLOW = (r"/x/v2/splash/", r"/football-portal/diff2/batch")
 ARGUMENTS = {**wool.ARGUMENT_DEFAULTS, "per_filter_video_thread": '"0"'}
 
 
@@ -96,6 +99,11 @@ def validate_simple_rule(line):
 
 def clean_line(section, line, revision):
     normalized = line.replace("\\", "")
+    if section == "Body Rewrite":
+        if not (BODY_ALLOW[0] in normalized or BODY_ALLOW[1] in normalized and '"ad"' in line):
+            return None
+    if section == "Script" and re.search(r"优酷底部tab|微信小程序个人中心", line.split("=", 1)[0], re.I):
+        return None
     if EXCLUDED.search(normalized):
         return None
     if section == "Rule" and "dig.bdurl.net" in normalized.lower():
@@ -199,6 +207,45 @@ def merge(feng, revision, wool_module, wool_source=None):
     return module
 
 
+def externalize_rules(module):
+    """Move contiguous identical-action domain rules to immutable, content-addressed lists."""
+    out, assets, pending, current = [], {}, [], None
+    in_rules = False
+
+    def flush():
+        nonlocal pending, current
+        if len(pending) < 8:
+            out.extend(pending)
+        else:
+            body = "\n".join(",".join((p := line.split(","))[:2] + p[3:]) for line in pending) + "\n"
+            digest = hashlib.sha256(body.encode()).hexdigest()[:20]
+            filename = f"personal-{digest}.list"
+            assets[filename] = body
+            out.append("RULE-SET," + REMOTE_RULES + filename + "," + current[0])
+        pending, current = [], None
+
+    for line in module.splitlines():
+        if line.startswith("[") and line.endswith("]"):
+            flush()
+            in_rules = line == "[Rule]"
+        parts = line.split(",")
+        eligible = (in_rules and len(parts) in (3, 4) and
+                    parts[0] in ("DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD") and
+                    parts[2] in ("REJECT", "DIRECT") and
+                    (len(parts) == 3 or parts[3] == "extended-matching"))
+        key = (parts[2], len(parts) == 4) if eligible else None
+        if key is None:
+            flush()
+            out.append(line)
+        else:
+            if current is not None and current != key:
+                flush()
+            current = key
+            pending.append(line)
+    flush()
+    return "\n".join(out) + "\n", assets
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--feng-source")
@@ -215,10 +262,16 @@ def main():
     wc = args.wool_commit or wc
     baseline, manifest = wool.build(src, wc)
     module = merge(feng, revision, baseline, src)
+    module, assets = externalize_rules(module)
+    asset_dir = Path(args.output).resolve().parent / "rules"
+    asset_dir.mkdir(exist_ok=True)
+    for name, content in assets.items():
+        (asset_dir / name).write_text(content, encoding="utf-8")
     manifest["feng"] = {"repository": "https://github.com/" + FENG_REPO, "path": FENG_PATH,
                         "commit": revision, "sha256": hashlib.sha256(feng.encode()).hexdigest()}
     names = sorted(set(re.findall(r"\{\{\{([A-Za-z0-9_]+)\}\}\}", module)))
     manifest["module_arguments"] = {name: ARGUMENTS[name].strip('"') for name in names}
+    manifest["remote_rules"] = sorted(assets)
     manifest["module_sha256"] = hashlib.sha256(module.encode()).hexdigest()
     manifest["merge_notes"] = {"priority": "Feng before Wool", "scope": "截图可识别 App；保留共享及无法确定归属的规则", "protected": list(PROTECTIONS),
                                "excluded": ["小红书专属规则", "小象助力车专属规则", "Spotify.Crack.Dev.js", "wyres.js（包含会员状态改写）"]}

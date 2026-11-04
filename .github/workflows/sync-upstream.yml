@@ -25,11 +25,11 @@ jobs:
         run: python3 scripts/merge_modules.py
       - name: Commit upstream changes
         run: |
-          if git diff --quiet -- PersonalAds.sgmodule sources.json; then
+          if git diff --quiet -- PersonalAds.sgmodule sources.json && [ -z "$(git ls-files --others --exclude-standard -- rules/)" ]; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add PersonalAds.sgmodule sources.json
+          git add PersonalAds.sgmodule sources.json rules/
           git commit -m "Sync merged ad module from upstream"
           git push origin HEAD:main

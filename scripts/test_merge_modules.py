@@ -2,7 +2,7 @@ import json
 import re
 import unittest
 
-from merge_modules import merge, script_key
+from merge_modules import externalize_rules, merge, script_key
 
 
 class MergeTests(unittest.TestCase):
@@ -61,6 +61,28 @@ hostname = %APPEND% absent.example, shared.example, api.zhihu.com
         self.assertNotIn("zhihu", result)
         self.assertIn("shared.example", result)
         self.assertIn("V5-京东", result)
+
+    def test_remote_rule_lists_preserve_order_and_options(self):
+        rules = [f"DOMAIN,ad{i}.example,REJECT" for i in range(8)]
+        extended = [f"DOMAIN,ext{i}.example,REJECT,extended-matching" for i in range(8)]
+        source = "[Rule]\n" + "\n".join(rules + extended) + "\nDOMAIN,after.example,DIRECT\n"
+        module, assets = externalize_rules(source)
+        refs = [line for line in module.splitlines() if line.startswith("RULE-SET,")]
+        self.assertEqual(len(refs), 2)
+        self.assertEqual(assets[refs[0].split(",")[1].rsplit("/", 1)[1]].splitlines(), [f"DOMAIN,ad{i}.example" for i in range(8)])
+        self.assertEqual(assets[refs[1].split(",")[1].rsplit("/", 1)[1]].splitlines(), [f"DOMAIN,ext{i}.example,extended-matching" for i in range(8)])
+        self.assertTrue(module.rstrip().endswith("DOMAIN,after.example,DIRECT"))
+
+    def test_excludes_membership_and_interface_body_rewrites(self):
+        source = r"""[Body Rewrite]
+http-response-jq ^https://app.bilibili.com/x/v2/account/mine '.data.vip_type = 2'
+http-response-jq ^https://app.bilibili.com/x/v2/splash/list '.data.show = []'
+[MITM]
+hostname = %APPEND% app.bilibili.com
+"""
+        output = merge(source, "abc", "")
+        self.assertNotIn("vip_type", output)
+        self.assertIn("/x/v2/splash/list", output)
 
     def test_script_identity_includes_type(self):
         self.assertNotEqual(script_key("a=type=http-response, pattern=^https://example.com"),
