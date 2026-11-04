@@ -126,7 +126,7 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "deff1ee13914cc11c0b6cf05eb8defb89d02220bf0774ea509d630999937a529",
+  "module_sha256": "1d1e80d660966494f8f59f2af9e6455e3d9cecacdd62ab126ad865307a3104ad",
   "feng": {
     "repository": "https://github.com/Feng-Feng1/surge",
     "path": "AdBlock-AllInOne.sgmodule",
@@ -158,8 +158,7 @@
     "excluded": [
       "小红书专属规则",
       "小象助力车专属规则",
-      "Spotify.Crack.Dev.js",
-      "wyres.js（包含会员状态改写）"
+      "Spotify.Crack.Dev.js"
     ]
   }
 }

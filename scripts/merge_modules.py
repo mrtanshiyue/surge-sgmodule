@@ -15,7 +15,7 @@ FENG_REPO = "Feng-Feng1/surge"
 FENG_PATH = "AdBlock-AllInOne.sgmodule"
 FENG_PREFIX = "https://raw.githubusercontent.com/Feng-Feng1/surge/"
 SECTIONS = ("Rule", "Header Rewrite", "URL Rewrite", "Body Rewrite", "Map Local", "Script")
-EXCLUDED = re.compile(r"xiaohongshu|xhscdn|(?<![a-z])xhs|rednote\.com|小红书|xiaoantech|spotify\.crack|wyres\.js", re.I)
+EXCLUDED = re.compile(r"xiaohongshu|xhscdn|(?<![a-z])xhs|rednote\.com|小红书|xiaoantech|spotify\.crack", re.I)
 PROTECTIONS = ("DOMAIN,dig.bdurl.net", "DOMAIN-SUFFIX,xiaohongshu.com",
                "DOMAIN-SUFFIX,xhscdn.com", "DOMAIN-SUFFIX,xhslink.com",
                "DOMAIN-SUFFIX,rednote.com", "DOMAIN-WILDCARD,v*-reading-ad.qznovelvod.com")
@@ -29,8 +29,6 @@ ABSENT_APPS = re.compile(r"weibo|weibocdn|weibomingzi|viber|zhihu|smzdm|coolapk|
 FENG_APP_PATTERNS = re.compile(r"(?:bilibili|biliapi|pinduoduo|yangkeduo|pddpic|taobao|alimama|alibaba|jdcloud|\.jd\.|meituan|amap|10jqka|walmartmobile|film\.mtop|ys7|lechange|music\.163|ximalaya|mina\.mi\.|xiaoaisound|mitvos|home\.mi\.|youku|wps|kingsoft-office|googlevideo|googleapis|youtube|byteurl|bytescm|bytedance|pangolin|toutiao|snssdk|amemv|qq\.com|gtimg|122\.gov|cloud\.189|api\.cloud\.189|mcd\.cn|96225\.com|neteasecloud|ad-sdk|adunion)", re.I)
 FENG_SCRIPT_APPS = re.compile(r"哔哩哔哩|bilibili|bili|喜马拉雅|京东|美团|小爱音箱|优酷|YouTube|阿里巴巴|淘宝|NetEaseCloudMusic|网易云|微信小程序个人中心|广告联盟|myBlockAds", re.I)
 REMOTE_RULES = "https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/rules/"
-# Keep only the clearly ad-specific body rewrites; UI and membership rewrites are excluded.
-BODY_ALLOW = (r"/x/v2/splash/", r"/football-portal/diff2/batch")
 ARGUMENTS = {**wool.ARGUMENT_DEFAULTS, "per_filter_video_thread": '"0"'}
 
 
@@ -99,11 +97,6 @@ def validate_simple_rule(line):
 
 def clean_line(section, line, revision):
     normalized = line.replace("\\", "")
-    if section == "Body Rewrite":
-        if not (BODY_ALLOW[0] in normalized or BODY_ALLOW[1] in normalized and '"ad"' in line):
-            return None
-    if section == "Script" and re.search(r"优酷底部tab|微信小程序个人中心", line.split("=", 1)[0], re.I):
-        return None
     if EXCLUDED.search(normalized):
         return None
     if section == "Rule" and "dig.bdurl.net" in normalized.lower():
@@ -112,6 +105,11 @@ def clean_line(section, line, revision):
         line = guard_ruleset(line)
     if section == "Rule":
         validate_simple_rule(line)
+    # wyres.js expects named options; its upstream home placeholders are unset.
+    if "wyres.js" in line and "link\\/home\\/framework\\/tab" in line:
+        line = line.replace('argument="[{{{MY}}},{{{DT}}},{{{FX}}}]"', r'argument="{\"MY\":true,\"DT\":false,\"FX\":true}"')
+    if "wyres.js" in line and "{PRGG}" in line:
+        line = re.sub(r',\s*argument="\[\{PRGG\}[^"\n]*\]"', '', line)
     # The upstream Bilibili scripts parse an object, not a positional array.
     if "bilibili.protobuf.request.js" in line and 'argument=[{{{logLevel}}}]' in line:
         line = line.replace('argument=[{{{logLevel}}}]', r'argument="{\"logLevel\":\"error\"}"')
@@ -274,7 +272,7 @@ def main():
     manifest["remote_rules"] = sorted(assets)
     manifest["module_sha256"] = hashlib.sha256(module.encode()).hexdigest()
     manifest["merge_notes"] = {"priority": "Feng before Wool", "scope": "截图可识别 App；保留共享及无法确定归属的规则", "protected": list(PROTECTIONS),
-                               "excluded": ["小红书专属规则", "小象助力车专属规则", "Spotify.Crack.Dev.js", "wyres.js（包含会员状态改写）"]}
+                               "excluded": ["小红书专属规则", "小象助力车专属规则", "Spotify.Crack.Dev.js"]}
     Path(args.output).write_text(module, encoding="utf-8")
     Path(args.manifest).write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Built", args.output, "from Feng", revision, "and Wool", wc)

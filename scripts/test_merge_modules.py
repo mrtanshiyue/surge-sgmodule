@@ -73,7 +73,7 @@ hostname = %APPEND% absent.example, shared.example, api.zhihu.com
         self.assertEqual(assets[refs[1].split(",")[1].rsplit("/", 1)[1]].splitlines(), [f"DOMAIN,ext{i}.example,extended-matching" for i in range(8)])
         self.assertTrue(module.rstrip().endswith("DOMAIN,after.example,DIRECT"))
 
-    def test_excludes_membership_and_interface_body_rewrites(self):
+    def test_keeps_membership_and_interface_body_rewrites(self):
         source = r"""[Body Rewrite]
 http-response-jq ^https://app.bilibili.com/x/v2/account/mine '.data.vip_type = 2'
 http-response-jq ^https://app.bilibili.com/x/v2/splash/list '.data.show = []'
@@ -81,8 +81,16 @@ http-response-jq ^https://app.bilibili.com/x/v2/splash/list '.data.show = []'
 hostname = %APPEND% app.bilibili.com
 """
         output = merge(source, "abc", "")
-        self.assertNotIn("vip_type", output)
+        self.assertIn("vip_type", output)
         self.assertIn("/x/v2/splash/list", output)
+
+    def test_netease_upstream_arguments(self):
+        from merge_modules import clean_line
+        tab = r'NetEaseCloudMusic_tab=type=http-response,pattern=link\/home\/framework\/tab,script-path=https://example.com/wyres.js,argument="[{{{MY}}},{{{DT}}},{{{FX}}}]"'
+        result = clean_line("Script", tab, "abc")
+        self.assertEqual(json.loads(json.loads(result.split("argument=", 1)[1])), {"MY": True, "DT": False, "FX": True})
+        home = 'x=type=http-response,script-path=https://example.com/wyres.js,argument="[{PRGG},{PRRK}]"'
+        self.assertNotIn("argument=", clean_line("Script", home, "abc"))
 
     def test_script_identity_includes_type(self):
         self.assertNotEqual(script_key("a=type=http-response, pattern=^https://example.com"),
@@ -98,14 +106,14 @@ hostname = %APPEND% app.bilibili.com
 
     def test_membership_scripts_and_bilibili_arguments(self):
         source = r'''[Script]
-netease=type=http-response,pattern=^https://music.example/,script-path=https://example.com/wyres.js
+NetEaseCloudMusic=type=http-response,pattern=^https://music.example/,script-path=https://example.com/wyres.js
 spotify=type=http-response,pattern=^https://spotify.example/,script-path=https://example.com/Spotify.Crack.Dev.js
 bili=type=http-request,pattern=^https://app.bilibili.com/,script-path=https://example.com/bilibili.protobuf.request.js,argument=[{{{logLevel}}}]
 [MITM]
 hostname = %APPEND% app.bilibili.com
 '''
         output = merge(source, "abc123", "")
-        self.assertNotIn("wyres.js", output)
+        self.assertIn("wyres.js", output)
         self.assertNotIn("Spotify.Crack", output)
         line = next(line for line in output.splitlines() if line.startswith("bili="))
         argument = line.split("argument=", 1)[1]
