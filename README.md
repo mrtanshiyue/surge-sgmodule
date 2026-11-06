@@ -10,7 +10,7 @@
 
 自动筛选依赖上游分组与已识别的 App 标识，未标注的域名拦截规则和外部广告规则集仍可能包含其他 App 的域名。共享外部规则集不会因为例外名单出现其他 App 名称而整组丢弃；用户排除项另加在外层，并覆盖域名、SNI 与 Host 的扩展匹配。
 
-GitHub Actions 每天检查上游。所有远程脚本均固定到 [script-lock.json](script-lock.json) 中已复核的提交和 SHA-256；每次构建分别检查脚本文件的最新上游内容，变化时停止发布，等待人工复核锁定版本。来源、脚本依赖和输出 SHA-256 记录于 sources.json。未知格式、参数或脚本同样会使构建失败并保留上次版本。
+GitHub Actions 每天检查上游，校验三个 Feng 外部规则文件的实际内容与其文件名中的 SHA-256，并核对它们的顺序、策略及例外条件。所有远程脚本均固定到 [script-lock.json](script-lock.json) 中已复核的提交和 SHA-256；每次构建分别检查脚本文件的最新上游内容，变化时停止发布，等待人工复核锁定版本。来源、脚本依赖和输出 SHA-256 记录于 sources.json。未知格式、参数或脚本同样会使构建失败并保留上次版本。
 
 ## 用户指定的保护范围
 
@@ -27,14 +27,22 @@ GitHub Actions 每天检查上游。所有远程脚本均固定到 [script-lock.
 - 远程脚本沿用上游项目的固定提交地址；响应改写直接保留在模块内。远程规则文件由自动更新工作流一并生成和提交。
 - MITM 主机同时依据保留的 HTTP 规则推导；共享 SDK 不会因被其他 App 的注释引用而丢失其必要主机。新增解密仍可能受 App 证书校验影响；共享 SDK 的奖励广告也可能被清理。
 
+## 已复核的规则修正
+
+[本地修正](scripts/reviewed_rules.py) 随模块重建，来源仍记录在 sources.json。
+
+- 拼多多运单红包商品接口仅清空已识别位置的商品列表数组，保留相邻的物流字段。喜马拉雅混排接口按子项移除 SceneListenCard，并保留普通卡片的顺序和数量。
+- 美团外卖 v7 的 loadInfo 使用上游响应脚本，只清理开屏广告字段。京东脚本按完整的 functionId 值匹配。网易云和 Google API 的模拟响应只匹配对应主机。
+- 移除了补充来源里按 `volc` 四个字母拒绝流量的宽泛规则。这个词也出现在非广告服务的域名里，单独依赖这条规则的广告请求可能放行。
+
 ## 构建验证
 
-需要 Python 3.9+、Node.js 22+ 和 jq。工作流先执行生成器回归测试，再抓取真实上游重建；发布前检查 jq 与脚本语法、Map Local JSON、MITM 依赖、规则集数量及保护条件、脚本锁和赞助片段设置，最后检查实际生成文件。push 和 pull request 也执行检查，只有定时任务或手动任务会自动提交更新。
+需要 Python 3.9+、Node.js 22+ 和 jq。每次提交与 PR 都先测试仓库内实际订阅，再从来源记录重建并逐字节对照模块、清单及生成的规则文件。定时或手动同步还会重建最新候选版本，比较脚本默认分支的内容。只有通过验证的主分支候选文件才会交给拥有写权限的发布任务。
 
 ```sh
-python3 -m unittest discover -s scripts -p 'test_merge_modules.py' -v
-python3 scripts/merge_modules.py
-python3 -m unittest discover -s scripts -p 'test_built_module.py' -v
+python3 -m unittest discover -s scripts -p 'test_*.py' -v
+python3 scripts/merge_modules.py --from-manifest sources.json
+git diff --exit-code -- PersonalAds.sgmodule sources.json rules/
 ```
 
 Mac 上另外使用 Surge 的 `--check` 检查转换后的独立临时配置；它不等于 iPhone 真机功能验证。

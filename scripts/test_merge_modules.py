@@ -4,10 +4,55 @@ import re
 import shlex
 import unittest
 
-from merge_modules import add_wechat, externalize_rules, merge, pin_scripts, required_hosts, script_key, validate_module
+from merge_modules import (FENG_PREFIX, REMOTE_RULES, add_wechat, deduplicate_scripts, externalize_rules,
+                           guard_ruleset, merge, pin_scripts, required_hosts, script_key, validate_module, verify_external_lists)
 
 
 class MergeTests(unittest.TestCase):
+    def test_formatted_script_paths_cannot_bypass_review(self):
+        pre = '[Rule]\n# script-path=https://example.org/unrelated\n[Script]\n'
+        line = 'a= type=http-response, pattern=^https://a.test/, argument="other, script-path=decoy", SCRIPT-PATH = "https://raw.githubusercontent.com/org/repo/main/a.js"'
+        with self.assertRaisesRegex(ValueError, 'Unreviewed'):
+            pin_scripts(pre + line, [], lambda _: '')
+        entry = {'repository': 'org/repo', 'path': 'a.js', 'commit': 'a'*40, 'sha256': hashlib.sha256(b'').hexdigest()}
+        output, records = pin_scripts(pre + line, [entry], lambda _: '', check_latest=False)
+        self.assertTrue(output.startswith(pre))
+        self.assertIn('argument="other, script-path=decoy"', output)
+        self.assertIn('/' + 'a'*40 + '/a.js', output)
+        self.assertEqual(records, [entry])
+        for invalid in (line + ',script-path=local.js', line.split(', SCRIPT-PATH')[0]):
+            with self.assertRaises(ValueError):
+                pin_scripts(pre + invalid, [entry], lambda _: '')
+
+    def test_dedup_preserves_intervening_http_handler(self):
+        def script(name, scheme, path, action):
+            return f'{name}=type=http-response,pattern=^{scheme}://api\\.example/{path},script-path={action}'
+        a = script('first', 'https', 'feed', 'a')
+        b = script('special', 'http', 'feed/story', 'b')
+        c = script('fallback', 'https?', 'feed', 'a')
+        self.assertEqual(deduplicate_scripts([a, b, c]), [a, b, c])
+
+    def test_unavailable_or_substituted_external_list_fails(self):
+        body = 'DOMAIN,ads.example\n'
+        sha = hashlib.sha256(body.encode()).hexdigest()
+        line = f'AND,((RULE-SET,{FENG_PREFIX}main/Resources/AdBlock/{sha}.list),(DOMAIN,ads.example)),REJECT'
+        src, output = '[Rule]\n' + line, '[Rule]\n' + guard_ruleset(line).replace('/main/', '/abc/')
+        self.assertEqual(verify_external_lists(src, 'abc', output, lambda _: body)[0]['sha256'], sha)
+        with self.assertRaisesRegex(ValueError, 'checksum'):
+            verify_external_lists(src, 'abc', output, lambda _: '<html>error</html>')
+        with self.assertRaisesRegex(ValueError, 'differs'):
+            verify_external_lists(src, 'abc', output.replace(',REJECT', ',DIRECT'), lambda _: body)
+
+    def test_generated_direct_list_may_allow_a_protected_host(self):
+        body = 'DOMAIN,dig.bdurl.net\n'
+        name = 'personal-' + hashlib.sha256(body.encode()).hexdigest()[:20] + '.list'
+        module = '[Map Local]\n[MITM]\nhostname = %APPEND% api.example\n[Rule]\nRULE-SET,' + REMOTE_RULES + name + ',DIRECT\n'
+        validate_module(module, {name: body})
+        with self.assertRaisesRegex(ValueError, 'protected host'):
+            validate_module(module.replace(',DIRECT', ',REJECT'), {name: body})
+        with self.assertRaisesRegex(ValueError, 'Missing generated'):
+            validate_module(module, {})
+
     def test_host_patterns_keep_slashes_inside_character_classes(self):
         content = {'Map Local': [r'^https?:\/\/[^\/]+\.amemv\.com\/api\/ad data-type=text data=" "']}
         self.assertEqual(required_hosts(content, ['api.amemv.com']), {'api.amemv.com'})
@@ -24,14 +69,14 @@ class MergeTests(unittest.TestCase):
         code = 'const ok = true;\n'
         entry = {'repository': 'owner/repo', 'path': 'test.js', 'commit': 'a' * 40,
                  'sha256': hashlib.sha256(code.encode()).hexdigest()}
-        line = '京东=type=http-response,pattern=^https://jd.com/,script-path=https://raw.githubusercontent.com/owner/repo/main/test.js'
+        line = '[Script]\n京东=type=http-response,pattern=^https://jd.com/,script-path=https://raw.githubusercontent.com/owner/repo/main/test.js'
         def fetch(url):
-            return json.dumps([{'sha': 'b' * 40}]) if 'api.github.com' in url else code
+            return code
         output, records = pin_scripts(line, [entry], fetch)
         self.assertIn('/' + 'a' * 40 + '/test.js', output)
         self.assertEqual(records, [entry])
         def changed(url):
-            return 'const changed = true;' if '/' + 'b' * 40 + '/' in url else fetch(url)
+            return 'const changed = true;' if '/HEAD/' in url else fetch(url)
         with self.assertRaisesRegex(ValueError, 'upstream changed'):
             pin_scripts(line, [entry], changed)
         with self.assertRaisesRegex(ValueError, 'Unreviewed'):

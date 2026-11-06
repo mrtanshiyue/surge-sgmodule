@@ -8,13 +8,12 @@ import json
 import re
 import shlex
 import subprocess
-import tempfile
-import urllib.parse
 import urllib.error
 import urllib.request
 from pathlib import Path
 
 import build_personal_ads as wool
+from reviewed_rules import narrow_rule
 
 FENG_REPO = "Feng-Feng1/surge"
 FENG_PATH = "AdBlock-AllInOne.sgmodule"
@@ -160,6 +159,9 @@ def validate_simple_rule(line):
 
 
 def clean_line(section, line, revision):
+    line = narrow_rule(section, line)
+    if line is None:
+        return None
     # Names in a ruleset's exceptions describe what it allows, not the set's scope.
     if section == "Rule" and "RULE-SET," in line:
         return guard_ruleset(line).replace(FENG_PREFIX + "main/", FENG_PREFIX + revision + "/")
@@ -248,7 +250,26 @@ def deduplicate_scripts(lines):
         key = re.sub(r'\bpattern\s*=\s*.*?(?=,\s*[\w-]+\s*=|$)', lambda _: "pattern=" + canonical, line.split("=", 1)[1].strip())
         if key in seen:
             if pattern == canonical:
-                output[seen[key]] = line
+                first = seen[key]
+                # Moving an HTTP-capable declaration earlier can steal HTTP requests.
+                hosts = http_host_patterns({'Script': [line]})
+                literal = ''
+                if len(hosts) == 1 and re.fullmatch(r'[\w-]+(?:\\\.[\w-]+)*', hosts[0]):
+                    literal = hosts[0].replace(r'\.', '.')
+                kind = script_key(line)[0]
+                for middle in output[first + 1:]:
+                    if middle.startswith('#') or script_key(middle)[0] != kind:
+                        continue
+                    middle_pattern = script_key(middle)[1]
+                    if middle_pattern.startswith('^https:'):
+                        continue
+                    possible = http_host_patterns({'Script': [middle]})
+                    if (not re.fullmatch(r'[\w.-]+', literal) or not middle_pattern.startswith('^')
+                            or not possible or any(re.fullmatch(p, literal, re.I) for p in possible)):
+                        output.append(line)
+                        break
+                else:
+                    output[first] = line
         else:
             seen[key] = len(output)
             output.append(line)
@@ -300,7 +321,7 @@ def merge(feng, revision, wool_module, wool_source=None):
                 line = clean_line(section, line, revision)
                 if line is None:
                     continue
-                identity = (section, script_key(line) if section == "Script" else re.sub(r"\s+", "", line))
+                identity = (section, script_key(line) if section == "Script" else line)
                 if identity in seen:
                     continue
                 seen.add(identity)
@@ -320,7 +341,8 @@ def merge(feng, revision, wool_module, wool_source=None):
     missing = set(arguments) - ARGUMENTS.keys()
     if missing:
         raise ValueError("Unknown upstream parameters: " + ", ".join(sorted(missing)))
-    output.append("#!arguments=" + ",".join(k + ":" + ARGUMENTS[k] for k in arguments))
+    if arguments:
+        output.append("#!arguments=" + ",".join(k + ":" + ARGUMENTS[k] for k in arguments))
     for section, lines in section_lines.items():
         output.extend(["", "[" + section + "]"] + lines)
     hosts = []
@@ -386,36 +408,91 @@ def externalize_rules(module):
     return "\n".join(out) + "\n", assets
 
 
-def pin_scripts(module, lock, fetcher=None):
-    fetcher = fetcher or fetch
-    approved = {(entry["repository"], entry["path"]): entry for entry in lock}
+def script_path_field(line):
+    """Find the single path parameter without interpreting commas inside quotes."""
+    start = line.index('=') + 1
+    cursor, field = start, None
+    for token in re.finditer(r'(?:[^,"]|"(?:\\.|[^"\\])*")+|,', line[start:]):
+        if start + token.start() != cursor:
+            raise ValueError('Malformed quoted script parameter')
+        cursor = start + token.end()
+        key, eq, value = token.group().partition('=')
+        if eq and key.strip().lower() == 'script-path':
+            if field is not None:
+                raise ValueError('Duplicate script-path')
+            value = value.strip()
+            url = json.loads(value) if value.startswith('"') else value
+            field = (url, start + token.start(), cursor)
+    if cursor != len(line) or field is None:
+        raise ValueError('Missing or malformed script-path')
+    return field
+
+
+def check_script(entry, fetcher, check_latest):
+    repo, path, commit = entry['repository'], entry['path'], entry['commit']
+    if not re.fullmatch(r'[0-9a-f]{40}', commit):
+        raise ValueError('Script dependency needs an immutable commit: ' + path)
+    prefix = 'https://raw.githubusercontent.com/' + repo + '/'
+    pinned = prefix + commit + '/' + path
+    code = fetcher(pinned)
+    if hashlib.sha256(code.encode()).hexdigest() != entry['sha256']:
+        raise ValueError('Approved script checksum mismatch: ' + pinned)
+    if check_latest:
+        latest = prefix + 'HEAD/' + path
+        if hashlib.sha256(fetcher(latest).encode()).hexdigest() != entry['sha256']:
+            raise ValueError('Script upstream changed; review script-lock.json: ' + latest)
+    subprocess.run(['node', '--check', '-'], input=code, check=True, text=True)
+    return pinned
+
+
+def pin_scripts(module, lock, fetcher=None, check_latest=True):
+    approved = {(e['repository'], e['path']): e for e in lock}
+    if len(approved) != len(lock):
+        raise ValueError('Duplicate dependency in script-lock.json')
+    verified = {}
+    lines = module.splitlines()
+    in_scripts = False
+    for i, line in enumerate(lines):
+        if line.startswith('[') and line.endswith(']'):
+            in_scripts = line == '[Script]'
+            continue
+        if not in_scripts or not line.strip() or line.startswith(('#', ';', '//')):
+            continue
+        url, start, end = script_path_field(line)
+        match = re.fullmatch(r'https://raw\.githubusercontent\.com/([^/]+/[^/]+)/[^/]+/(.+)', url)
+        if not match or match.groups() not in approved:
+            raise ValueError('Unreviewed script dependency: ' + url)
+        key = match.groups()
+        if key not in verified:
+            verified[key] = check_script(approved[key], fetcher or fetch, check_latest)
+        leading = line[start:end]
+        leading = leading[:len(leading) - len(leading.lstrip())]
+        lines[i] = line[:start] + leading + 'script-path=' + verified[key] + line[end:]
+    return '\n'.join(lines) + '\n', [approved[key] for key in sorted(verified)]
+
+
+def verify_external_lists(feng, revision, generated, fetcher=None):
+    """Verify each original ruleset, its order, exceptions, policy and pinned bytes."""
+    upstream = [l.strip() for l in sections(feng)['Rule'] if l.strip() and not l.lstrip().startswith(('#', ';', '//')) and 'RULE-SET,' in l]
+    expected = [guard_ruleset(l).replace(FENG_PREFIX + 'main/', FENG_PREFIX + revision + '/') for l in upstream]
+    actual = [l for l in sections(generated)['Rule'] if 'RULE-SET,' in l and not l.startswith('RULE-SET,' + REMOTE_RULES)]
+    if actual != expected:
+        raise ValueError('Feng ruleset, order or policy differs from upstream')
     records = []
-    with tempfile.TemporaryDirectory() as temporary:
-        for url in sorted(set(re.findall(r'script-path=([^,\s]+)', module))):
-            match = re.fullmatch(r'https://raw\.githubusercontent\.com/([^/]+/[^/]+)/[^/]+/(.+)', url)
-            if not match or match.groups() not in approved:
-                raise ValueError("Unreviewed script dependency: " + url)
-            entry = approved[match.groups()]
-            if not re.fullmatch(r'[0-9a-f]{40}', entry['commit']):
-                raise ValueError("Script dependency needs an immutable commit: " + url)
-            prefix = 'https://raw.githubusercontent.com/' + entry['repository'] + '/'
-            pinned = prefix + entry['commit'] + '/' + entry['path']
-            code = fetcher(pinned)
-            if hashlib.sha256(code.encode()).hexdigest() != entry['sha256']:
-                raise ValueError("Approved script checksum mismatch: " + pinned)
-            commits = json.loads(fetcher('https://api.github.com/repos/' + entry['repository'] + '/commits?path=' + urllib.parse.quote(entry['path'], safe='') + '&per_page=1'))
-            if not commits:
-                raise ValueError("Script upstream has no commits: " + url)
-            latest = prefix + commits[0]['sha'] + '/' + entry['path']
-            current = code if latest == pinned else fetcher(latest)
-            if hashlib.sha256(current.encode()).hexdigest() != entry['sha256']:
-                raise ValueError("Script upstream changed; review script-lock.json: " + latest)
-            local = Path(temporary) / ('script-' + str(len(records)) + '.js')
-            local.write_text(code, encoding='utf-8')
-            subprocess.run(['node', '--check', str(local)], check=True, capture_output=True, text=True)
-            module = module.replace(url, pinned)
-            records.append(entry)
-    return module, records
+    for line in expected:
+        urls = re.findall(r'RULE-SET,([^,)]+)', line)
+        if len(urls) != 1:
+            raise ValueError('Review nested Feng ruleset references')
+        url = urls[0]
+        prefix = FENG_PREFIX + revision + '/Resources/AdBlock/'
+        digest = url.removeprefix(prefix).removesuffix('.list')
+        if not re.fullmatch('[0-9a-f]{64}', digest) or url != prefix + digest + '.list':
+            raise ValueError('Review external ruleset URL: ' + url)
+        body = (fetcher or fetch)(url)
+        if hashlib.sha256(body.encode()).hexdigest() != digest:
+            raise ValueError('External rule file checksum mismatch: ' + url)
+        records.append({'url': url, 'sha256': digest})
+    return records
 
 
 def validate_module(module, assets):
@@ -435,7 +512,7 @@ def validate_module(module, assets):
             json.loads(body)
     for line in content.get('Body Rewrite', []):
         if line.startswith(('http-request-jq ', 'http-response-jq ')):
-            expression = shlex.split(line)[2]
+            _, _, expression = shlex.split(line)
             subprocess.run(['jq', '-n', 'if false then (' + expression + ') else null end'], check=True, capture_output=True, text=True)
     airborne = 'https://grpc.biliapi.net/bilibili.community.service.dm.v1.DM/DmSegMobile'
     for line in content.get('Script', []):
@@ -448,21 +525,39 @@ def validate_module(module, assets):
             arg = re.search(r'argument=("(?:\\.|[^"\\])*")', line)
             if not arg or json.loads(json.loads(arg.group(1))).get('sponsorBlock') is not False:
                 raise ValueError('Bilibili sponsorBlock must be false')
+    referenced = set()
     for line in content['Rule']:
         if not line.strip() or line.startswith('#'):
             continue
-        if 'RULE-SET,' in line and REMOTE_RULES not in line:
+        if line.startswith('RULE-SET,' + REMOTE_RULES):
+            _, url, policy, *_ = line.split(',')
+            name = url.removeprefix(REMOTE_RULES)
+            if name not in assets:
+                raise ValueError('Missing generated rule file: ' + name)
+            referenced.add(name)
+            for entry in assets[name].splitlines():
+                parts = entry.split(',')
+                validate_simple_rule(','.join(parts[:2] + [policy] + parts[2:]))
+        elif 'RULE-SET,' in line:
             for guard in PROTECTIONS:
                 if '(NOT,((' + guard + ',extended-matching)))' not in line:
                     raise ValueError('External ruleset is missing protection: ' + guard)
         else:
             validate_simple_rule(line)
+    if referenced != set(assets):
+        raise ValueError('Rule file manifest differs from module references')
     for name, body in assets.items():
         if name != 'personal-' + hashlib.sha256(body.encode()).hexdigest()[:20] + '.list':
             raise ValueError('Rule file checksum mismatch: ' + name)
-        for line in body.splitlines():
-            parts = line.split(',')
-            validate_simple_rule(','.join(parts[:2] + ['REJECT'] + parts[2:]))
+
+
+def recorded_source(repo, path, commit, digest):
+    if not re.fullmatch('[0-9a-f]{40}', commit):
+        raise ValueError('Invalid recorded commit for ' + path)
+    body = fetch(f'https://raw.githubusercontent.com/{repo}/{commit}/{path}')
+    if hashlib.sha256(body.encode()).hexdigest() != digest:
+        raise ValueError('Recorded source checksum mismatch: ' + path)
+    return body, commit
 
 
 def main():
@@ -475,23 +570,30 @@ def main():
     p.add_argument("--wool-commit")
     p.add_argument("--output", default="PersonalAds.sgmodule")
     p.add_argument("--manifest", default="sources.json")
+    p.add_argument("--from-manifest", help="Rebuild the exact reviewed inputs recorded in this manifest")
     args = p.parse_args()
-    feng, revision = feng_source(args.feng_source, args.feng_commit)
-    startup, startup_revision = startup_source(args.startup_source, args.startup_commit)
-    src, wc = wool.read_upstream(args.wool_source)
-    if args.wool_source and not args.wool_commit:
-        raise ValueError("--wool-commit is required with --wool-source")
-    wc = args.wool_commit or wc
+    if args.from_manifest:
+        if any((args.feng_source, args.feng_commit, args.startup_source, args.startup_commit, args.wool_source, args.wool_commit)):
+            p.error('--from-manifest cannot be combined with source overrides')
+        recorded = json.loads(Path(args.from_manifest).read_text(encoding='utf-8'))
+        feng, revision = recorded_source(FENG_REPO, FENG_PATH, recorded['feng']['commit'], recorded['feng']['sha256'])
+        startup, startup_revision = recorded_source(STARTUP_REPO, STARTUP_PATH, recorded['wechat_source']['commit'], recorded['wechat_source']['sha256'])
+        src, wc = recorded_source(wool.UPSTREAM_REPO, wool.UPSTREAM_PATH, recorded['upstream_commit'], recorded['upstream_sha256'])
+    else:
+        feng, revision = feng_source(args.feng_source, args.feng_commit)
+        startup, startup_revision = startup_source(args.startup_source, args.startup_commit)
+        src, wc = wool.read_upstream(args.wool_source)
+        if args.wool_source and not args.wool_commit:
+            raise ValueError("--wool-commit is required with --wool-source")
+        wc = args.wool_commit or wc
     baseline, manifest = wool.build(src, wc)
     module = merge(feng, revision, baseline, src)
     module = add_wechat(module, startup)
     lock = json.loads((Path(__file__).resolve().parent.parent / 'script-lock.json').read_text(encoding='utf-8'))
-    module, dependencies = pin_scripts(module, lock)
+    module, dependencies = pin_scripts(module, lock, check_latest=not args.from_manifest)
     module, assets = externalize_rules(module)
     validate_module(module, assets)
-    expected = sum('RULE-SET,' in line for line in sections(feng).get('Rule', []))
-    if module.count('AND,((AND,((RULE-SET,') != expected:
-        raise ValueError('An upstream external ruleset was lost during merging')
+    manifest['feng_rule_files'] = verify_external_lists(feng, revision, module)
     asset_dir = Path(args.output).resolve().parent / "rules"
     asset_dir.mkdir(exist_ok=True)
     for name, content in assets.items():

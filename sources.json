@@ -126,7 +126,21 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "f435047c5ae552a8230f2e154566cb538086426bfd36dc0dc52a639be19a879a",
+  "module_sha256": "e53f01077900b0e76fff2852113b906a29e8668e3b7fb4b64eeec1a709fd0843",
+  "feng_rule_files": [
+    {
+      "url": "https://raw.githubusercontent.com/Feng-Feng1/surge/1b0e85e5767ff8e12e41e2597b57290bbd754e5c/Resources/AdBlock/862c6562faa526e1334caa261ca8936387031c348796ff03f3c189b7d1ca5259.list",
+      "sha256": "862c6562faa526e1334caa261ca8936387031c348796ff03f3c189b7d1ca5259"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Feng-Feng1/surge/1b0e85e5767ff8e12e41e2597b57290bbd754e5c/Resources/AdBlock/25a786b7ab9d57ec9a647b998df8b034cb4e3dee35360312d8b2cf6934abf5c8.list",
+      "sha256": "25a786b7ab9d57ec9a647b998df8b034cb4e3dee35360312d8b2cf6934abf5c8"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Feng-Feng1/surge/1b0e85e5767ff8e12e41e2597b57290bbd754e5c/Resources/AdBlock/f9282df383fafe617846bed8e3af70b3e9c4a2597826dd035045fd638acdcdd5.list",
+      "sha256": "f9282df383fafe617846bed8e3af70b3e9c4a2597826dd035045fd638acdcdd5"
+    }
+  ],
   "feng": {
     "repository": "https://github.com/Feng-Feng1/surge",
     "path": "AdBlock-AllInOne.sgmodule",
@@ -143,26 +157,25 @@
   "remote_rules": [
     "personal-06e5c1a09d4fdf89705a.list",
     "personal-09eb55ddb79e9a63eefa.list",
-    "personal-3b052c69af51db0643b1.list",
     "personal-473763c72577f0cb71f2.list",
     "personal-7aee6a37b618f486eb42.list",
     "personal-91af77528dcd28129492.list",
-    "personal-a6146bf486e4add39cf6.list",
     "personal-b308336f937cfc366a37.list",
-    "personal-b425bd661808c2a18eb8.list"
+    "personal-b425bd661808c2a18eb8.list",
+    "personal-d382e4d5317dc5732c33.list"
   ],
   "script_dependencies": [
-    {
-      "repository": "Feng-Feng1/surge",
-      "path": "Resources/AdBlock/56301a1c6ecb6546244dda50984e17d325d451aaa0172e67b6eee79b2f3da619.txt",
-      "commit": "1b0e85e5767ff8e12e41e2597b57290bbd754e5c",
-      "sha256": "56301a1c6ecb6546244dda50984e17d325d451aaa0172e67b6eee79b2f3da619"
-    },
     {
       "repository": "Feng-Feng1/surge",
       "path": "Bilibili-Splash-AdClean.js",
       "commit": "5fcbd533c94fc2632a11c46448859be16c91be61",
       "sha256": "2278878a51f18bf8b3408754d82d1a6fe8d75edd4b750cf96f7df9def3f00d34"
+    },
+    {
+      "repository": "Feng-Feng1/surge",
+      "path": "Resources/AdBlock/56301a1c6ecb6546244dda50984e17d325d451aaa0172e67b6eee79b2f3da619.txt",
+      "commit": "1b0e85e5767ff8e12e41e2597b57290bbd754e5c",
+      "sha256": "56301a1c6ecb6546244dda50984e17d325d451aaa0172e67b6eee79b2f3da619"
     },
     {
       "repository": "Feng-Feng1/surge",
@@ -190,6 +203,12 @@
     },
     {
       "repository": "fmz200/wool_scripts",
+      "path": "Scripts/cainiao/cainiao.js",
+      "commit": "4b7830670baf235ed945085cb926dc499cf619e0",
+      "sha256": "76fe899db1e045aaff2d71d6ff3c58cb665bac52a5996ff20e56079a02a6451c"
+    },
+    {
+      "repository": "fmz200/wool_scripts",
       "path": "Scripts/cnftp.js",
       "commit": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
       "sha256": "4a95ce816c3e0bbaddf99e76c0f4b5ae3adb74318b9509e24ace40b675f11954"
@@ -211,12 +230,6 @@
       "path": "Scripts/myBlockAds.js",
       "commit": "5d5f63fcf98bc69d5f8f1b1bae6f86a01ee4bb97",
       "sha256": "4cf62100424886068a5470daecec319e93ccd034c647d79a9daaa72bbbc341bb"
-    },
-    {
-      "repository": "fmz200/wool_scripts",
-      "path": "Scripts/cainiao/cainiao.js",
-      "commit": "4b7830670baf235ed945085cb926dc499cf619e0",
-      "sha256": "76fe899db1e045aaff2d71d6ff3c58cb665bac52a5996ff20e56079a02a6451c"
     },
     {
       "repository": "kokoryh/Sparkle",
