@@ -1,6 +1,9 @@
 name: Sync merged ad module
 
 on:
+  push:
+    branches: [main]
+  pull_request:
   schedule:
     - cron: "23 4 * * *"
   workflow_dispatch:
@@ -18,12 +21,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Check merge protections
         run: python3 -m unittest discover -s scripts -p 'test_merge_modules.py' -v
       - name: Build from the latest upstream commits
         run: python3 scripts/merge_modules.py
+      - name: Check the generated module and real upstream integration
+        run: python3 -m unittest discover -s scripts -p 'test_built_module.py' -v
       - name: Commit upstream changes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
           if git diff --quiet -- PersonalAds.sgmodule sources.json && [ -z "$(git ls-files --others --exclude-standard -- rules/)" ]; then
             exit 0

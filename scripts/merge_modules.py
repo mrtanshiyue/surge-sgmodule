@@ -6,6 +6,11 @@ import fnmatch
 import hashlib
 import json
 import re
+import shlex
+import subprocess
+import tempfile
+import urllib.parse
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -36,8 +41,13 @@ ARGUMENTS = {**wool.ARGUMENT_DEFAULTS, "per_filter_video_thread": '"0"'}
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "surge-sgmodule-sync"})
-    with urllib.request.urlopen(req, timeout=45) as response:
-        return response.read().decode("utf-8")
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=45) as response:
+                return response.read().decode("utf-8")
+        except (TimeoutError, urllib.error.URLError):
+            if attempt == 2:
+                raise
 
 
 def feng_source(path, revision):
@@ -131,7 +141,7 @@ def guard_ruleset(line):
     match = re.fullmatch(r"(AND,\(.*\)),(REJECT(?:-DROP)?)(,pre-matching)?", line)
     if not match:
         raise ValueError("Unrecognised upstream external ruleset: " + line[:100])
-    exclusions = ",".join("(NOT,((" + rule + ")))" for rule in PROTECTIONS)
+    exclusions = ",".join("(NOT,((" + rule + ",extended-matching)))" for rule in PROTECTIONS)
     return "AND,((" + match.group(1) + ")," + exclusions + ")," + match.group(2) + (match.group(3) or "")
 
 
@@ -150,15 +160,23 @@ def validate_simple_rule(line):
 
 
 def clean_line(section, line, revision):
+    # Names in a ruleset's exceptions describe what it allows, not the set's scope.
+    if section == "Rule" and "RULE-SET," in line:
+        return guard_ruleset(line).replace(FENG_PREFIX + "main/", FENG_PREFIX + revision + "/")
     normalized = line.replace("\\", "")
     if EXCLUDED.search(normalized):
         return None
     if section == "Rule" and "dig.bdurl.net" in normalized.lower():
         return None
-    if section == "Rule" and "RULE-SET," in line:
-        line = guard_ruleset(line)
     if section == "Rule":
         validate_simple_rule(line)
+    if section == "Script" and "DmSegMobile" in normalized:
+        return None  # This upstream request handler injects skip actions even with sponsorBlock=false.
+    if section == "Map Local":
+        data = re.search(r'\bdata="(\{.*\})"(?=\s+[\w-]+=|$)', line)
+        if data and data.group(1).startswith(('{"', '{}')):
+            json.loads(data.group(1))
+            line = line[:data.start(1) - 1] + json.dumps(data.group(1), ensure_ascii=False) + line[data.end(1) + 1:]
     # wyres.js expects named options; its upstream home placeholders are unset.
     if "wyres.js" in line and "link\\/home\\/framework\\/tab" in line:
         line = line.replace('argument="[{{{MY}}},{{{DT}}},{{{FX}}}]"', r'argument="{\"MY\":true,\"DT\":false,\"FX\":true}"')
@@ -166,12 +184,75 @@ def clean_line(section, line, revision):
         line = re.sub(r',\s*argument="\[\{PRGG\}[^"\n]*\]"', '', line)
     # The upstream Bilibili scripts parse an object, not a positional array.
     if "bilibili.protobuf.request.js" in line and 'argument=[{{{logLevel}}}]' in line:
-        line = line.replace('argument=[{{{logLevel}}}]', r'argument="{\"logLevel\":\"error\"}"')
+        line = line.replace('argument=[{{{logLevel}}}]', r'argument="{\"sponsorBlock\":false,\"logLevel\":\"error\"}"')
     if "bilibili.protobuf.request.js" in line and "{purifyComment}" in line:
-        line = re.sub(r'argument="\[.*\]"', r'argument="{\\"purifyComment\\":true,\\"logLevel\\":\\"error\\"}"', line)
+        line = re.sub(r'argument="\[.*\]"', r'argument="{\\"purifyComment\\":true,\\"sponsorBlock\\":false,\\"logLevel\\":\\"error\\"}"', line)
     if "bilibili.protobuf.response.js" in line and "{displayUpList}" in line:
         line = re.sub(r'argument="\[.*\]"', r'argument="{\\"displayUpList\\":\\"show\\",\\"purifyComment\\":true,\\"sponsorBlock\\":false,\\"logLevel\\":\\"error\\"}"', line)
     return line.replace(FENG_PREFIX + "main/", FENG_PREFIX + revision + "/")
+
+
+def http_host_patterns(content):
+    patterns = []
+    for section in ("URL Rewrite", "Header Rewrite", "Body Rewrite", "Map Local", "Script"):
+        for line in content.get(section, []):
+            if not line.strip() or line.startswith("#"):
+                continue
+            if section == "Script":
+                pattern = script_key(line)[1]
+            else:
+                index = 1 if section in ("Header Rewrite", "Body Rewrite") else 0
+                pattern = line.split()[index]
+            pattern = pattern.strip('"').replace(r"\/", "/")
+            host = re.match(r'^\^?https\??://((?:\[[^]]+\]|[^/])+)', pattern)
+            if host:
+                try:
+                    re.compile(host.group(1))
+                    patterns.append(host.group(1))
+                except re.error:
+                    # Some SDK rules put complete host/path pairs inside one alternation.
+                    authority = pattern.split('://', 1)[1].removesuffix('$')
+                    if not authority.startswith('(') or not authority.endswith(')'):
+                        raise ValueError('Review unsupported HTTP host pattern: ' + pattern)
+                    for branch in authority[1:-1].removeprefix('?:').split('|'):
+                        branch_host = re.match(r'((?:\[[^]]+\]|[^/])+)/', branch)
+                        if not branch_host:
+                            raise ValueError('Review unsupported HTTP host branch: ' + branch)
+                        re.compile(branch_host.group(1))
+                        patterns.append(branch_host.group(1))
+    return patterns
+
+
+def required_hosts(content, candidates):
+    required = set()
+    for pattern in http_host_patterns(content):
+        literal = pattern.replace(r"\.", ".")
+        if re.fullmatch(r"[\w.-]+", literal):
+            required.add(literal)
+        # An any-host path rule must not make every upstream hostname a MITM target.
+        if not re.search(r'[A-Za-z0-9][A-Za-z0-9-]*\.[A-Za-z0-9][A-Za-z0-9-]*', literal):
+            continue
+        regex = re.compile("^(?:" + pattern + ")$", re.I)
+        required.update(h for h in candidates if "*" not in h and not h.startswith("-") and regex.fullmatch(h))
+    return required
+
+
+def deduplicate_scripts(lines):
+    output, seen = [], {}
+    for line in lines:
+        if line.startswith("#"):
+            output.append(line)
+            continue
+        pattern = script_key(line)[1]
+        canonical = pattern.replace("^https:", "^https?:", 1)
+        key = re.sub(r'\bpattern\s*=\s*.*?(?=,\s*[\w-]+\s*=|$)', lambda _: "pattern=" + canonical, line.split("=", 1)[1].strip())
+        if key in seen:
+            if pattern == canonical:
+                output[seen[key]] = line
+        else:
+            seen[key] = len(output)
+            output.append(line)
+    return output
 
 
 def merge(feng, revision, wool_module, wool_source=None):
@@ -210,7 +291,7 @@ def merge(feng, revision, wool_module, wool_source=None):
                     if known_groups and not known_groups.intersection(wool.ALLOWED_GROUPS):
                         continue
                     normalized = line.replace("\\", "")
-                    if ABSENT_APPS.search(normalized):
+                    if "RULE-SET," not in line and ABSENT_APPS.search(normalized):
                         continue
                     if section in ("URL Rewrite", "Header Rewrite", "Body Rewrite", "Map Local") and not known_groups and not FENG_APP_PATTERNS.search(normalized):
                         continue
@@ -230,6 +311,8 @@ def merge(feng, revision, wool_module, wool_source=None):
                         line = script_name + " = " + line.split("=", 1)[1].strip()
                     all_scripts.add(script_name)
                 result.append(line)
+        if section == "Script":
+            result = deduplicate_scripts(result)
         if len(result) > 2:
             section_lines[section] = result
     selected_text = "\n".join(x for v in section_lines.values() for x in v)
@@ -241,6 +324,9 @@ def merge(feng, revision, wool_module, wool_source=None):
     for section, lines in section_lines.items():
         output.extend(["", "[" + section + "]"] + lines)
     hosts = []
+    candidates = [h.strip() for part in (src, fallback) for line in part.get("MITM", [])
+                  if "%APPEND%" in line for h in line.split("%APPEND%", 1)[1].split(",")]
+    dependencies = required_hosts(section_lines, candidates)
     other_hosts.difference_update(selected_hosts)
     for part in (src, fallback):
         for line in part.get("MITM", []):
@@ -248,8 +334,10 @@ def merge(feng, revision, wool_module, wool_source=None):
             if match:
                 for host in match.group(1).split(","):
                     host = host.strip()
-                    if host and not EXCLUDED.search(host) and not ABSENT_APPS.search(host) and host.lower() not in other_hosts and (part is fallback or host.lower() in selected_hosts or FENG_APP_PATTERNS.search(host)) and host != "dig.bdurl.net" and host not in hosts:
+                    selected = host.lower() not in other_hosts and (part is fallback or host.lower() in selected_hosts or FENG_APP_PATTERNS.search(host))
+                    if host and (host in dependencies or selected) and not EXCLUDED.search(host) and not ABSENT_APPS.search(host) and host != "dig.bdurl.net" and host not in hosts:
                         hosts.append(host)
+    hosts.extend(sorted(h for h in dependencies if h not in hosts and not EXCLUDED.search(h) and not ABSENT_APPS.search(h) and h != "dig.bdurl.net"))
     if not hosts:
         raise ValueError("No MITM hostnames found")
     output += ["", "[MITM]", "hostname = %APPEND% " + ", ".join(hosts)]
@@ -298,6 +386,85 @@ def externalize_rules(module):
     return "\n".join(out) + "\n", assets
 
 
+def pin_scripts(module, lock, fetcher=None):
+    fetcher = fetcher or fetch
+    approved = {(entry["repository"], entry["path"]): entry for entry in lock}
+    records = []
+    with tempfile.TemporaryDirectory() as temporary:
+        for url in sorted(set(re.findall(r'script-path=([^,\s]+)', module))):
+            match = re.fullmatch(r'https://raw\.githubusercontent\.com/([^/]+/[^/]+)/[^/]+/(.+)', url)
+            if not match or match.groups() not in approved:
+                raise ValueError("Unreviewed script dependency: " + url)
+            entry = approved[match.groups()]
+            if not re.fullmatch(r'[0-9a-f]{40}', entry['commit']):
+                raise ValueError("Script dependency needs an immutable commit: " + url)
+            prefix = 'https://raw.githubusercontent.com/' + entry['repository'] + '/'
+            pinned = prefix + entry['commit'] + '/' + entry['path']
+            code = fetcher(pinned)
+            if hashlib.sha256(code.encode()).hexdigest() != entry['sha256']:
+                raise ValueError("Approved script checksum mismatch: " + pinned)
+            commits = json.loads(fetcher('https://api.github.com/repos/' + entry['repository'] + '/commits?path=' + urllib.parse.quote(entry['path'], safe='') + '&per_page=1'))
+            if not commits:
+                raise ValueError("Script upstream has no commits: " + url)
+            latest = prefix + commits[0]['sha'] + '/' + entry['path']
+            current = code if latest == pinned else fetcher(latest)
+            if hashlib.sha256(current.encode()).hexdigest() != entry['sha256']:
+                raise ValueError("Script upstream changed; review script-lock.json: " + latest)
+            local = Path(temporary) / ('script-' + str(len(records)) + '.js')
+            local.write_text(code, encoding='utf-8')
+            subprocess.run(['node', '--check', str(local)], check=True, capture_output=True, text=True)
+            module = module.replace(url, pinned)
+            records.append(entry)
+    return module, records
+
+
+def validate_module(module, assets):
+    content = sections(module)
+    hosts = wool.source_mitm_hosts(content)
+    missing = required_hosts(content, hosts) - set(hosts)
+    if missing:
+        raise ValueError('Missing MITM dependency: ' + ', '.join(sorted(missing)))
+    for line in content['Map Local']:
+        if not line.strip() or line.startswith('#'):
+            continue
+        params = dict(item.split('=', 1) for item in shlex.split(line)[1:])
+        if set(params) - {'data-type', 'data', 'header', 'status-code'}:
+            raise ValueError('Invalid Map Local parameters: ' + line)
+        body = params.get('data', '').strip()
+        if params.get('data-type') == 'text' and body.startswith(('{', '[')):
+            json.loads(body)
+    for line in content.get('Body Rewrite', []):
+        if line.startswith(('http-request-jq ', 'http-response-jq ')):
+            expression = shlex.split(line)[2]
+            subprocess.run(['jq', '-n', 'if false then (' + expression + ') else null end'], check=True, capture_output=True, text=True)
+    airborne = 'https://grpc.biliapi.net/bilibili.community.service.dm.v1.DM/DmSegMobile'
+    for line in content.get('Script', []):
+        if not line.strip() or line.startswith('#'):
+            continue
+        kind, pattern = script_key(line)
+        if kind == 'http-request' and re.search(pattern, airborne):
+            raise ValueError('Sponsor skip request handler must not be enabled')
+        if re.search(r'bilibili\.protobuf\.(request|response)\.js', line):
+            arg = re.search(r'argument=("(?:\\.|[^"\\])*")', line)
+            if not arg or json.loads(json.loads(arg.group(1))).get('sponsorBlock') is not False:
+                raise ValueError('Bilibili sponsorBlock must be false')
+    for line in content['Rule']:
+        if not line.strip() or line.startswith('#'):
+            continue
+        if 'RULE-SET,' in line and REMOTE_RULES not in line:
+            for guard in PROTECTIONS:
+                if '(NOT,((' + guard + ',extended-matching)))' not in line:
+                    raise ValueError('External ruleset is missing protection: ' + guard)
+        else:
+            validate_simple_rule(line)
+    for name, body in assets.items():
+        if name != 'personal-' + hashlib.sha256(body.encode()).hexdigest()[:20] + '.list':
+            raise ValueError('Rule file checksum mismatch: ' + name)
+        for line in body.splitlines():
+            parts = line.split(',')
+            validate_simple_rule(','.join(parts[:2] + ['REJECT'] + parts[2:]))
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--feng-source")
@@ -318,7 +485,13 @@ def main():
     baseline, manifest = wool.build(src, wc)
     module = merge(feng, revision, baseline, src)
     module = add_wechat(module, startup)
+    lock = json.loads((Path(__file__).resolve().parent.parent / 'script-lock.json').read_text(encoding='utf-8'))
+    module, dependencies = pin_scripts(module, lock)
     module, assets = externalize_rules(module)
+    validate_module(module, assets)
+    expected = sum('RULE-SET,' in line for line in sections(feng).get('Rule', []))
+    if module.count('AND,((AND,((RULE-SET,') != expected:
+        raise ValueError('An upstream external ruleset was lost during merging')
     asset_dir = Path(args.output).resolve().parent / "rules"
     asset_dir.mkdir(exist_ok=True)
     for name, content in assets.items():
@@ -329,9 +502,10 @@ def main():
     manifest["module_arguments"] = {name: ARGUMENTS[name].strip('"') for name in names}
     manifest["wechat_source"] = {"repository": "https://github.com/" + STARTUP_REPO, "path": STARTUP_PATH, "commit": startup_revision, "sha256": hashlib.sha256(startup.encode()).hexdigest(), "scope": "微信公众号广告接口和商品推广"}
     manifest["remote_rules"] = sorted(assets)
+    manifest['script_dependencies'] = dependencies
     manifest["module_sha256"] = hashlib.sha256(module.encode()).hexdigest()
     manifest["merge_notes"] = {"priority": "Feng before Wool", "scope": "截图可识别 App；保留共享及无法确定归属的规则", "protected": list(PROTECTIONS),
-                               "excluded": ["小红书专属规则", "小象助力车专属规则", "Spotify.Crack.Dev.js"]}
+                               "excluded": ["小红书专属规则", "小象助力车专属规则", "Spotify.Crack.Dev.js", "Bilibili DmSegMobile 赞助空降"]}
     Path(args.output).write_text(module, encoding="utf-8")
     Path(args.manifest).write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Built", args.output, "from Feng", revision, "and Wool", wc)

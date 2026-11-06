@@ -1,11 +1,95 @@
 import json
+import hashlib
 import re
+import shlex
 import unittest
 
-from merge_modules import add_wechat, externalize_rules, merge, script_key
+from merge_modules import add_wechat, externalize_rules, merge, pin_scripts, required_hosts, script_key, validate_module
 
 
 class MergeTests(unittest.TestCase):
+    def test_host_patterns_keep_slashes_inside_character_classes(self):
+        content = {'Map Local': [r'^https?:\/\/[^\/]+\.amemv\.com\/api\/ad data-type=text data=" "']}
+        self.assertEqual(required_hosts(content, ['api.amemv.com']), {'api.amemv.com'})
+
+    def test_host_path_alternatives_each_keep_their_mitm_dependency(self):
+        content = {'Script': [r'联盟=type=http-response, pattern=^https:\/\/(api\.example\.com\/api\/ad|other\.example\.com\/rest\/ads$|mi\.gdt\.qq\.com\/gdt_mview\.fcg\?), script-path=https://example.com/a.js']}
+        self.assertEqual(required_hosts(content, []), {'api.example.com', 'other.example.com', 'mi.gdt.qq.com'})
+
+    def test_any_host_url_rule_does_not_expand_mitm_to_unrelated_hosts(self):
+        content = {'URL Rewrite': [r'^https?:\/\/.+?\/music\/common\/upload\/t_splash_info - reject']}
+        self.assertEqual(required_hosts(content, ['bank.example.com', 'api.m.jd.com']), set())
+
+    def test_script_lock_pins_sources_and_stops_independent_upstream_changes(self):
+        code = 'const ok = true;\n'
+        entry = {'repository': 'owner/repo', 'path': 'test.js', 'commit': 'a' * 40,
+                 'sha256': hashlib.sha256(code.encode()).hexdigest()}
+        line = '京东=type=http-response,pattern=^https://jd.com/,script-path=https://raw.githubusercontent.com/owner/repo/main/test.js'
+        def fetch(url):
+            return json.dumps([{'sha': 'b' * 40}]) if 'api.github.com' in url else code
+        output, records = pin_scripts(line, [entry], fetch)
+        self.assertIn('/' + 'a' * 40 + '/test.js', output)
+        self.assertEqual(records, [entry])
+        def changed(url):
+            return 'const changed = true;' if '/' + 'b' * 40 + '/' in url else fetch(url)
+        with self.assertRaisesRegex(ValueError, 'upstream changed'):
+            pin_scripts(line, [entry], changed)
+        with self.assertRaisesRegex(ValueError, 'Unreviewed'):
+            pin_scripts(line, [], fetch)
+
+    def test_validation_rejects_broken_mock_json_and_sponsor_request_handlers(self):
+        base = '[Rule]\n[Map Local]\n[MITM]\nhostname = %APPEND% api.bilibili.com\n'
+        broken = base.replace('[Map Local]\n', '[Map Local]\n^https://api.bilibili.com/ data-type=text data="{oops}"\n')
+        with self.assertRaises(ValueError):
+            validate_module(broken, {})
+        airborne = base.replace('[MITM]', '[Script]\nbili=type=http-request,pattern=^https://grpc.biliapi.net/.*/DmSegMobile$,script-path=https://example.com/a.js\n[MITM]').replace('%APPEND% api.bilibili.com', '%APPEND% api.bilibili.com, grpc.biliapi.net')
+        with self.assertRaisesRegex(ValueError, 'Sponsor skip'):
+            validate_module(airborne, {})
+
+    def test_external_ruleset_exceptions_do_not_remove_the_whole_set(self):
+        source = '[Rule]\nAND,((RULE-SET,https://example.com/ads.list),(NOT,((DOMAIN,api.iqiyi.com)))),REJECT,pre-matching\n[MITM]\nhostname = %APPEND% api.bilibili.com\n'
+        output = merge(source, 'abc', '')
+        self.assertIn('RULE-SET,https://example.com/ads.list', output)
+        self.assertIn('DOMAIN,dig.bdurl.net,extended-matching', output)
+        self.assertIn('REJECT,pre-matching', output)
+
+    def test_shared_mitm_dependency_survives_absent_app_attribution(self):
+        source = r'''[Map Local]
+^https?:\/\/api-access\.pangolin-sdk-toutiao\.com\/api\/ad\/union\/sdk\/get_ads data-type=text data="{}"
+[MITM]
+hostname = %APPEND% api-access.pangolin-sdk-toutiao.com
+'''
+        wool = '# > 七猫小说\n[URL Rewrite]\n# > 七猫小说\n# hostname = api-access.pangolin-sdk-toutiao.com\n'
+        output = merge(source, 'abc', '', wool)
+        self.assertIn('hostname = %APPEND% api-access.pangolin-sdk-toutiao.com', output)
+
+    def test_literal_https_dependency_is_added_without_decrypting_all_hosts(self):
+        output = merge('[URL Rewrite]\n^https://api\\.mcd\\.cn/bff/splash - reject\n[MITM]\nhostname = %APPEND% api.example\n', 'abc', '')
+        self.assertIn('api.mcd.cn', output.split('[MITM]', 1)[1])
+        self.assertNotIn(', *', output.split('[MITM]', 1)[1])
+
+    def test_map_local_json_quotes_do_not_consume_following_parameters(self):
+        from merge_modules import clean_line
+        line = r'^https://api\.bilibili\.com/test data-type=text data="{"code":0,"data":{"showTime":""},"message":"success"}" status-code=200 header="Content-Type:text/plain"'
+        result = clean_line('Map Local', line, 'abc')
+        params = dict(p.split('=', 1) for p in shlex.split(result)[1:])
+        self.assertEqual(json.loads(params['data'])['code'], 0)
+        self.assertEqual(params['status-code'], '200')
+        self.assertEqual(params['header'], 'Content-Type:text/plain')
+
+    def test_no_airborne_request_and_no_duplicate_http_variants(self):
+        source = r'''[Script]
+bilibili.airborne=type=http-request, pattern=^https://grpc\.biliapi\.net/bilibili.community.service.dm.v1.DM/DmSegMobile$, script-path=https://example.com/bilibili.protobuf.request.js
+淘宝1=type=http-response, pattern=^https:\/\/guide-acs\.m\.taobao\.com\/test, script-path=https://example.com/a.js, requires-body=true
+淘宝2=type=http-response, pattern=^https?:\/\/guide-acs\.m\.taobao\.com\/test, script-path=https://example.com/a.js, requires-body=true
+[MITM]
+hostname = %APPEND% grpc.biliapi.net, guide-acs.m.taobao.com
+'''
+        output = merge(source, 'abc', '')
+        self.assertNotIn('DmSegMobile', output)
+        self.assertEqual(output.count('script-path=https://example.com/a.js'), 1)
+        self.assertIn('^https?:', output)
+
     def test_priority_and_protection(self):
         feng = r'''[Rule]
 AND,((RULE-SET,https://example.com/list),(NOT,((DOMAIN,example.com)))),REJECT
@@ -138,7 +222,7 @@ hostname = %APPEND% app.bilibili.com
         self.assertNotIn("Spotify.Crack", output)
         line = next(line for line in output.splitlines() if line.startswith("bili="))
         argument = line.split("argument=", 1)[1]
-        self.assertEqual(json.loads(json.loads(argument)), {"logLevel": "error"})
+        self.assertEqual(json.loads(json.loads(argument)), {"sponsorBlock": False, "logLevel": "error"})
 
 
 if __name__ == "__main__":

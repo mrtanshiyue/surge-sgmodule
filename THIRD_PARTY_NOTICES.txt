@@ -22,12 +22,14 @@ ad-alliance group. The Feng portion covers additional apps. Xiaohongshu-specific
 hostnames, MITM targets, rewrites and scripts are excluded; exclusions are also
 applied to Feng's external block lists. dig.bdurl.net is protected because it
 broke Douyin Selection playback on the user's device. Source revisions and
-SHA-256 values are recorded in sources.json. Feng repository resource URLs are
-pinned to the selected commit; third-party script URLs may still track branches.
+SHA-256 values are recorded in sources.json. Feng repository rule resource URLs
+are pinned to the selected commit. Every script URL is pinned to a reviewed
+commit and checksum in script-lock.json, with dependency records in sources.json.
 
 Surge module argument defaults were checked against upstream split modules.
 Bilibili protobuf scripts receive JSON object parameters; sponsorBlock is false
-so creator-sponsorship segments remain intact. Spotify.Crack.Dev.js is excluded. The wyres.js script is included and may modify
+and the independent DmSegMobile sponsor-skip request handler is excluded, so
+creator-sponsorship segments remain intact. Spotify.Crack.Dev.js is excluded. The wyres.js script is included and may modify
 client-side membership status; other upstream scripts have not all been audited.
 
 Two selected WeChat public-account rules are derived from:
