@@ -1,14 +1,40 @@
 import json
 import hashlib
+import io
 import re
 import shlex
 import unittest
+import urllib.error
+from unittest.mock import patch
+
+import build_personal_ads as wool
 
 from merge_modules import (FENG_PREFIX, REMOTE_RULES, add_wechat, deduplicate_scripts, externalize_rules,
                            guard_ruleset, merge, pin_scripts, required_hosts, script_key, validate_module, verify_external_lists)
 
 
 class MergeTests(unittest.TestCase):
+    def test_upstream_retries_transient_errors_for_both_downloads(self):
+        failure = lambda: urllib.error.HTTPError('https://example.com', 500, 'server error', {}, None)
+        commit = 'a' * 40
+        responses = [failure(), io.BytesIO(json.dumps([{'sha': commit}]).encode()),
+                     failure(), io.BytesIO(b'module content')]
+        with patch('build_personal_ads.urllib.request.urlopen', side_effect=responses) as get, \
+             patch('build_personal_ads.time.sleep') as sleep:
+            self.assertEqual(wool.read_upstream(None), ('module content', commit))
+        self.assertEqual(get.call_count, 4)
+        self.assertEqual(sleep.call_count, 2)
+        self.assertIn(commit, get.call_args_list[-1].args[0].full_url)
+
+    def test_upstream_retries_are_bounded_and_do_not_retry_404(self):
+        for code, attempts in ((500, 3), (404, 1)):
+            error = urllib.error.HTTPError('https://example.com', code, 'failure', {}, None)
+            with patch('build_personal_ads.urllib.request.urlopen', side_effect=error) as get, \
+                 patch('build_personal_ads.time.sleep'):
+                with self.assertRaises(urllib.error.HTTPError):
+                    wool.read_upstream(None)
+                self.assertEqual(get.call_count, attempts)
+
     def test_12306_splash_handler_and_mitm_are_kept(self):
         source = r'''[Script]
 V5-12306无广告响应 = type=http-request,pattern=^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList(?:\?|$),requires-body=true,script-path=https://example.com/ads.js,argument=rail12306

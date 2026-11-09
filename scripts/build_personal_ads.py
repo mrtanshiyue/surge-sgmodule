@@ -5,6 +5,8 @@ import argparse
 import hashlib
 import json
 import re
+import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -89,20 +91,31 @@ DEFERRED_CANDIDATES = {
     ],
 }
 
+def fetch_upstream(url):
+    request = urllib.request.Request(url, headers={"User-Agent": "surge-sgmodule-sync"})
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8")
+        except urllib.error.HTTPError as error:
+            if error.code < 500 or attempt == 2:
+                raise
+        except (TimeoutError, urllib.error.URLError):
+            if attempt == 2:
+                raise
+        time.sleep(attempt + 1)
+
+
 def read_upstream(source_path):
     if source_path:
         text = Path(source_path).read_text(encoding="utf-8")
         return text, "local-source"
 
-    request = urllib.request.Request(UPSTREAM_API, headers={"User-Agent": "surge-sgmodule-sync"})
-    with urllib.request.urlopen(request, timeout=30) as response:
-        commits = json.load(response)
+    commits = json.loads(fetch_upstream(UPSTREAM_API))
     if not commits:
         raise RuntimeError("Upstream has no commit for blockAds.module")
     commit = commits[0]["sha"]
-    request = urllib.request.Request(RAW_URL.format(commit=commit), headers={"User-Agent": "surge-sgmodule-sync"})
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8"), commit
+    return fetch_upstream(RAW_URL.format(commit=commit)), commit
 
 
 def parse_module(source):
