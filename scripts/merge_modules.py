@@ -33,7 +33,7 @@ PROTECTED_HOSTS = ("dig.bdurl.net", "edith.xiaohongshu.com", "ads-video-al.xhscd
 ABSENT_APPS = re.compile(r"weibo|weibocdn|weibomingzi|viber|zhihu|smzdm|coolapk|csdn|chelaile|gotokeep|xueqiu|douban|cainiao|goofish|taobao\.idle|pupuapi|iqiyi|kugou|dftoutiao|weilitoutiao|jiemian|ixiaochuan|瓜子漫画|微博|知乎|闲鱼|菜鸟|什么值得买|酷安|哔哩哔哩漫画", re.I)
 # Unlabelled upstream rewrites are kept only for visible apps and shared ad SDKs.
 FENG_APP_PATTERNS = re.compile(r"(?:bilibili|biliapi|pinduoduo|yangkeduo|pddpic|taobao|alimama|alibaba|jdcloud|\.jd\.|meituan|amap|10jqka|walmartmobile|film\.mtop|ys7|lechange|music\.163|ximalaya|mina\.mi\.|xiaoaisound|mitvos|home\.mi\.|youku|wps|kingsoft-office|googlevideo|googleapis|youtube|byteurl|bytescm|bytedance|pangolin|toutiao|snssdk|amemv|qq\.com|gtimg|122\.gov|cloud\.189|api\.cloud\.189|mcd\.cn|96225\.com|neteasecloud|ad-sdk|adunion)", re.I)
-FENG_SCRIPT_APPS = re.compile(r"哔哩哔哩|bilibili|bili|喜马拉雅|京东|美团|小爱音箱|优酷|YouTube|阿里巴巴|淘宝|NetEaseCloudMusic|网易云|微信小程序个人中心|广告联盟|myBlockAds", re.I)
+FENG_SCRIPT_APPS = re.compile(r"哔哩哔哩|bilibili|bili|喜马拉雅|京东|^V5-12306无广告响应$|美团|小爱音箱|优酷|YouTube|阿里巴巴|淘宝|NetEaseCloudMusic|网易云|微信小程序个人中心|广告联盟|myBlockAds", re.I)
 REMOTE_RULES = "https://raw.githubusercontent.com/mrtanshiyue/surge-sgmodule/main/rules/"
 ARGUMENTS = {**wool.ARGUMENT_DEFAULTS, "per_filter_video_thread": '"0"'}
 
@@ -316,7 +316,7 @@ def merge(feng, revision, wool_module, wool_source=None):
                         continue
                     if section in ("URL Rewrite", "Header Rewrite", "Body Rewrite", "Map Local") and not known_groups and not FENG_APP_PATTERNS.search(normalized):
                         continue
-                    if section == "Script" and not FENG_SCRIPT_APPS.search(line.split("=", 1)[0]):
+                    if section == "Script" and not FENG_SCRIPT_APPS.search(line.split("=", 1)[0].strip()):
                         continue
                 line = clean_line(section, line, revision)
                 if line is None:

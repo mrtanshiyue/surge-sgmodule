@@ -9,6 +9,17 @@ from merge_modules import (FENG_PREFIX, REMOTE_RULES, add_wechat, deduplicate_sc
 
 
 class MergeTests(unittest.TestCase):
+    def test_12306_splash_handler_and_mitm_are_kept(self):
+        source = r'''[Script]
+V5-12306无广告响应 = type=http-request,pattern=^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList(?:\?|$),requires-body=true,script-path=https://example.com/ads.js,argument=rail12306
+[MITM]
+hostname = %APPEND% ad.12306.cn
+'''
+        output = merge(source, 'abc', '')
+        self.assertIn('V5-12306无广告响应', output)
+        self.assertIn('argument=rail12306', output)
+        self.assertIn('ad.12306.cn', output.split('[MITM]', 1)[1])
+
     def test_formatted_script_paths_cannot_bypass_review(self):
         pre = '[Rule]\n# script-path=https://example.org/unrelated\n[Script]\n'
         line = 'a= type=http-response, pattern=^https://a.test/, argument="other, script-path=decoy", SCRIPT-PATH = "https://raw.githubusercontent.com/org/repo/main/a.js"'

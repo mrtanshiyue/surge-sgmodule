@@ -74,6 +74,14 @@ class BuiltModuleTests(unittest.TestCase):
         jd = 'https://api.m.jd.com/client.action?functionId='
         self.assertFalse(matches(scripts, jd + 'startOther'))
         self.assertTrue(matches(scripts, jd + 'myOrderInfo&v=1'))
+        rail_url = 'https://ad.12306.cn/ad/ser/getAdList'
+        rail = [l for l in content['Script'] if l.startswith('V5-12306无广告响应')]
+        self.assertEqual(len(rail), 1)
+        self.assertEqual(script_key(rail[0])[0], 'http-request')
+        self.assertTrue(re.search(script_key(rail[0])[1], rail_url))
+        self.assertFalse(re.search(script_key(rail[0])[1], rail_url + 'Extra'))
+        self.assertIn('argument=rail12306', rail[0])
+        self.assertIn('ad.12306.cn', content['MITM'][0].split('%APPEND%', 1)[1].split(', '))
         self.assertTrue(matches(maps, 'https://foo.googleapis.com/player/ad_break'))
         self.assertFalse(matches(maps, 'https://example.org/path/foo.googleapis.com/player/ad_break'))
         self.assertFalse(matches(maps, 'https://example.org/?u=https://interface.music.163.com/eapi/ad'))

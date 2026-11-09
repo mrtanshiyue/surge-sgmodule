@@ -126,7 +126,7 @@
       "DOMAIN,v96-reading-ad.qznovelvod.com,REJECT"
     ]
   },
-  "module_sha256": "e53f01077900b0e76fff2852113b906a29e8668e3b7fb4b64eeec1a709fd0843",
+  "module_sha256": "fd21cab0884abf916ad687ee87aec236822b0a161353d7f6204bc37c3db99466",
   "feng_rule_files": [
     {
       "url": "https://raw.githubusercontent.com/Feng-Feng1/surge/1b0e85e5767ff8e12e41e2597b57290bbd754e5c/Resources/AdBlock/862c6562faa526e1334caa261ca8936387031c348796ff03f3c189b7d1ca5259.list",
