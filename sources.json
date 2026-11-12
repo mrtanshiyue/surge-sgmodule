@@ -1,9 +1,9 @@
 {
   "upstream_repository": "https://github.com/fmz200/wool_scripts",
   "upstream_path": "Surge/module/blockAds.module",
-  "upstream_commit": "4b7830670baf235ed945085cb926dc499cf619e0",
-  "upstream_sha256": "cc306fc3e061d106d5197a5a1be42f940193c32bc7234302ff31b357f4a01076",
-  "upstream_date": "2026-10-30 16:26:43",
+  "upstream_commit": "009b501adaebb3428461e91c98a17a556249e076",
+  "upstream_sha256": "c0f86fc48a01da7bd1344ab084eeeb47b6067677e75b526ccd460d785c9418c1",
+  "upstream_date": "2026-11-11 22:01:46",
   "selected_groups": {
     "Rule": [
       "广告联盟",
@@ -93,12 +93,12 @@
     {
       "repository": "fmz200/wool_scripts",
       "path": "Surge/module/split/partB/bilibili.sgmodule",
-      "commit": "4b7830670baf235ed945085cb926dc499cf619e0"
+      "commit": "009b501adaebb3428461e91c98a17a556249e076"
     },
     {
       "repository": "fmz200/wool_scripts",
       "path": "Surge/module/split/partW/NetEaseCloudMusic.sgmodule",
-      "commit": "4b7830670baf235ed945085cb926dc499cf619e0"
+      "commit": "009b501adaebb3428461e91c98a17a556249e076"
     }
   ],
   "excluded_rules": [
