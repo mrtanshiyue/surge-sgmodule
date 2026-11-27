@@ -33,6 +33,9 @@ jobs:
         run: |
           python3 scripts/merge_modules.py
           python3 -m unittest discover -s scripts -p 'test_built_module.py' -v
+          sha256sum PersonalAds.sgmodule sources.json > "$RUNNER_TEMP/candidate-checksums"
+          python3 scripts/merge_modules.py --from-manifest sources.json
+          sha256sum -c "$RUNNER_TEMP/candidate-checksums"
       - name: Show candidate changes for review
         if: github.event_name == 'pull_request'
         run: |
