@@ -23,7 +23,7 @@ class MergeTests(unittest.TestCase):
             self.assertIn('DOMAIN,ads.google.test,REJECT', module)
             self.assertNotIn('old.google.test', module)
             self.assertIn('youtube.test', module.split('[MITM]', 1)[1])
-            self.assertEqual(manifest['selected_groups']['Rule'], ['Google', 'YouTube'])
+            self.assertEqual(manifest['selected_groups']['Rule'], ['YouTube', 'Google'])
             restored = current.replace('[MITM]', '# > YouTube\nDOMAIN,new.youtube.test,REJECT\n[MITM]')
             module, _ = wool.build(restored, 'b' * 40, previous)
             self.assertIn('DOMAIN,new.youtube.test,REJECT', module)

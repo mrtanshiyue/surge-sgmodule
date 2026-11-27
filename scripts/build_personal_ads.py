@@ -189,9 +189,13 @@ def build(source, commit, youtube_fallback=None):
     ):
         _, fallback_sections, fallback_plain = parse_module(youtube_fallback)
         for section, blocks in fallback_sections.items():
-            sections.setdefault(section, []).extend(
-                (name, lines) for name, lines in blocks if name == "YouTube"
-            )
+            current = sections.setdefault(section, [])
+            for index, (name, lines) in enumerate(blocks):
+                if name != "YouTube":
+                    continue
+                following = {group for group, _ in blocks[index + 1:]}
+                insert_at = next((i for i, (group, _) in enumerate(current) if group in following), len(current))
+                current.insert(insert_at, (name, lines))
         fallback_hosts = source_mitm_hosts(fallback_plain)
         current_hosts = source_mitm_hosts(plain_sections)
         plain_sections["MITM"] = ["hostname = %APPEND% " + ", ".join(dict.fromkeys(current_hosts + fallback_hosts))]
