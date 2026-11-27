@@ -182,8 +182,19 @@ def source_mitm_hosts(plain_sections):
     raise RuntimeError("Upstream MITM hostname list not found")
 
 
-def build(source, commit):
+def build(source, commit, youtube_fallback=None):
     metadata, sections, plain_sections = parse_module(source)
+    if youtube_fallback and not any(
+        name == "YouTube" for blocks in sections.values() for name, _ in blocks
+    ):
+        _, fallback_sections, fallback_plain = parse_module(youtube_fallback)
+        for section, blocks in fallback_sections.items():
+            sections.setdefault(section, []).extend(
+                (name, lines) for name, lines in blocks if name == "YouTube"
+            )
+        fallback_hosts = source_mitm_hosts(fallback_plain)
+        current_hosts = source_mitm_hosts(plain_sections)
+        plain_sections["MITM"] = ["hostname = %APPEND% " + ", ".join(dict.fromkeys(current_hosts + fallback_hosts))]
     groups = selected_groups(sections)
     selected_text = "\n".join(line for blocks in groups.values() for _, lines in blocks for line in lines)
     argument_names = sorted(set(re.findall(r"\{\{\{([A-Za-z0-9_]+)\}\}\}", selected_text)))

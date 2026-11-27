@@ -14,6 +14,24 @@ from merge_modules import (FENG_PREFIX, REMOTE_RULES, add_wechat, deduplicate_sc
 
 
 class MergeTests(unittest.TestCase):
+    def test_removed_youtube_group_uses_only_reviewed_fallback(self):
+        current = '[Rule]\n# > Google\nDOMAIN,ads.google.test,REJECT\n[MITM]\nhostname = %APPEND% api.google.test\n'
+        previous = '[Rule]\n# > YouTube\n# hostname = youtube.test\nDOMAIN,ads.youtube.test,REJECT\n# > Google\nDOMAIN,old.google.test,REJECT\n[MITM]\nhostname = %APPEND% youtube.test, old.google.test\n'
+        with patch.object(wool, 'ALLOWED_GROUPS', {'Google', 'YouTube'}):
+            module, manifest = wool.build(current, 'a' * 40, previous)
+            self.assertIn('DOMAIN,ads.youtube.test,REJECT', module)
+            self.assertIn('DOMAIN,ads.google.test,REJECT', module)
+            self.assertNotIn('old.google.test', module)
+            self.assertIn('youtube.test', module.split('[MITM]', 1)[1])
+            self.assertEqual(manifest['selected_groups']['Rule'], ['Google', 'YouTube'])
+            restored = current.replace('[MITM]', '# > YouTube\nDOMAIN,new.youtube.test,REJECT\n[MITM]')
+            module, _ = wool.build(restored, 'b' * 40, previous)
+            self.assertIn('DOMAIN,new.youtube.test,REJECT', module)
+            self.assertNotIn('DOMAIN,ads.youtube.test,REJECT', module)
+        with patch.object(wool, 'ALLOWED_GROUPS', {'Google', 'YouTube', 'Another app'}):
+            with self.assertRaisesRegex(RuntimeError, 'Another app'):
+                wool.build(current, 'a' * 40, previous)
+
     def test_upstream_retries_transient_errors_for_both_downloads(self):
         failure = lambda: urllib.error.HTTPError('https://example.com', 500, 'server error', {}, None)
         commit = 'a' * 40
