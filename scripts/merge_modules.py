@@ -19,6 +19,8 @@ FENG_REPO = "Feng-Feng1/surge"
 FENG_PATH = "AdBlock-AllInOne.sgmodule"
 STARTUP_REPO = "Walvez/surge-startup-ads"
 STARTUP_PATH = "dist/StartUpAds_Selected.sgmodule"
+YOUTUBE_FALLBACK_COMMIT = "009b501adaebb3428461e91c98a17a556249e076"
+YOUTUBE_FALLBACK_SHA256 = "c0f86fc48a01da7bd1344ab084eeeb47b6067677e75b526ccd460d785c9418c1"
 FENG_PREFIX = "https://raw.githubusercontent.com/Feng-Feng1/surge/"
 SECTIONS = ("Rule", "Header Rewrite", "URL Rewrite", "Body Rewrite", "Map Local", "Script")
 EXCLUDED = re.compile(r"xiaohongshu|xhscdn|(?<![a-z])xhs|rednote\.com|小红书|xiaoantech|spotify\.crack", re.I)
@@ -276,9 +278,16 @@ def deduplicate_scripts(lines):
     return output
 
 
-def merge(feng, revision, wool_module, wool_source=None):
+def merge(feng, revision, wool_module, wool_source=None, youtube_fallback=None):
     src, fallback = sections(feng), sections(wool_module)
-    groups = wool.parse_module(wool_source)[1] if wool_source else {}
+    groups = {}
+    for source, fallback_only in ((wool_source, False), (youtube_fallback, True)):
+        if source:
+            for section, blocks in wool.parse_module(source)[1].items():
+                groups.setdefault(section, []).extend(
+                    (name, lines) for name, lines in blocks
+                    if not fallback_only or name == 'YouTube'
+                )
     attribution = {}
     selected_hosts, other_hosts = set(), set()
     for section, blocks in groups.items():
@@ -439,7 +448,10 @@ def check_script(entry, fetcher, check_latest):
         raise ValueError('Approved script checksum mismatch: ' + pinned)
     if check_latest:
         latest = prefix + 'HEAD/' + path
-        if hashlib.sha256(fetcher(latest).encode()).hexdigest() != entry['sha256']:
+        expected_latest = entry.get('acknowledged_upstream_sha256', entry['sha256'])
+        if not re.fullmatch(r'[0-9a-f]{64}', expected_latest):
+            raise ValueError('Invalid acknowledged upstream checksum: ' + path)
+        if hashlib.sha256(fetcher(latest).encode()).hexdigest() != expected_latest:
             raise ValueError('Script upstream changed; review script-lock.json: ' + latest)
     subprocess.run(['node', '--check', '-'], input=code, check=True, text=True)
     return pinned
@@ -468,7 +480,10 @@ def pin_scripts(module, lock, fetcher=None, check_latest=True):
         leading = line[start:end]
         leading = leading[:len(leading) - len(leading.lstrip())]
         lines[i] = line[:start] + leading + 'script-path=' + verified[key] + line[end:]
-    return '\n'.join(lines) + '\n', [approved[key] for key in sorted(verified)]
+    return '\n'.join(lines) + '\n', [
+        {k: v for k, v in approved[key].items() if k != 'acknowledged_upstream_sha256'}
+        for key in sorted(verified)
+    ]
 
 
 def verify_external_lists(feng, revision, generated, fetcher=None):
@@ -579,6 +594,8 @@ def main():
         feng, revision = recorded_source(FENG_REPO, FENG_PATH, recorded['feng']['commit'], recorded['feng']['sha256'])
         startup, startup_revision = recorded_source(STARTUP_REPO, STARTUP_PATH, recorded['wechat_source']['commit'], recorded['wechat_source']['sha256'])
         src, wc = recorded_source(wool.UPSTREAM_REPO, wool.UPSTREAM_PATH, recorded['upstream_commit'], recorded['upstream_sha256'])
+        fallback_record = recorded.get('youtube_fallback')
+        youtube_fallback = recorded_source(wool.UPSTREAM_REPO, wool.UPSTREAM_PATH, fallback_record['commit'], fallback_record['sha256'])[0] if fallback_record else None
     else:
         feng, revision = feng_source(args.feng_source, args.feng_commit)
         startup, startup_revision = startup_source(args.startup_source, args.startup_commit)
@@ -586,8 +603,14 @@ def main():
         if args.wool_source and not args.wool_commit:
             raise ValueError("--wool-commit is required with --wool-source")
         wc = args.wool_commit or wc
-    baseline, manifest = wool.build(src, wc)
-    module = merge(feng, revision, baseline, src)
+        groups = wool.parse_module(src)[1]
+        has_youtube = any(name == 'YouTube' for blocks in groups.values() for name, _ in blocks)
+        fallback_record = None if has_youtube else {'commit': YOUTUBE_FALLBACK_COMMIT, 'sha256': YOUTUBE_FALLBACK_SHA256}
+        youtube_fallback = recorded_source(wool.UPSTREAM_REPO, wool.UPSTREAM_PATH, fallback_record['commit'], fallback_record['sha256'])[0] if fallback_record else None
+    baseline, manifest = wool.build(src, wc, youtube_fallback)
+    module = merge(feng, revision, baseline, src, youtube_fallback)
+    if youtube_fallback:
+        manifest['youtube_fallback'] = fallback_record
     module = add_wechat(module, startup)
     lock = json.loads((Path(__file__).resolve().parent.parent / 'script-lock.json').read_text(encoding='utf-8'))
     module, dependencies = pin_scripts(module, lock, check_latest=not args.from_manifest)

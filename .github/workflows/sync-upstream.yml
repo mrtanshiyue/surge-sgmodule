@@ -29,12 +29,21 @@ jobs:
           git diff --exit-code -- PersonalAds.sgmodule sources.json rules/
           test -z "$(git ls-files --others --exclude-standard -- rules/)"
       - name: Check current upstream and build candidate
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'))
         run: |
           python3 scripts/merge_modules.py
           python3 -m unittest discover -s scripts -p 'test_built_module.py' -v
+          sha256sum PersonalAds.sgmodule sources.json > "$RUNNER_TEMP/candidate-checksums"
+          python3 scripts/merge_modules.py --from-manifest sources.json
+          sha256sum -c "$RUNNER_TEMP/candidate-checksums"
+      - name: Show candidate changes for review
+        if: github.event_name == 'pull_request'
+        run: |
+          git status --short
+          git diff --stat
+          git diff -- PersonalAds.sgmodule
       - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'))
         with:
           name: checked-subscription
           path: |

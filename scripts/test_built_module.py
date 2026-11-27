@@ -30,7 +30,10 @@ class BuiltModuleTests(unittest.TestCase):
         self.assertIn('.vip_type = 2', module)
         dependencies = manifest['script_dependencies']
         lock = json.loads((ROOT / 'script-lock.json').read_text())
-        self.assertCountEqual(dependencies, lock)
+        self.assertCountEqual(dependencies, [
+            {k: v for k, v in entry.items() if k != 'acknowledged_upstream_sha256'}
+            for entry in lock
+        ])
         locked_urls = {f"https://raw.githubusercontent.com/{e['repository']}/{e['commit']}/{e['path']}" for e in lock}
         script_urls = {script_path_field(l)[0] for l in content['Script'] if l.strip() and not l.startswith('#')}
         self.assertEqual(script_urls, locked_urls)

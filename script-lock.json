@@ -27,19 +27,22 @@
     "repository": "kokoryh/Sparkle",
     "path": "dist/bilibili.protobuf.request.js",
     "commit": "d513a2eeab382c640ccd5d6ecd76e07c4828b1ed",
-    "sha256": "61fc5eaded4cb28d2c21796d3fb92ae8b8c3896346bf16ad3f4f29f6e1db53d2"
+    "sha256": "61fc5eaded4cb28d2c21796d3fb92ae8b8c3896346bf16ad3f4f29f6e1db53d2",
+    "acknowledged_upstream_sha256": "3d7cf60fb5730ac5ab14ab0aa11826df09f009db724562eb8483d907e4564bf0"
   },
   {
     "repository": "kokoryh/Sparkle",
     "path": "dist/bilibili.json.js",
     "commit": "e94110a188a2f2b603231ce50ed9c804ee89b448",
-    "sha256": "09749a95e96d4b5847d5d6a07476b3ff70b3dc11d8cda2b00e80bd8681594c6e"
+    "sha256": "09749a95e96d4b5847d5d6a07476b3ff70b3dc11d8cda2b00e80bd8681594c6e",
+    "acknowledged_upstream_sha256": "5b2e1a9c2b203648a75c1e7d1c8b20081005fce6d909fb378ab2c3b5c3b8e4cb"
   },
   {
     "repository": "kokoryh/Sparkle",
     "path": "dist/bilibili.protobuf.response.js",
     "commit": "d513a2eeab382c640ccd5d6ecd76e07c4828b1ed",
-    "sha256": "bfcc0970105056b51a02eb643931c8d4a8d9656f25a5c3f0d6fe9cf6b4d15f8e"
+    "sha256": "bfcc0970105056b51a02eb643931c8d4a8d9656f25a5c3f0d6fe9cf6b4d15f8e",
+    "acknowledged_upstream_sha256": "4a70452a6f6ca07f9d81069005075dbf2957c349cfe981d26af2d295ebbc016e"
   },
   {
     "repository": "fmz200/wool_scripts",
