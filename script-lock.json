@@ -35,7 +35,7 @@
     "path": "dist/bilibili.json.js",
     "commit": "e94110a188a2f2b603231ce50ed9c804ee89b448",
     "sha256": "09749a95e96d4b5847d5d6a07476b3ff70b3dc11d8cda2b00e80bd8681594c6e",
-    "acknowledged_upstream_sha256": "5b2e1a9c2b203648a75c1e7d1c8b20081005fce6d909fb378ab2c3b8e4cb"
+    "acknowledged_upstream_sha256": "5b2e1a9c2b203648a75c1e7d1c8b20081005fce6d909fb378ab2c3b5c3b8e4cb"
   },
   {
     "repository": "kokoryh/Sparkle",
