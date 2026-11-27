@@ -448,7 +448,10 @@ def check_script(entry, fetcher, check_latest):
         raise ValueError('Approved script checksum mismatch: ' + pinned)
     if check_latest:
         latest = prefix + 'HEAD/' + path
-        if hashlib.sha256(fetcher(latest).encode()).hexdigest() != entry['sha256']:
+        expected_latest = entry.get('acknowledged_upstream_sha256', entry['sha256'])
+        if not re.fullmatch(r'[0-9a-f]{64}', expected_latest):
+            raise ValueError('Invalid acknowledged upstream checksum: ' + path)
+        if hashlib.sha256(fetcher(latest).encode()).hexdigest() != expected_latest:
             raise ValueError('Script upstream changed; review script-lock.json: ' + latest)
     subprocess.run(['node', '--check', '-'], input=code, check=True, text=True)
     return pinned
@@ -477,7 +480,10 @@ def pin_scripts(module, lock, fetcher=None, check_latest=True):
         leading = line[start:end]
         leading = leading[:len(leading) - len(leading.lstrip())]
         lines[i] = line[:start] + leading + 'script-path=' + verified[key] + line[end:]
-    return '\n'.join(lines) + '\n', [approved[key] for key in sorted(verified)]
+    return '\n'.join(lines) + '\n', [
+        {k: v for k, v in approved[key].items() if k != 'acknowledged_upstream_sha256'}
+        for key in sorted(verified)
+    ]
 
 
 def verify_external_lists(feng, revision, generated, fetcher=None):

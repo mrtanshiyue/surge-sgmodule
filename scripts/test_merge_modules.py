@@ -134,6 +134,12 @@ hostname = %APPEND% ad.12306.cn
             return 'const changed = true;' if '/HEAD/' in url else fetch(url)
         with self.assertRaisesRegex(ValueError, 'upstream changed'):
             pin_scripts(line, [entry], changed)
+        accepted = {**entry, 'acknowledged_upstream_sha256': hashlib.sha256(b'const changed = true;').hexdigest()}
+        output, records = pin_scripts(line, [accepted], changed)
+        self.assertIn('/' + 'a' * 40 + '/test.js', output)
+        self.assertEqual(records, [entry])
+        with self.assertRaisesRegex(ValueError, 'upstream changed'):
+            pin_scripts(line, [accepted], lambda url: 'const changed again = true;' if '/HEAD/' in url else code)
         with self.assertRaisesRegex(ValueError, 'Unreviewed'):
             pin_scripts(line, [], fetch)
 

@@ -33,8 +33,14 @@ jobs:
         run: |
           python3 scripts/merge_modules.py
           python3 -m unittest discover -s scripts -p 'test_built_module.py' -v
+      - name: Show candidate changes for review
+        if: github.event_name == 'pull_request'
+        run: |
+          git status --short
+          git diff --stat
+          git diff -- PersonalAds.sgmodule
       - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'))
         with:
           name: checked-subscription
           path: |
